@@ -41,7 +41,19 @@ class HostController extends \BaseController {
 	 */
 	public function store()
 	{
-		//
+        if (Input::isJson()) {
+
+            $data = Input::all();
+
+            try {
+                $this->hosts->add($data);
+                return Response::json($data);
+            } catch (Exception $e) {
+                return Response::json($e->getMessage(), 500);
+            }
+        } else {
+            return Response::json("Content-Type must be 'application/json'", 500);
+        }
 	}
 
 	/**
@@ -91,7 +103,13 @@ class HostController extends \BaseController {
 	 */
 	public function destroy($fqdn)
 	{
-		//
+        try {
+            $this->hosts->remove($fqdn);
+            return Response::json("Deleted $fqdn");
+        } catch (Exception $e) {
+            return Response::json($e->getMessage(), 500);
+        }
+
 	}
 
 }

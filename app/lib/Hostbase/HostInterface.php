@@ -19,11 +19,11 @@ interface HostInterface {
     public function get($fqdn = null);
 
     /**
-     * @param string $fqdn
      * @param array $data
+     * @throws \Exception
      * @return mixed
      */
-    public function add($fqdn, array $data);
+    public function add(array $data);
 
     /**
      * @param string $fqdn
