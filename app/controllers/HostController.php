@@ -52,7 +52,13 @@ class HostController extends \BaseController {
 	 */
 	public function show($fqdn)
     {
-		//
+		$host = $this->hosts->get($fqdn);
+
+        if ($host != null) {
+            return Response::json($host);
+        } else {
+            return Response::json("Host '$fqdn' not found'", 404);
+        }
 	}
 
 	/**

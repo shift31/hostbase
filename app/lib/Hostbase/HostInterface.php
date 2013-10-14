@@ -14,7 +14,7 @@ interface HostInterface {
 
     /**
      * @param string|null $fqdn
-     * @return mixed
+     * @return array|null
      */
     public function get($fqdn = null);
 

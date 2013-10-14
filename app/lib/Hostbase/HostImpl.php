@@ -4,6 +4,7 @@ namespace Hostbase;
 
 use Log;
 use Cb;
+use Basement\data\Document;
 use Basement\data\DocumentCollection;
 use Basement\view\Query as BasementQuery;
 use Basement\view\ViewResult;
@@ -35,9 +36,9 @@ class HostImpl implements HostInterface {
 
         $result = $client->search($searchParams);
 
-        if (is_array($result)) {
-            $docIds = array();
+        $docIds = array();
 
+        if (is_array($result)) {
             foreach ($result['hits']['hits'] as $hit) {
                 $docIds[] = $hit['_id'];
             }
@@ -50,10 +51,12 @@ class HostImpl implements HostInterface {
         } else {
             $hosts = array();
 
+            /** @noinspection PhpVoidFunctionResultUsedInspection */
             $docCollection = Cb::findByKey($docIds);
 
             if ($docCollection instanceof DocumentCollection) {
                 foreach ($docCollection as $doc) {
+                    /** @noinspection PhpUndefinedMethodInspection */
                     $hosts[] = $doc->doc();
                 }
             }
@@ -66,15 +69,14 @@ class HostImpl implements HostInterface {
 
     /**
      * @param string|null $fqdn
-     * @return array
+     * @return array|null
      */
     public function get($fqdn = null)
     {
-
-        $hosts = array();
-
         // list all hosts by default
         if ($fqdn == null) {
+
+            $hosts = array();
 
             $query = new BasementQuery();
             $viewResult = Cb::findByView('hosts', 'byFqdn', $query);
@@ -88,10 +90,20 @@ class HostImpl implements HostInterface {
                 }
             }
 
-        }
+            //Log::debug(print_r($hosts, true));
+            return $hosts;
 
-        //Log::debug(print_r($hosts, true));
-        return $hosts;
+        } else {
+
+            $result = Cb::findByKey("host_$fqdn", array('first' => true));
+            Log::debug(print_r($result, true));
+
+            if ($result instanceof Document) {
+                return $result->doc();
+            } else {
+                return null;
+            }
+        }
     }
 
     /**
