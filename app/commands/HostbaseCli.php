@@ -21,11 +21,11 @@ class HostbaseCli extends Command {
 	 */
 	protected $description = 'View and manipulate your host database.';
 
-	/**
-	 * Create a new command instance.
-	 *
-	 * @return void
-	 */
+    /**
+     * Create a new command instance.
+     *
+     * @return \HostbaseCli
+     */
 	public function __construct()
 	{
         $this->hosts = new HostImpl();
@@ -42,8 +42,23 @@ class HostbaseCli extends Command {
 	{
 		$queryOrFqdn = $this->argument('query|fqdn');
 
-        if ($this->option('add') || $this->option('modify') || $this->option('remove')) {
-            $fqdn = $queryOrFqdn;
+        if ($this->option('add')) {
+            $data = json_decode($this->option('add'), true);
+
+            Log::debug(print_r($data, true));
+
+            if (!is_array($data)) {
+                $this->error('Missing JSON');
+                exit(1);
+            } else {
+                $data['fqdn'] = $queryOrFqdn;
+                $this->hosts->add($data);
+            }
+
+        } elseif ($this->option('modify')) {
+            //TODO
+        } elseif ($this->option('remove')) {
+            //TODO - removal all based on query; ask user to confirm
         } else {
             $query = $queryOrFqdn;
             $hosts = $this->hosts->search($query, $this->option('showdata'));
@@ -55,12 +70,12 @@ class HostbaseCli extends Command {
 
                 foreach ($hosts as $host) {
                     if ($this->option('showdata')) {
+                        $output .= PHP_EOL . $host['fqdn'] . PHP_EOL;
+
                         foreach ($host as $key => $value) {
-                            if ($key == 'fqdn') {
-                                $output .= $value . PHP_EOL;
-                            } else {
-                                $output .= "\t$key: $value" . PHP_EOL;
-                            }
+                            if ($key == 'fqdn') continue;
+
+                            $output .= "\t$key: $value" . PHP_EOL;
                         }
                     } else {
                         $output .= $host . PHP_EOL;
@@ -95,8 +110,8 @@ class HostbaseCli extends Command {
 	{
 		return array(
             array('showdata', null, InputOption::VALUE_NONE, 'Show all data for host(s).', null),
-			array('add', null, InputOption::VALUE_NONE, 'Add a host.', null),
-            array('modify', null, InputOption::VALUE_NONE, 'Modify a host.', null),
+			array('add', null, InputOption::VALUE_REQUIRED, 'Add a host.', null),
+            array('modify', null, InputOption::VALUE_REQUIRED, 'Modify a host.', null),
             array('remove', null, InputOption::VALUE_NONE, 'Remove a host.', null),
 		);
 	}

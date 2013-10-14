@@ -1,2 +1,2 @@
 #!/bin/sh
-php artisan hostbase $@
+php artisan hostbase "$@"

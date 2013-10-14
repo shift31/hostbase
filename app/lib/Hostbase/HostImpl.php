@@ -134,7 +134,10 @@ class HostImpl implements HostInterface {
                 'key' => "host_${data['fqdn']}",
                 'doc' => $data
             );
-            Cb::save($doc);
+
+            if (!Cb::save($doc, array('override' => false))) {
+                throw new \Exception("Host already exists");
+            }
         }
     }
 
