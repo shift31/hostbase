@@ -20,7 +20,7 @@ class HostController extends \BaseController {
         if (Input::has('q')) {
             return Response::json($this->hosts->search(Input::get('q'), true));
         } else {
-            return Response::json($this->hosts->get());
+            return Response::json($this->hosts->show());
         }
 	}
 
@@ -46,7 +46,7 @@ class HostController extends \BaseController {
             $data = Input::all();
 
             try {
-                $this->hosts->add($data);
+                $this->hosts->store($data);
                 return Response::json($data);
             } catch (Exception $e) {
                 return Response::json($e->getMessage(), 500);
@@ -64,7 +64,7 @@ class HostController extends \BaseController {
 	 */
 	public function show($fqdn)
     {
-		$host = $this->hosts->get($fqdn);
+		$host = $this->hosts->show($fqdn);
 
         if ($host != null) {
             return Response::json($host);
@@ -92,7 +92,19 @@ class HostController extends \BaseController {
 	 */
 	public function update($fqdn)
 	{
-		//
+        if (Input::isJson()) {
+
+            $data = Input::all();
+
+            try {
+                $updatedData = $this->hosts->update($fqdn, $data);
+                return Response::json($updatedData);
+            } catch (Exception $e) {
+                return Response::json($e->getMessage(), 500);
+            }
+        } else {
+            return Response::json("Content-Type must be 'application/json'", 500);
+        }
 	}
 
 	/**
@@ -104,7 +116,7 @@ class HostController extends \BaseController {
 	public function destroy($fqdn)
 	{
         try {
-            $this->hosts->remove($fqdn);
+            $this->hosts->destroy($fqdn);
             return Response::json("Deleted $fqdn");
         } catch (Exception $e) {
             return Response::json($e->getMessage(), 500);

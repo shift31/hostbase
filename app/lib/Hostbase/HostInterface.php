@@ -16,26 +16,26 @@ interface HostInterface {
      * @param string|null $fqdn
      * @return array|null
      */
-    public function get($fqdn = null);
+    public function show($fqdn = null);
 
     /**
      * @param array $data
      * @throws \Exception
      * @return mixed
      */
-    public function add(array $data);
+    public function store(array $data);
 
     /**
      * @param string $fqdn
      * @param array $data
      * @return mixed
      */
-    public function modify($fqdn, array $data);
+    public function update($fqdn, array $data);
 
 
     /**
      * @param string $fqdn
      * @return mixed
      */
-    public function remove($fqdn);
+    public function destroy($fqdn);
 }
