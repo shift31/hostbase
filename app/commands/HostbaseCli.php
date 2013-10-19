@@ -101,7 +101,7 @@ class HostbaseCli extends Command {
                 }
             }
         } else {
-            $this->error('No hosts matching your query were found.');
+            $this->error("No hosts matching '$query' were found.");
         }
     }
 

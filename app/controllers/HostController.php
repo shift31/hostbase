@@ -18,7 +18,12 @@ class HostController extends BaseController {
 	{
 		// handle search
         if (Input::has('q')) {
-            return Response::json($this->hosts->search(Input::get('q'), true));
+	        try {
+		        $hosts = $this->hosts->search(Input::get('q'), true);
+		        return Response::json($hosts);
+	        } catch (Exception $e) {
+		        return Response::json($e->getMessage(), 500);
+	        }
         } else {
             return Response::json($this->hosts->show());
         }
@@ -64,12 +69,10 @@ class HostController extends BaseController {
 	 */
 	public function show($fqdn)
     {
-		$host = $this->hosts->show($fqdn);
-
-        if ($host != null) {
-            return Response::json($host);
-        } else {
-            return Response::json("Host '$fqdn' not found'", 404);
+        try {
+            return Response::json($this->hosts->show($fqdn));
+        } catch (Exception $e) {
+            return Response::json($e->getMessage(), 404);
         }
 	}
 

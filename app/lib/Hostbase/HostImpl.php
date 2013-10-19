@@ -14,11 +14,12 @@ use Elasticsearch\Client as EsClient;
 
 class HostImpl implements HostInterface {
 
-    /**
-     * @param string $query
-     * @param bool $showData
-     * @return array
-     */
+	/**
+	 * @param string $query
+	 * @param bool   $showData
+	 * @throws \Exception
+	 * @return array
+	 */
     public function search($query, $showData = false)
     {
         //TODO: make elasticsearch service provider
@@ -66,14 +67,20 @@ class HostImpl implements HostInterface {
         }
 
         //Log::debug(print_r($hosts, true));
-        return $hosts;
+	    if (count($hosts) == 0) {
+		    throw new \Exception("No hosts matching '$query' were found");
+	    } else {
+		    return $hosts;
+	    }
+
     }
 
 
-    /**
-     * @param string|null $fqdn
-     * @return array|null
-     */
+	/**
+	 * @param string|null $fqdn
+	 * @throws \Exception
+	 * @return array|null
+	 */
     public function show($fqdn = null)
     {
         // list all hosts by default
@@ -106,7 +113,7 @@ class HostImpl implements HostInterface {
             if ($result instanceof Document) {
                 return $result->doc();
             } else {
-                return null;
+                throw new \Exception("No host named '$fqdn'");
             }
         }
     }
@@ -158,15 +165,31 @@ class HostImpl implements HostInterface {
         //Log::debug(print_r($result, true));
 
         if ($result instanceof Document) {
+
+	        // convert Document to array
+			$updateData = (array) unserialize($result->serialize());
+
             foreach ($data as $key => $value) {
-                $result->$key = $value;
+                if ($value == null) {
+	                // keys should be removed when nullified
+	                unset($updateData[$key]);
+                } else {
+	                $updateData[$key] = $value;
+                }
             }
 
+	        $doc = array(
+		        'key' => "host_$fqdn",
+		        'doc' => $updateData
+	        );
+
+	        //Log::debug(print_r($doc, true));
+
             /** @noinspection PhpVoidFunctionResultUsedInspection */
-            if (!Cb::save($result)) {
+            if (!Cb::save($doc, array('replace' => true))) {
                 throw new \Exception("Unable to update '$fqdn'");
             } else {
-                return $result->doc();
+                return $updateData;
             }
 
         } else {
@@ -181,8 +204,9 @@ class HostImpl implements HostInterface {
      */
     public function destroy($fqdn)
     {
-        /** @noinspection PhpVoidFunctionResultUsedInspection */
-        /** @noinspection PhpUndefinedMethodInspection */
+	    $this->show($fqdn);
+	    /** @noinspection PhpVoidFunctionResultUsedInspection */
+	    /** @noinspection PhpUndefinedMethodInspection */
         Cb::connection()->delete("host_$fqdn");
     }
 }

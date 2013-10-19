@@ -8,12 +8,14 @@ interface HostInterface {
     /**
      * @param string $query
      * @param bool $showData
+     * @throws \Exception
      * @return array
      */
     public function search($query, $showData = false);
 
     /**
      * @param string|null $fqdn
+     * @throws \Exception
      * @return array|null
      */
     public function show($fqdn = null);
@@ -28,6 +30,7 @@ interface HostInterface {
     /**
      * @param string $fqdn
      * @param array $data
+     * @throws \Exception
      * @return mixed
      */
     public function update($fqdn, array $data);
@@ -35,6 +38,7 @@ interface HostInterface {
 
     /**
      * @param string $fqdn
+     * @throws \Exception
      * @return mixed
      */
     public function destroy($fqdn);
