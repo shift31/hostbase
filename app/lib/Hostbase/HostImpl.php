@@ -2,14 +2,13 @@
 
 namespace Hostbase;
 
-use Log;
-use Cb;
 use Basement\data\Document;
 use Basement\data\DocumentCollection;
 use Basement\view\Query as BasementQuery;
 use Basement\view\ViewResult;
-use Monolog\Logger;
+use Cb;
 use Elasticsearch\Client as EsClient;
+use Monolog\Logger;
 
 
 class HostImpl implements HostInterface
@@ -59,13 +58,13 @@ class HostImpl implements HostInterface
 		} else {
 			$hosts = array();
 
-			/** @noinspection PhpVoidFunctionResultUsedInspection */
 			$docCollection = Cb::findByKey($docIds);
 
 			if ($docCollection instanceof DocumentCollection) {
 				foreach ($docCollection as $doc) {
-					/** @noinspection PhpUndefinedMethodInspection */
-					$hosts[] = $doc->doc();
+					if ($doc instanceof Document) {
+						$hosts[] = $doc->doc();
+					}
 				}
 			}
 		}
@@ -101,8 +100,9 @@ class HostImpl implements HostInterface
 				$docCollection = $viewResult->get();
 
 				foreach ($docCollection as $doc) {
-					/** @noinspection PhpUndefinedMethodInspection */
-					$hosts[] = str_replace('host_', '', $doc->key());
+					if ($doc instanceof Document) {
+						$hosts[] = str_replace('host_', '', $doc->key());
+					}
 				}
 			}
 
@@ -110,8 +110,6 @@ class HostImpl implements HostInterface
 			return $hosts;
 
 		} else {
-
-			/** @noinspection PhpVoidFunctionResultUsedInspection */
 			$result = Cb::findByKey("host_$fqdn", array('first' => true));
 			//Log::debug(print_r($result, true));
 
@@ -151,7 +149,6 @@ class HostImpl implements HostInterface
 				'doc' => $data
 			);
 
-			/** @noinspection PhpVoidFunctionResultUsedInspection */
 			if (!Cb::save($doc, array('override' => false))) {
 				throw new \Exception("'$fqdn' already exists");
 			}
@@ -168,7 +165,6 @@ class HostImpl implements HostInterface
 	 */
 	public function update($fqdn, array $data)
 	{
-		/** @noinspection PhpVoidFunctionResultUsedInspection */
 		$result = Cb::findByKey("host_$fqdn", array('first' => true));
 		//Log::debug(print_r($result, true));
 
@@ -193,7 +189,6 @@ class HostImpl implements HostInterface
 
 			//Log::debug(print_r($doc, true));
 
-			/** @noinspection PhpVoidFunctionResultUsedInspection */
 			if (!Cb::save($doc, array('replace' => true))) {
 				throw new \Exception("Unable to update '$fqdn'");
 			} else {
@@ -209,13 +204,19 @@ class HostImpl implements HostInterface
 	/**
 	 * @param string $fqdn
 	 *
+	 * @throws \Exception
 	 * @return mixed
 	 */
 	public function destroy($fqdn)
 	{
 		$this->show($fqdn);
-		/** @noinspection PhpVoidFunctionResultUsedInspection */
-		/** @noinspection PhpUndefinedMethodInspection */
-		Cb::connection()->delete("host_$fqdn");
+
+		$cbConnection = Cb::connection();
+
+		if ($cbConnection instanceof \Couchbase) {
+			$cbConnection->delete("host_$fqdn");
+		} else {
+			throw new \Exception("No Couchbase connection");
+		}
 	}
 }
