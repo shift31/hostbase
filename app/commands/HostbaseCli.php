@@ -44,69 +44,13 @@ class HostbaseCli extends Command {
 		$queryOrFqdn = $this->argument('query|fqdn');
 
         if ($this->option('add')) {
-            $data = json_decode($this->option('add'), true);
-
-            //Log::debug(print_r($data, true));
-
-            if (!is_array($data)) {
-                $this->error('Missing JSON');
-                exit(1);
-            } else {
-                $data['fqdn'] = $queryOrFqdn;
-                try {
-                    $this->hosts->store($data);
-                    $this->info("Added '$queryOrFqdn'");
-                } catch (Exception $e) {
-                    $this->error($e->getMessage());
-                }
-            }
+            $this->add($queryOrFqdn);
         } elseif ($this->option('update')) {
-            $data = json_decode($this->option('update'), true);
-
-            //Log::debug(print_r($data, true));
-
-            if (!is_array($data)) {
-                $this->error('Missing JSON');
-                exit(1);
-            } else {
-                try {
-                    $this->hosts->update($queryOrFqdn, $data);
-                    $this->info("Modified '$queryOrFqdn'");
-                } catch (Exception $e) {
-                    $this->error($e->getMessage());
-                }
-            }
+            $this->update($queryOrFqdn);
         } elseif ($this->option('delete')) {
-            if ($this->confirm("Are you sure you want to delete '$queryOrFqdn'? [yes|no]", true)) {
-               try {
-                   $this->hosts->destroy($queryOrFqdn);
-                   $this->info("Deleted $queryOrFqdn");
-               } catch (Exception $e) {
-                   $this->error($e->getMessage());
-               }
-            } else {
-                exit;
-            }
+            $this->delete($queryOrFqdn);
         } else {
-            $query = $queryOrFqdn;
-            $hosts = $this->hosts->search($query, $this->option('showdata'));
-
-            //Log::debug(print_r($hosts, true));
-
-            if (count($hosts) > 0) {
-                foreach ($hosts as $host) {
-                    if ($this->option('showdata')) {
-
-                        $this->info($host['fqdn']);
-
-                        $this->line(Yaml::dump($host, 2));
-                    } else {
-                        $this->info($host);
-                    }
-                }
-            } else {
-                $this->error('No hosts matching your query were found.');
-            }
+            $this->search($queryOrFqdn);
         }
 	}
 
@@ -136,5 +80,92 @@ class HostbaseCli extends Command {
             array('delete', null, InputOption::VALUE_NONE, 'Delete a host.', null),
 		);
 	}
+
+
+    /**
+     * @param $query
+     */
+    protected function search($query)
+    {
+        $hosts = $this->hosts->search($query, $this->option('showdata'));
+
+        //Log::debug(print_r($hosts, true));
+
+        if (count($hosts) > 0) {
+            foreach ($hosts as $host) {
+                if ($this->option('showdata')) {
+                    $this->info($host['fqdn']);
+                    $this->line(Yaml::dump($host, 2));
+                } else {
+                    $this->info($host);
+                }
+            }
+        } else {
+            $this->error('No hosts matching your query were found.');
+        }
+    }
+
+    /**
+     * @param $fqdn
+     */
+    protected function add($fqdn)
+    {
+        $data = json_decode($this->option('add'), true);
+
+        //Log::debug(print_r($data, true));
+
+        if (!is_array($data)) {
+            $this->error('Missing JSON');
+            exit(1);
+        } else {
+            $data['fqdn'] = $fqdn;
+
+            try {
+                $this->hosts->store($data);
+                $this->info("Added '$fqdn'");
+            } catch (Exception $e) {
+                $this->error($e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * @param $fqdn
+     */
+    protected function update($fqdn)
+    {
+        $data = json_decode($this->option('update'), true);
+
+        //Log::debug(print_r($data, true));
+
+        if (!is_array($data)) {
+            $this->error('Missing JSON');
+            exit(1);
+        } else {
+            try {
+                $this->hosts->update($fqdn, $data);
+                $this->info("Modified '$fqdn'");
+            } catch (Exception $e) {
+                $this->error($e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * @param $fqdn
+     */
+    protected function delete($fqdn)
+    {
+        if ($this->confirm("Are you sure you want to delete '$fqdn'? [yes|no]")) {
+            try {
+                $this->hosts->destroy($fqdn);
+                $this->info("Deleted $fqdn");
+            } catch (Exception $e) {
+                $this->error($e->getMessage());
+            }
+        } else {
+            exit;
+        }
+    }
 
 }
