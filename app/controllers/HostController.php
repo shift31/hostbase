@@ -2,7 +2,7 @@
 
 use Hostbase\HostInterface;
 
-class HostController extends \BaseController {
+class HostController extends BaseController {
 
     public function __construct(HostInterface $hosts)
     {

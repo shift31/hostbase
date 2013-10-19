@@ -137,6 +137,7 @@ class HostImpl implements HostInterface {
                 'doc' => $data
             );
 
+            /** @noinspection PhpVoidFunctionResultUsedInspection */
             if (!Cb::save($doc, array('override' => false))) {
                 throw new \Exception("'$fqdn' already exists");
             }
@@ -161,6 +162,7 @@ class HostImpl implements HostInterface {
                 $result->$key = $value;
             }
 
+            /** @noinspection PhpVoidFunctionResultUsedInspection */
             if (!Cb::save($result)) {
                 throw new \Exception("Unable to update '$fqdn'");
             } else {

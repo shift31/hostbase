@@ -3,6 +3,7 @@
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Yaml\Yaml;
 use Hostbase\HostImpl;
 
 class HostbaseCli extends Command {
@@ -45,20 +46,47 @@ class HostbaseCli extends Command {
         if ($this->option('add')) {
             $data = json_decode($this->option('add'), true);
 
-            Log::debug(print_r($data, true));
+            //Log::debug(print_r($data, true));
 
             if (!is_array($data)) {
                 $this->error('Missing JSON');
                 exit(1);
             } else {
                 $data['fqdn'] = $queryOrFqdn;
-                $this->hosts->add($data);
+                try {
+                    $this->hosts->store($data);
+                    $this->info("Added '$queryOrFqdn'");
+                } catch (Exception $e) {
+                    $this->error($e->getMessage());
+                }
             }
+        } elseif ($this->option('update')) {
+            $data = json_decode($this->option('update'), true);
 
-        } elseif ($this->option('modify')) {
-            //TODO
-        } elseif ($this->option('remove')) {
-            //TODO - removal all based on query; ask user to confirm
+            //Log::debug(print_r($data, true));
+
+            if (!is_array($data)) {
+                $this->error('Missing JSON');
+                exit(1);
+            } else {
+                try {
+                    $this->hosts->update($queryOrFqdn, $data);
+                    $this->info("Modified '$queryOrFqdn'");
+                } catch (Exception $e) {
+                    $this->error($e->getMessage());
+                }
+            }
+        } elseif ($this->option('delete')) {
+            if ($this->confirm("Are you sure you want to delete '$queryOrFqdn'? [yes|no]", true)) {
+               try {
+                   $this->hosts->destroy($queryOrFqdn);
+                   $this->info("Deleted $queryOrFqdn");
+               } catch (Exception $e) {
+                   $this->error($e->getMessage());
+               }
+            } else {
+                exit;
+            }
         } else {
             $query = $queryOrFqdn;
             $hosts = $this->hosts->search($query, $this->option('showdata'));
@@ -66,23 +94,16 @@ class HostbaseCli extends Command {
             //Log::debug(print_r($hosts, true));
 
             if (count($hosts) > 0) {
-                $output = '';
-
                 foreach ($hosts as $host) {
                     if ($this->option('showdata')) {
-                        $output .= PHP_EOL . $host['fqdn'] . PHP_EOL;
 
-                        foreach ($host as $key => $value) {
-                            if ($key == 'fqdn') continue;
+                        $this->info($host['fqdn']);
 
-                            $output .= "\t$key: $value" . PHP_EOL;
-                        }
+                        $this->line(Yaml::dump($host, 2));
                     } else {
-                        $output .= $host . PHP_EOL;
+                        $this->info($host);
                     }
                 }
-
-                $this->line($output);
             } else {
                 $this->error('No hosts matching your query were found.');
             }
@@ -111,8 +132,8 @@ class HostbaseCli extends Command {
 		return array(
             array('showdata', null, InputOption::VALUE_NONE, 'Show all data for host(s).', null),
 			array('add', null, InputOption::VALUE_REQUIRED, 'Add a host.', null),
-            array('modify', null, InputOption::VALUE_REQUIRED, 'Modify a host.', null),
-            array('remove', null, InputOption::VALUE_NONE, 'Remove a host.', null),
+            array('update', null, InputOption::VALUE_REQUIRED, 'Update a host.', null),
+            array('delete', null, InputOption::VALUE_NONE, 'Delete a host.', null),
 		);
 	}
 
