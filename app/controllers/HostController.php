@@ -21,7 +21,7 @@ class HostController extends BaseController
 		// handle search
 		if (Input::has('q')) {
 			try {
-				$hosts = $this->hosts->search(Input::get('q'), true);
+				$hosts = $this->hosts->search(Input::get('q'), Input::has('size') ? Input::get('size') : 10000, true);
 
 				return Response::json($hosts);
 			} catch (Exception $e) {

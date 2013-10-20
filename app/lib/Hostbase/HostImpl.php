@@ -16,12 +16,13 @@ class HostImpl implements HostInterface
 
 	/**
 	 * @param string $query
+	 * @param int    $limit
 	 * @param bool   $showData
 	 *
 	 * @throws \Exception
 	 * @return array
 	 */
-	public function search($query, $showData = false)
+	public function search($query, $limit = 10000, $showData = false)
 	{
 		//TODO: make elasticsearch service provider
 
@@ -29,7 +30,7 @@ class HostImpl implements HostInterface
 		$connParams['hosts'] = array(
 			'localhost:9200'
 		);
-		$connParams['logPath'] = storage_path() . '/logs/hostbase-elasticsearch' . php_sapi_name() . '.log';
+		$connParams['logPath'] = storage_path() . '/logs/hostbase-elasticsearch-' . php_sapi_name() . '.log';
 		$connParams['logLevel'] = Logger::INFO;
 
 
@@ -37,6 +38,7 @@ class HostImpl implements HostInterface
 
 
 		$searchParams['index'] = 'hostbase';
+		$searchParams['size'] = $limit;
 		$searchParams['body']['query']['query_string']['query'] = $query;
 
 		$result = $client->search($searchParams);
@@ -140,6 +142,7 @@ class HostImpl implements HostInterface
 				//Log::debug('$fqdnParts:' . print_r($fqdnParts, true));
 				$data['hostname'] = $fqdnParts[0];
 				$data['domain'] = $fqdnParts[1];
+				$data['createdDateTime'] = date('c');
 			}
 
 			$fqdn = $data['fqdn'];
@@ -181,6 +184,8 @@ class HostImpl implements HostInterface
 					$updateData[$key] = $value;
 				}
 			}
+
+			$updateData['updatedDateTime'] = date('c');
 
 			$doc = array(
 				'key' => "host_$fqdn",

@@ -80,6 +80,7 @@ class HostbaseCli extends Command
 	protected function getOptions()
 	{
 		return array(
+			array('limit', null, InputOption::VALUE_REQUIRED, 'Limit size of result set.', null),
 			array('showdata', null, InputOption::VALUE_NONE, 'Show all data for host(s).', null),
 			array('add', null, InputOption::VALUE_REQUIRED, 'Add a host.', null),
 			array('update', null, InputOption::VALUE_REQUIRED, 'Update a host.', null),
@@ -93,7 +94,9 @@ class HostbaseCli extends Command
 	 */
 	protected function search($query)
 	{
-		$hosts = $this->hosts->search($query, $this->option('showdata'));
+		$limit = $this->option('limit') > 0 ? $this->option('limit') : 10000;
+
+		$hosts = $this->hosts->search($query, $limit, $this->option('showdata'));
 
 		//Log::debug(print_r($hosts, true));
 

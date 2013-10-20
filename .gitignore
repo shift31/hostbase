@@ -6,3 +6,4 @@ composer.lock
 _ide_helper.php
 .idea/*
 test.json
+/app/config/local

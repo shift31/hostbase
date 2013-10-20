@@ -8,12 +8,12 @@ interface HostInterface
 
 	/**
 	 * @param string $query
+	 * @param int    $limit
 	 * @param bool   $showData
 	 *
-	 * @throws \Exception
 	 * @return array
 	 */
-	public function search($query, $showData = false);
+	public function search($query, $limit = 10000, $showData = false);
 
 
 	/**
