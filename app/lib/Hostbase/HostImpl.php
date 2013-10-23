@@ -154,6 +154,8 @@ class HostImpl implements HostInterface
 
 			if (!Cb::save($doc, array('override' => false))) {
 				throw new \Exception("'$fqdn' already exists");
+			} else {
+				return $data;
 			}
 		}
 	}

@@ -1,6 +1,7 @@
 <?php
 
 use Hostbase\HostInterface;
+use Symfony\Component\Yaml\Yaml;
 
 class HostController extends BaseController
 {
@@ -23,12 +24,21 @@ class HostController extends BaseController
 			try {
 				$hosts = $this->hosts->search(Input::get('q'), Input::has('size') ? Input::get('size') : 10000, true);
 
-				return Response::json($hosts);
+				if (Request::header('Accept') == 'application/yaml') {
+					return Response::make(Yaml::dump($hosts), 200, array('Content-Type' => 'application/yaml'));
+				} else {
+					return Response::json($hosts);
+				}
 			} catch (Exception $e) {
 				return Response::json($e->getMessage(), 500);
 			}
 		} else {
-			return Response::json($this->hosts->show());
+			if (Request::header('Accept') == 'application/yaml') {
+				return Response::make(Yaml::dump($this->hosts->show()), 200, array('Content-Type' => 'application/yaml'));
+			} else {
+				return Response::json($this->hosts->show());
+			}
+
 		}
 	}
 
@@ -55,15 +65,24 @@ class HostController extends BaseController
 
 			$data = Input::all();
 
-			try {
-				$this->hosts->store($data);
+		} elseif (Request::header('Content-Type') == 'application/yaml') {
 
-				return Response::json($data);
-			} catch (Exception $e) {
-				return Response::json($e->getMessage(), 500);
-			}
+			$data = Yaml::parse(Input::getContent());
+
 		} else {
-			return Response::json("Content-Type must be 'application/json'", 500);
+			return Response::json("Content-Type must be 'application/json' or 'application/yaml", 500);
+		}
+
+		try {
+			$host = $this->hosts->store($data);
+
+			if (Request::header('Accept') == 'application/yaml') {
+				return Response::make(Yaml::dump($host), 200, array('Content-Type' => 'application/yaml'));
+			} else {
+				return Response::json($host);
+			}
+		} catch (Exception $e) {
+			return Response::json($e->getMessage(), 500);
 		}
 	}
 
@@ -78,7 +97,11 @@ class HostController extends BaseController
 	public function show($fqdn)
 	{
 		try {
-			return Response::json($this->hosts->show($fqdn));
+			if (Request::header('Accept') == 'application/yaml') {
+				return Response::make(Yaml::dump($this->hosts->show($fqdn)), 200, array('Content-Type' => 'application/yaml'));
+			} else {
+				return Response::json($this->hosts->show($fqdn));
+			}
 		} catch (Exception $e) {
 			return Response::json($e->getMessage(), 404);
 		}
@@ -111,15 +134,24 @@ class HostController extends BaseController
 
 			$data = Input::all();
 
-			try {
-				$updatedData = $this->hosts->update($fqdn, $data);
+		} elseif (Request::header('Content-Type') == 'application/yaml') {
 
-				return Response::json($updatedData);
-			} catch (Exception $e) {
-				return Response::json($e->getMessage(), 500);
-			}
+			$data = Yaml::parse(Input::getContent());
+
 		} else {
-			return Response::json("Content-Type must be 'application/json'", 500);
+			return Response::json("Content-Type must be 'application/json' or 'application/yaml", 500);
+		}
+
+		try {
+			$updatedData = $this->hosts->update($fqdn, $data);
+
+			if (Request::header('Accept') == 'application/yaml') {
+				return Response::make(Yaml::dump($updatedData), 200, array('Content-Type' => 'application/yaml'));
+			} else {
+				return Response::json($updatedData);
+			}
+		} catch (Exception $e) {
+			return Response::json($e->getMessage(), 500);
 		}
 	}
 
