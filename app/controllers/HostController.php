@@ -1,6 +1,6 @@
 <?php
 
-use Hostbase\HostInterface;
+use Hostbase\Host\HostInterface;
 use Symfony\Component\Yaml\Yaml;
 
 class HostController extends BaseController

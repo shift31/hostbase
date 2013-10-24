@@ -1,6 +1,6 @@
 <?php
 
-namespace Hostbase;
+namespace Hostbase\Host;
 
 use Basement\data\Document;
 use Basement\data\DocumentCollection;
@@ -11,7 +11,7 @@ use Elasticsearch\Client as EsClient;
 use Monolog\Logger;
 
 
-class HostImpl implements HostInterface
+class CouchbaseElasticsearchHost implements HostInterface
 {
 
 	/**

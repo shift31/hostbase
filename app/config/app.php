@@ -118,7 +118,7 @@ return array(
 
         'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
 
-        'Hostbase\HostServiceProvider',
+        'Hostbase\Host\HostServiceProvider',
 	),
 
 	/*
