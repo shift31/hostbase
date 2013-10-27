@@ -25,7 +25,7 @@ class CouchbaseElasticsearchIpAddress implements IpAddressInterface
 	{
 		$searchParams['index'] = 'hostbase';
 		$searchParams['size'] = $limit;
-		$searchParams['body']['query']['query_string']['query'] = $query;
+		$searchParams['body']['query']['query_string']['query'] = 'docType:ipAddress AND ' . $query;
 
 		$result = Es::search($searchParams);
 
@@ -160,7 +160,7 @@ class CouchbaseElasticsearchIpAddress implements IpAddressInterface
 			$updateData = (array)unserialize($result->serialize());
 
 			foreach ($data as $key => $value) {
-				if ($value == null) {
+				if ($value === null) {
 					// keys should be removed when nullified
 					unset($updateData[$key]);
 				} else {

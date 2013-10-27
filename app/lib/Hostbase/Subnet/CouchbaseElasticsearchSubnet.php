@@ -25,7 +25,7 @@ class CouchbaseElasticsearchSubnet implements SubnetInterface
 	{
 		$searchParams['index'] = 'hostbase';
 		$searchParams['size'] = $limit;
-		$searchParams['body']['query']['query_string']['query'] = $query;
+		$searchParams['body']['query']['query_string']['query'] = 'docType:subnet AND ' . $query;
 
 		$result = Es::search($searchParams);
 
@@ -164,7 +164,7 @@ class CouchbaseElasticsearchSubnet implements SubnetInterface
 			$updateData = (array)unserialize($result->serialize());
 
 			foreach ($data as $key => $value) {
-				if ($value == null) {
+				if ($value === null) {
 					// keys should be removed when nullified
 					unset($updateData[$key]);
 				} else {
