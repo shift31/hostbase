@@ -1,6 +1,6 @@
 <?php
 
-namespace Hostbase\Host;
+namespace Hostbase\Subnet;
 
 use Basement\data\Document;
 use Basement\data\DocumentCollection;
@@ -10,7 +10,7 @@ use Cb;
 use Es;
 
 
-class CouchbaseElasticsearchHost implements HostInterface
+class CouchbaseElasticsearchSubnet implements SubnetInterface
 {
 
 	/**
@@ -38,50 +38,50 @@ class CouchbaseElasticsearchHost implements HostInterface
 		}
 
 		if ($showData === false) {
-			$hosts = array_map(
-				function ($host) {
-					return str_replace('host_', '', $host);
+			$subnets = array_map(
+				function ($subnet) {
+					return str_replace('subnet_', '', $subnet);
 				}, $docIds
 			);
 		} else {
-			$hosts = array();
+			$subnets = array();
 
 			$docCollection = Cb::findByKey($docIds);
 
 			if ($docCollection instanceof DocumentCollection) {
 				foreach ($docCollection as $doc) {
 					if ($doc instanceof Document) {
-						$hosts[] = $doc->doc();
+						$subnets[] = $doc->doc();
 					}
 				}
 			}
 		}
 
-		//Log::debug(print_r($hosts, true));
-		if (count($hosts) == 0) {
-			throw new \Exception("No hosts matching '$query' were found");
+		//Log::debug(print_r($subnets, true));
+		if (count($subnets) == 0) {
+			throw new \Exception("No subnets matching '$query' were found");
 		} else {
-			return $hosts;
+			return $subnets;
 		}
 
 	}
 
 
 	/**
-	 * @param string|null $fqdn
+	 * @param string|null $subnet
 	 *
 	 * @throws \Exception
 	 * @return array|null
 	 */
-	public function show($fqdn = null)
+	public function show($subnet = null)
 	{
-		// list all hosts by default
-		if ($fqdn == null) {
+		// list all subnets by default
+		if ($subnet == null) {
 
-			$hosts = array();
+			$subnets = array();
 
 			$query = new BasementQuery();
-			$viewResult = Cb::findByView('hosts', 'byFqdn', $query);
+			$viewResult = Cb::findByView('subnets', 'bySubnet', $query);
 
 			if ($viewResult instanceof ViewResult) {
 
@@ -89,22 +89,24 @@ class CouchbaseElasticsearchHost implements HostInterface
 
 				foreach ($docCollection as $doc) {
 					if ($doc instanceof Document) {
-						$hosts[] = str_replace('host_', '', $doc->key());
+						$subnets[] = str_replace('subnet_', '', $doc->key());
 					}
 				}
 			}
 
-			//Log::debug(print_r($hosts, true));
-			return $hosts;
+			//Log::debug(print_r($subnets, true));
+			return $subnets;
 
 		} else {
-			$result = Cb::findByKey("host_$fqdn", array('first' => true));
+			$subnet = str_replace('/', '_', $subnet);
+
+			$result = Cb::findByKey("subnet_$subnet", array('first' => true));
 			//Log::debug(print_r($result, true));
 
 			if ($result instanceof Document) {
 				return $result->doc();
 			} else {
-				throw new \Exception("No host named '$fqdn'");
+				throw new \Exception("No '$subnet' subnet");
 			}
 		}
 	}
@@ -118,31 +120,23 @@ class CouchbaseElasticsearchHost implements HostInterface
 	 */
 	public function store(array $data)
 	{
-		if (!isset($data['fqdn'])) {
-			throw new \Exception("Host must have a value for 'fqdn'");
+		if (!isset($data['network']) || !isset($data['netmask']) || !isset($data['gateway']) || !isset($data['cidr'])) {
+			throw new \Exception("Subnet must have a value for 'network', 'netmask', 'gateway', and 'cidr'");
 		} else {
 
-			// generate hostname and domain if they don't already exist
-			if (!isset($data['hostname']) && !isset($data['domain'])) {
-				$fqdnParts = explode('.', $data['fqdn'], 2);
-				//Log::debug('$fqdnParts:' . print_r($fqdnParts, true));
-				$data['hostname'] = $fqdnParts[0];
-				$data['domain'] = $fqdnParts[1];
-			}
-
 			// set document type and creation time
-			$data['docType'] = 'host';
 			$data['createdDateTime'] = date('c');
+			$data['docType'] = 'subnet';
 
-			$fqdn = $data['fqdn'];
+			$subnet = "{$data['network']}_{$data['cidr']}";
 
 			$doc = array(
-				'key' => "host_$fqdn",
+				'key' => "subnet_$subnet",
 				'doc' => $data
 			);
 
 			if (!Cb::save($doc, array('override' => false))) {
-				throw new \Exception("'$fqdn' already exists");
+				throw new \Exception("'$subnet' already exists");
 			} else {
 				return $data;
 			}
@@ -151,15 +145,17 @@ class CouchbaseElasticsearchHost implements HostInterface
 
 
 	/**
-	 * @param string $fqdn
+	 * @param string $subnet
 	 * @param array  $data
 	 *
 	 * @throws \Exception
 	 * @return mixed
 	 */
-	public function update($fqdn, array $data)
+	public function update($subnet, array $data)
 	{
-		$result = Cb::findByKey("host_$fqdn", array('first' => true));
+		$subnet = str_replace('/', '_', $subnet);
+
+		$result = Cb::findByKey("subnet_$subnet", array('first' => true));
 		//Log::debug(print_r($result, true));
 
 		if ($result instanceof Document) {
@@ -179,38 +175,40 @@ class CouchbaseElasticsearchHost implements HostInterface
 			$updateData['updatedDateTime'] = date('c');
 
 			$doc = array(
-				'key' => "host_$fqdn",
+				'key' => "subnet_$subnet",
 				'doc' => $updateData
 			);
 
 			//Log::debug(print_r($doc, true));
 
 			if (!Cb::save($doc, array('replace' => true))) {
-				throw new \Exception("Unable to update '$fqdn'");
+				throw new \Exception("Unable to update '$subnet'");
 			} else {
 				return $updateData;
 			}
 
 		} else {
-			throw new \Exception("No host named '$fqdn'");
+			throw new \Exception("No '$subnet' subnet");
 		}
 	}
 
 
 	/**
-	 * @param string $fqdn
+	 * @param string $subnet
 	 *
 	 * @throws \Exception
 	 * @return mixed
 	 */
-	public function destroy($fqdn)
+	public function destroy($subnet)
 	{
-		$this->show($fqdn);
+		$subnet = str_replace('/', '_', $subnet);
+
+		$this->show($subnet);
 
 		$cbConnection = Cb::connection();
 
 		if ($cbConnection instanceof \Couchbase) {
-			$cbConnection->delete("host_$fqdn");
+			$cbConnection->delete("subnet_$subnet");
 		} else {
 			throw new \Exception("No Couchbase connection");
 		}

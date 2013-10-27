@@ -7,7 +7,6 @@
         "barryvdh/laravel-ide-helper": "1.*",
         "shift31/laravel-basement": "dev-master",
         "monolog/monolog": "1.6.x-dev as 1.5.0",
-		"elasticsearch/elasticsearch": "~0.4",
 		"symfony/yaml": "2.3.x-dev"
 	},
 	"autoload": {

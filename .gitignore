@@ -1,9 +1,10 @@
 /bootstrap/compiled.php
 /vendor
 composer.phar
-composer.lock
 .DS_Store
 _ide_helper.php
 .idea/*
 test.json
 /app/config/local
+/app/storage
+/workbench

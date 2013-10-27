@@ -17,3 +17,5 @@ Route::get('/', function()
 });
 
 Route::resource('hosts', 'HostController');
+Route::resource('subnets', 'SubnetController');
+Route::resource('ipaddresses', 'IpAddressController');

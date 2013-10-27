@@ -115,10 +115,13 @@ return array(
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 
         'Shift31\LaravelBasement\LaravelBasementServiceProvider',
+		'Shift31\LaravelElasticsearch\LaravelElasticsearchServiceProvider',
 
         'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
 
         'Hostbase\Host\HostServiceProvider',
+        'Hostbase\Subnet\SubnetServiceProvider',
+		'Hostbase\IpAddress\IpAddressServiceProvider'
 	),
 
 	/*
