@@ -2,7 +2,7 @@
 
 use Symfony\Component\Yaml\Yaml;
 
-abstract class ResourceController extends BaseController
+abstract class ResourceControllerAbstract extends BaseController
 {
 
 	protected $resources;

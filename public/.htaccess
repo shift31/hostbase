@@ -4,6 +4,9 @@
 
 	RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
+
+    # TODO: make real vhost
     RewriteBase /~bgetsug/hostbase
+
     RewriteRule ^ index.php [L]
 </IfModule>

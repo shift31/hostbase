@@ -28,7 +28,7 @@ $app->redirectIfTrailingSlash();
 
 $env = $app->detectEnvironment(array(
 
-    'local' => array('ubuntu12-dev', 'localhost'),
+    'local' => array('*dev*', '*local*'),
 
 ));
 

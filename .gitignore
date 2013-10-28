@@ -8,3 +8,4 @@ test.json
 /app/config/local
 /app/storage
 /workbench
+/workbench.php
