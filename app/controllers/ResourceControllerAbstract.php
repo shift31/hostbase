@@ -1,5 +1,6 @@
 <?php
 
+use Hostbase\ResourceInterface;
 use Symfony\Component\Yaml\Yaml;
 
 abstract class ResourceControllerAbstract extends BaseController
@@ -8,7 +9,7 @@ abstract class ResourceControllerAbstract extends BaseController
 	protected $resources;
 
 
-	public function __construct($resources)
+	public function __construct(ResourceInterface $resources)
 	{
 		$this->resources = $resources;
 	}
