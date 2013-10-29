@@ -60,10 +60,9 @@ class CouchbaseElasticsearchHost implements HostInterface
 		//Log::debug(print_r($hosts, true));
 		if (count($hosts) == 0) {
 			throw new \Exception("No hosts matching '$query' were found");
-		} else {
-			return $hosts;
 		}
 
+		return $hosts;
 	}
 
 
@@ -101,11 +100,11 @@ class CouchbaseElasticsearchHost implements HostInterface
 			$result = Cb::findByKey("host_$fqdn", array('first' => true));
 			//Log::debug(print_r($result, true));
 
-			if ($result instanceof Document) {
-				return $result->doc();
-			} else {
+			if (!($result instanceof Document)) {
 				throw new \Exception("No host named '$fqdn'");
 			}
+
+			return $result->doc();
 		}
 	}
 
@@ -120,33 +119,32 @@ class CouchbaseElasticsearchHost implements HostInterface
 	{
 		if (!isset($data['fqdn'])) {
 			throw new \Exception("Host must have a value for 'fqdn'");
-		} else {
-
-			// generate hostname and domain if they don't already exist
-			if (!isset($data['hostname']) && !isset($data['domain'])) {
-				$fqdnParts = explode('.', $data['fqdn'], 2);
-				//Log::debug('$fqdnParts:' . print_r($fqdnParts, true));
-				$data['hostname'] = $fqdnParts[0];
-				$data['domain'] = $fqdnParts[1];
-			}
-
-			// set document type and creation time
-			$data['docType'] = 'host';
-			$data['createdDateTime'] = date('c');
-
-			$fqdn = $data['fqdn'];
-
-			$doc = array(
-				'key' => "host_$fqdn",
-				'doc' => $data
-			);
-
-			if (!Cb::save($doc, array('override' => false))) {
-				throw new \Exception("'$fqdn' already exists");
-			} else {
-				return $data;
-			}
 		}
+
+		// generate hostname and domain if they don't already exist
+		if (!isset($data['hostname']) && !isset($data['domain'])) {
+			$fqdnParts = explode('.', $data['fqdn'], 2);
+			//Log::debug('$fqdnParts:' . print_r($fqdnParts, true));
+			$data['hostname'] = $fqdnParts[0];
+			$data['domain'] = $fqdnParts[1];
+		}
+
+		// set document type and creation time
+		$data['docType'] = 'host';
+		$data['createdDateTime'] = date('c');
+
+		$fqdn = $data['fqdn'];
+
+		$doc = array(
+			'key' => "host_$fqdn",
+			'doc' => $data
+		);
+
+		if (!Cb::save($doc, array('override' => false))) {
+			throw new \Exception("'$fqdn' already exists");
+		}
+
+		return $data;
 	}
 
 
@@ -162,38 +160,36 @@ class CouchbaseElasticsearchHost implements HostInterface
 		$result = Cb::findByKey("host_$fqdn", array('first' => true));
 		//Log::debug(print_r($result, true));
 
-		if ($result instanceof Document) {
-
-			// convert Document to array
-			$updateData = (array)unserialize($result->serialize());
-
-			foreach ($data as $key => $value) {
-				if ($value === null) {
-					// keys should be removed when nullified
-					unset($updateData[$key]);
-				} else {
-					$updateData[$key] = $value;
-				}
-			}
-
-			$updateData['updatedDateTime'] = date('c');
-
-			$doc = array(
-				'key' => "host_$fqdn",
-				'doc' => $updateData
-			);
-
-			//Log::debug(print_r($doc, true));
-
-			if (!Cb::save($doc, array('replace' => true))) {
-				throw new \Exception("Unable to update '$fqdn'");
-			} else {
-				return $updateData;
-			}
-
-		} else {
+		if (!($result instanceof Document)) {
 			throw new \Exception("No host named '$fqdn'");
 		}
+
+		// convert Document to array
+		$updateData = (array)unserialize($result->serialize());
+
+		foreach ($data as $key => $value) {
+			if ($value === null) {
+				// keys should be removed when nullified
+				unset($updateData[$key]);
+			} else {
+				$updateData[$key] = $value;
+			}
+		}
+
+		$updateData['updatedDateTime'] = date('c');
+
+		$doc = array(
+			'key' => "host_$fqdn",
+			'doc' => $updateData
+		);
+
+		//Log::debug(print_r($doc, true));
+
+		if (!Cb::save($doc, array('replace' => true))) {
+			throw new \Exception("Unable to update '$fqdn'");
+		}
+
+		return $updateData;
 	}
 
 

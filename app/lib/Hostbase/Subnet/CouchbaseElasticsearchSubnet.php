@@ -60,10 +60,9 @@ class CouchbaseElasticsearchSubnet implements SubnetInterface
 		//Log::debug(print_r($subnets, true));
 		if (count($subnets) == 0) {
 			throw new \Exception("No subnets matching '$query' were found");
-		} else {
-			return $subnets;
 		}
 
+		return $subnets;
 	}
 
 
@@ -89,7 +88,7 @@ class CouchbaseElasticsearchSubnet implements SubnetInterface
 
 				foreach ($docCollection as $doc) {
 					if ($doc instanceof Document) {
-						$subnets[] = str_replace('subnet_', '', $doc->key());
+						$subnets[] = str_replace('_', '/', str_replace('subnet_', '', $doc->key()));
 					}
 				}
 			}
@@ -103,11 +102,12 @@ class CouchbaseElasticsearchSubnet implements SubnetInterface
 			$result = Cb::findByKey("subnet_$subnet", array('first' => true));
 			//Log::debug(print_r($result, true));
 
-			if ($result instanceof Document) {
-				return $result->doc();
-			} else {
+			if (!($result instanceof Document)) {
 				throw new \Exception("No '$subnet' subnet");
+
 			}
+
+			return $result->doc();
 		}
 	}
 
@@ -120,27 +120,37 @@ class CouchbaseElasticsearchSubnet implements SubnetInterface
 	 */
 	public function store(array $data)
 	{
-		if (!isset($data['network']) || !isset($data['netmask']) || !isset($data['gateway']) || !isset($data['cidr'])) {
-			throw new \Exception("Subnet must have a value for 'network', 'netmask', 'gateway', and 'cidr'");
-		} else {
 
-			// set document type and creation time
-			$data['createdDateTime'] = date('c');
-			$data['docType'] = 'subnet';
+		$validator = Validator::make(
+			$data,
+			array(
+			     'network'  => 'required',
+			     'netmask'  => 'required',
+			     'gateway'  => 'required',
+			     'cidr'     => 'required'
+			)
+		);
 
-			$subnet = "{$data['network']}_{$data['cidr']}";
-
-			$doc = array(
-				'key' => "subnet_$subnet",
-				'doc' => $data
-			);
-
-			if (!Cb::save($doc, array('override' => false))) {
-				throw new \Exception("'$subnet' already exists");
-			} else {
-				return $data;
-			}
+		if ($validator->fails()) {
+			throw new \Exception(join('; ', $validator->messages()->all()));
 		}
+
+		// set document type and creation time
+		$data['createdDateTime'] = date('c');
+		$data['docType'] = 'subnet';
+
+		$subnet = "{$data['network']}_{$data['cidr']}";
+
+		$doc = array(
+			'key' => "subnet_$subnet",
+			'doc' => $data
+		);
+
+		if (!Cb::save($doc, array('override' => false))) {
+			throw new \Exception("'$subnet' already exists");
+		}
+
+		return $data;
 	}
 
 
@@ -158,38 +168,36 @@ class CouchbaseElasticsearchSubnet implements SubnetInterface
 		$result = Cb::findByKey("subnet_$subnet", array('first' => true));
 		//Log::debug(print_r($result, true));
 
-		if ($result instanceof Document) {
-
-			// convert Document to array
-			$updateData = (array)unserialize($result->serialize());
-
-			foreach ($data as $key => $value) {
-				if ($value === null) {
-					// keys should be removed when nullified
-					unset($updateData[$key]);
-				} else {
-					$updateData[$key] = $value;
-				}
-			}
-
-			$updateData['updatedDateTime'] = date('c');
-
-			$doc = array(
-				'key' => "subnet_$subnet",
-				'doc' => $updateData
-			);
-
-			//Log::debug(print_r($doc, true));
-
-			if (!Cb::save($doc, array('replace' => true))) {
-				throw new \Exception("Unable to update '$subnet'");
-			} else {
-				return $updateData;
-			}
-
-		} else {
+		if (!($result instanceof Document)) {
 			throw new \Exception("No '$subnet' subnet");
 		}
+
+		// convert Document to array
+		$updateData = (array)unserialize($result->serialize());
+
+		foreach ($data as $key => $value) {
+			if ($value === null) {
+				// keys should be removed when nullified
+				unset($updateData[$key]);
+			} else {
+				$updateData[$key] = $value;
+			}
+		}
+
+		$updateData['updatedDateTime'] = date('c');
+
+		$doc = array(
+			'key' => "subnet_$subnet",
+			'doc' => $updateData
+		);
+
+		//Log::debug(print_r($doc, true));
+
+		if (!Cb::save($doc, array('replace' => true))) {
+			throw new \Exception("Unable to update '$subnet'");
+		}
+
+		return $updateData;
 	}
 
 

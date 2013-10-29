@@ -8,6 +8,7 @@ use Basement\view\Query as BasementQuery;
 use Basement\view\ViewResult;
 use Cb;
 use Es;
+use Validator;
 
 
 class CouchbaseElasticsearchIpAddress implements IpAddressInterface
@@ -60,10 +61,9 @@ class CouchbaseElasticsearchIpAddress implements IpAddressInterface
 		//Log::debug(print_r($ipAddresses, true));
 		if (count($ipAddresses) == 0) {
 			throw new \Exception("No IP addresses matching '$query' were found");
-		} else {
-			return $ipAddresses;
 		}
 
+		return $ipAddresses;
 	}
 
 
@@ -101,11 +101,11 @@ class CouchbaseElasticsearchIpAddress implements IpAddressInterface
 			$result = Cb::findByKey("ipAddress_$ipAddress", array('first' => true));
 			//Log::debug(print_r($result, true));
 
-			if ($result instanceof Document) {
-				return $result->doc();
-			} else {
+			if (!($result instanceof Document)) {
 				throw new \Exception("No IP address '$ipAddress' exists");
 			}
+
+			return $result->doc();
 		}
 	}
 
@@ -118,27 +118,34 @@ class CouchbaseElasticsearchIpAddress implements IpAddressInterface
 	 */
 	public function store(array $data)
 	{
-		if (!isset($data['subnet']) || !isset($data['ipAddress'])) {
-			throw new \Exception("IP address must have a value for 'subnet' and 'ipAddress'");
-		} else {
+		$validator = Validator::make(
+			$data,
+			array(
+			     'subnet'       => 'required',
+			     'ipAddress'    => 'required'
+			)
+		);
 
-			// set document type and creation time
-			$data['createdDateTime'] = date('c');
-			$data['docType'] = 'ipAddress';
-
-			$ipAddress = $data['ipAddress'];
-
-			$doc = array(
-				'key' => "ipAddress_$ipAddress",
-				'doc' => $data
-			);
-
-			if (!Cb::save($doc, array('override' => false))) {
-				throw new \Exception("'$ipAddress' already exists");
-			} else {
-				return $data;
-			}
+		if ($validator->fails()) {
+			throw new \Exception(join('; ', $validator->messages()->all()));
 		}
+
+		// set document type and creation time
+		$data['createdDateTime'] = date('c');
+		$data['docType'] = 'ipAddress';
+
+		$ipAddress = $data['ipAddress'];
+
+		$doc = array(
+			'key' => "ipAddress_$ipAddress",
+			'doc' => $data
+		);
+
+		if (!Cb::save($doc, array('override' => false))) {
+			throw new \Exception("'$ipAddress' already exists");
+		}
+
+		return $data;
 	}
 
 
@@ -154,38 +161,36 @@ class CouchbaseElasticsearchIpAddress implements IpAddressInterface
 		$result = Cb::findByKey("ipAddress_$ipAddress", array('first' => true));
 		//Log::debug(print_r($result, true));
 
-		if ($result instanceof Document) {
-
-			// convert Document to array
-			$updateData = (array)unserialize($result->serialize());
-
-			foreach ($data as $key => $value) {
-				if ($value === null) {
-					// keys should be removed when nullified
-					unset($updateData[$key]);
-				} else {
-					$updateData[$key] = $value;
-				}
-			}
-
-			$updateData['updatedDateTime'] = date('c');
-
-			$doc = array(
-				'key' => "ipAddress_$ipAddress",
-				'doc' => $updateData
-			);
-
-			//Log::debug(print_r($doc, true));
-
-			if (!Cb::save($doc, array('replace' => true))) {
-				throw new \Exception("Unable to update '$ipAddress'");
-			} else {
-				return $updateData;
-			}
-
-		} else {
+		if (!($result instanceof Document)) {
 			throw new \Exception("No IP address '$ipAddress' exists");
 		}
+
+		// convert Document to array
+		$updateData = (array)unserialize($result->serialize());
+
+		foreach ($data as $key => $value) {
+			if ($value === null) {
+				// keys should be removed when nullified
+				unset($updateData[$key]);
+			} else {
+				$updateData[$key] = $value;
+			}
+		}
+
+		$updateData['updatedDateTime'] = date('c');
+
+		$doc = array(
+			'key' => "ipAddress_$ipAddress",
+			'doc' => $updateData
+		);
+
+		//Log::debug(print_r($doc, true));
+
+		if (!Cb::save($doc, array('replace' => true))) {
+			throw new \Exception("Unable to update '$ipAddress'");
+		}
+
+		return $updateData;
 	}
 
 
