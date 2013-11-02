@@ -8,6 +8,7 @@ use Basement\view\Query as BasementQuery;
 use Basement\view\ViewResult;
 use Cb;
 use Es;
+use Validator;
 
 
 class CouchbaseElasticsearchSubnet implements SubnetInterface

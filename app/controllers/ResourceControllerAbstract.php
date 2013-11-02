@@ -25,7 +25,10 @@ abstract class ResourceControllerAbstract extends BaseController
 		// handle search
 		if (Input::has('q')) {
 			try {
-				$resources = $this->resources->search(Input::get('q'), Input::has('size') ? Input::get('size') : 10000, true);
+				$resources = $this->resources->search(
+					Input::get('q'),
+					Input::has('size') ? Input::get('size') : 10000,
+					Input::has('showData') ? (bool) Input::get('showData') : true);
 
 				if (Request::header('Accept') == 'application/yaml') {
 					return Response::make(Yaml::dump($resources), 200, array('Content-Type' => 'application/yaml'));
