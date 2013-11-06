@@ -8,6 +8,7 @@ use Basement\view\Query as BasementQuery;
 use Basement\view\ViewResult;
 use Cb;
 use Es;
+use Crypt;
 
 
 class CouchbaseElasticsearchHost implements HostInterface
@@ -51,7 +52,12 @@ class CouchbaseElasticsearchHost implements HostInterface
 			if ($docCollection instanceof DocumentCollection) {
 				foreach ($docCollection as $doc) {
 					if ($doc instanceof Document) {
-						$hosts[] = $doc->doc();
+						$data = $doc->doc();
+
+						/** @noinspection PhpParamsInspection */
+						$this->decryptAdminPassword($data);
+
+						$hosts[] = $data;
 					}
 				}
 			}
@@ -97,6 +103,7 @@ class CouchbaseElasticsearchHost implements HostInterface
 			return $hosts;
 
 		} else {
+			/** @noinspection PhpVoidFunctionResultUsedInspection */
 			$result = Cb::findByKey("host_$fqdn", array('first' => true));
 			//Log::debug(print_r($result, true));
 
@@ -104,7 +111,12 @@ class CouchbaseElasticsearchHost implements HostInterface
 				throw new \Exception("No host named '$fqdn'");
 			}
 
-			return $result->doc();
+			$data = $result->doc();
+
+			/** @noinspection PhpParamsInspection */
+			$this->decryptAdminPassword($data);
+
+			return $data;
 		}
 	}
 
@@ -133,6 +145,9 @@ class CouchbaseElasticsearchHost implements HostInterface
 		$data['docType'] = 'host';
 		$data['createdDateTime'] = date('c');
 
+		// encrypt admin password
+		$this->encryptAdminPassword($data);
+
 		$fqdn = $data['fqdn'];
 
 		$doc = array(
@@ -157,6 +172,7 @@ class CouchbaseElasticsearchHost implements HostInterface
 	 */
 	public function update($fqdn, array $data)
 	{
+		/** @noinspection PhpVoidFunctionResultUsedInspection */
 		$result = Cb::findByKey("host_$fqdn", array('first' => true));
 		//Log::debug(print_r($result, true));
 
@@ -165,7 +181,10 @@ class CouchbaseElasticsearchHost implements HostInterface
 		}
 
 		// convert Document to array
-		$updateData = (array)unserialize($result->serialize());
+		$updateData = (array) unserialize($result->serialize());
+
+		// encrypt admin password
+		$this->encryptAdminPassword($data);
 
 		foreach ($data as $key => $value) {
 			if ($value === null) {
@@ -185,6 +204,7 @@ class CouchbaseElasticsearchHost implements HostInterface
 
 		//Log::debug(print_r($doc, true));
 
+		/** @noinspection PhpVoidFunctionResultUsedInspection */
 		if (!Cb::save($doc, array('replace' => true))) {
 			throw new \Exception("Unable to update '$fqdn'");
 		}
@@ -209,6 +229,30 @@ class CouchbaseElasticsearchHost implements HostInterface
 			$cbConnection->delete("host_$fqdn");
 		} else {
 			throw new \Exception("No Couchbase connection");
+		}
+	}
+
+
+	/**
+	 * @param array $data
+	 */
+	public function encryptAdminPassword(array &$data)
+	{
+		if (isset($data['adminCredentials'])) {
+			$data['adminCredentials']['encryptedPassword'] = Crypt::encrypt($data['adminCredentials']['password']);
+			unset($data['adminCredentials']['password']);
+		}
+	}
+
+
+	/**
+	 * @param array $data
+	 */
+	public function decryptAdminPassword(array &$data)
+	{
+		if (isset($data['adminCredentials'])) {
+			$data['adminCredentials']['password'] = Crypt::decrypt($data['adminCredentials']['encryptedPassword']);
+			unset($data['adminCredentials']['encryptedPassword']);
 		}
 	}
 }
