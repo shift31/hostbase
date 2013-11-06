@@ -1,6 +1,6 @@
 <?php
 
-use Hostbase\Host\CouchbaseElasticsearchHost as Host;
+use Hostbase\Host\HostInterface;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -17,6 +17,7 @@ class HostbaseCli extends Command
 	 */
 	protected $name = 'hostbase';
 
+
 	/**
 	 * The console command description.
 	 *
@@ -26,13 +27,11 @@ class HostbaseCli extends Command
 
 
 	/**
-	 * Create a new command instance.
-	 *
-	 * @return \HostbaseCli
+	 * @param HostInterface $hosts
 	 */
-	public function __construct()
+	public function __construct(HostInterface $hosts)
 	{
-		$this->hosts = new Host();
+		$this->hosts = $hosts;
 
 		parent::__construct();
 	}

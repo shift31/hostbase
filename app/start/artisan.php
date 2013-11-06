@@ -11,5 +11,4 @@
 |
 */
 
-
-Artisan::add(new HostbaseCli);
+Artisan::resolve('HostbaseCli');

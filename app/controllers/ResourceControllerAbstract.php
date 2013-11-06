@@ -18,7 +18,7 @@ abstract class ResourceControllerAbstract extends BaseController
 	/**
 	 * Display a listing of the resource.
 	 *
-	 * @return Response
+	 * @return \Illuminate\Http\JsonResponse
 	 */
 	public function index()
 	{
@@ -63,7 +63,7 @@ abstract class ResourceControllerAbstract extends BaseController
 	/**
 	 * Store a newly created resource in storage.
 	 *
-	 * @return Response
+	 * @return \Illuminate\Http\JsonResponse
 	 */
 	public function store()
 	{
@@ -83,9 +83,9 @@ abstract class ResourceControllerAbstract extends BaseController
 			$resource = $this->resources->store($data);
 
 			if (Request::header('Accept') == 'application/yaml') {
-				return Response::make(Yaml::dump($resource), 200, array('Content-Type' => 'application/yaml'));
+				return Response::make(Yaml::dump($resource), 201, array('Content-Type' => 'application/yaml'));
 			} else {
-				return Response::json($resource);
+				return Response::json($resource, 201);
 			}
 		} catch (Exception $e) {
 			return Response::json($e->getMessage(), 500);
@@ -98,7 +98,7 @@ abstract class ResourceControllerAbstract extends BaseController
 	 *
 	 * @param  string $id
 	 *
-	 * @return Response
+	 * @return \Illuminate\Http\JsonResponse
 	 */
 	public function show($id)
 	{
@@ -132,7 +132,7 @@ abstract class ResourceControllerAbstract extends BaseController
 	 *
 	 * @param  string $id
 	 *
-	 * @return Response
+	 * @return \Illuminate\Http\JsonResponse
 	 */
 	public function update($id)
 	{
@@ -167,7 +167,7 @@ abstract class ResourceControllerAbstract extends BaseController
 	 *
 	 * @param  string $id
 	 *
-	 * @return Response
+	 * @return \Illuminate\Http\JsonResponse
 	 */
 	public function destroy($id)
 	{
