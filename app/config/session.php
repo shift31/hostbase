@@ -122,4 +122,9 @@ return array(
 
 	'domain' => null,
 
+	/*
+	 * New for 4.1
+	 */
+    'expire_on_close' => false,
+
 );
