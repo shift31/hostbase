@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "90ab0cb6e5063bf81150714d6d1e6598",
+    "hash": "4246332331c5908c38240137ee2cb0b2",
     "packages": [
         {
             "name": "barryvdh/laravel-ide-helper",
