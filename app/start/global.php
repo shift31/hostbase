@@ -31,9 +31,8 @@ ClassLoader::addDirectories(array(
 |
 */
 
-$logFile = 'hostbase-'.php_sapi_name().'.log';
-
-Log::useDailyFiles(storage_path().'/logs/'.$logFile);
+$logFile = 'hostbase.log';
+Log::useFiles(storage_path().'/logs/'.$logFile);
 
 /*
 |--------------------------------------------------------------------------
