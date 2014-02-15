@@ -1,7 +1,4 @@
-<?php
-
-namespace Hostbase\Host;
-
+<?php namespace Hostbase\Host;
 
 use Illuminate\Support\ServiceProvider;
 

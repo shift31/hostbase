@@ -1,6 +1,4 @@
-<?php
-
-namespace Hostbase\IpAddress;
+<?php namespace Hostbase\IpAddress;
 
 
 interface IpAddressInterface

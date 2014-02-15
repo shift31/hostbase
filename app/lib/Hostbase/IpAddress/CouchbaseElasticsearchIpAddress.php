@@ -1,7 +1,6 @@
-<?php
+<?php namespace Hostbase\IpAddress;
 
-namespace Hostbase\IpAddress;
-
+use Hostbase\ResourceInterface;
 use Basement\data\Document;
 use Basement\data\DocumentCollection;
 use Basement\view\Query as BasementQuery;
@@ -11,7 +10,7 @@ use Es;
 use Validator;
 
 
-class CouchbaseElasticsearchIpAddress implements IpAddressInterface
+class CouchbaseElasticsearchIpAddress implements IpAddressInterface, ResourceInterface
 {
 
 	/**

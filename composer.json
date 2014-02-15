@@ -3,11 +3,13 @@
 	"description": "A host information database",
 	"license": "MIT",
 	"require": {
+        "php": ">=5.4.x",
 		"laravel/framework": "4.1.*",
         "barryvdh/laravel-ide-helper": "1.*",
         "shift31/laravel-basement": "dev-master",
         "shift31/laravel-elasticsearch": "dev-master",
-		"symfony/yaml": "2.3.x-dev"
+		"symfony/yaml": "2.3.x-dev",
+		"league/fractal": "0.7.*"
 	},
 	"autoload": {
 		"classmap": [

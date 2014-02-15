@@ -1,6 +1,4 @@
-<?php
-
-namespace Hostbase\Host;
+<?php namespace Hostbase\Host;
 
 
 interface HostInterface

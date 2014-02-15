@@ -1,7 +1,4 @@
-<?php
-
-namespace Hostbase\Subnet;
-
+<?php namespace Hostbase\Subnet;
 
 use Illuminate\Support\ServiceProvider;
 

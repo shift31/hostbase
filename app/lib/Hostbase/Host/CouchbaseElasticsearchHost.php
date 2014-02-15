@@ -1,7 +1,6 @@
-<?php
+<?php namespace Hostbase\Host;
 
-namespace Hostbase\Host;
-
+use Hostbase\ResourceInterface;
 use Basement\data\Document;
 use Basement\data\DocumentCollection;
 use Basement\view\Query as BasementQuery;
@@ -11,7 +10,7 @@ use Es;
 use Crypt;
 
 
-class CouchbaseElasticsearchHost implements HostInterface
+class CouchbaseElasticsearchHost implements HostInterface, ResourceInterface
 {
 
 	/**

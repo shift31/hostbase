@@ -1,7 +1,6 @@
-<?php
+<?php namespace Hostbase\Subnet;
 
-namespace Hostbase\Subnet;
-
+use Hostbase\ResourceInterface;
 use Basement\data\Document;
 use Basement\data\DocumentCollection;
 use Basement\view\Query as BasementQuery;
@@ -11,7 +10,7 @@ use Es;
 use Validator;
 
 
-class CouchbaseElasticsearchSubnet implements SubnetInterface
+class CouchbaseElasticsearchSubnet implements SubnetInterface, ResourceInterface
 {
 
 	/**

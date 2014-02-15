@@ -1,6 +1,4 @@
-<?php
-
-namespace Hostbase\Subnet;
+<?php namespace Hostbase\Subnet;
 
 
 interface SubnetInterface

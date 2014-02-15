@@ -1,6 +1,4 @@
-<?php
-
-namespace Hostbase\IpAddress;
+<?php namespace Hostbase\IpAddress;
 
 use Hostbase\Host\CouchbaseElasticsearchHost as Host;
 use Hostbase\IpAddress\CouchbaseElasticsearchIpAddress as IpAddress;
