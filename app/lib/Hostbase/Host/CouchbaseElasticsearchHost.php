@@ -26,8 +26,8 @@ class CouchbaseElasticsearchHost implements HostInterface, ResourceInterface
 		$searchParams['index'] = 'hostbase';
 		$searchParams['size'] = $limit;
 		$searchParams['body']['query']['query_string'] = [
-			'default_field' => 'hostname',
-			'query' => 'docType:"host" AND ' . $query
+			'default_field' => 'fqdn',
+			'query' => 'docType:"host" AND ' . str_replace('/', '\\/', $query)
 		];
 
 		$result = Es::search($searchParams);

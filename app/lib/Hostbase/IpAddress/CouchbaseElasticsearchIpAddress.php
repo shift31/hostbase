@@ -27,7 +27,7 @@ class CouchbaseElasticsearchIpAddress implements IpAddressInterface, ResourceInt
 		$searchParams['size'] = $limit;
 		$searchParams['body']['query']['query_string'] = [
 			'default_field' => 'ipAddress',
-			'query' => 'docType:"ipAddress" AND ' . $query
+			'query' => 'docType:"ipAddress" AND ' . str_replace('/', '\\/', $query)
 		];
 
 		$result = Es::search($searchParams);

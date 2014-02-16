@@ -27,7 +27,7 @@ class CouchbaseElasticsearchSubnet implements SubnetInterface, ResourceInterface
 		$searchParams['size'] = $limit;
 		$searchParams['body']['query']['query_string'] = [
 			'default_field' => 'network',
-		    'query' => 'docType:"subnet" AND ' . $query
+		    'query' => 'docType:"subnet" AND ' . str_replace('/', '\\/', $query)
 		];
 
 		$result = Es::search($searchParams);
