@@ -25,14 +25,14 @@ class CouchbaseElasticsearchSubnet implements SubnetInterface, ResourceInterface
 	{
 		$searchParams['index'] = 'hostbase';
 		$searchParams['size'] = $limit;
-		$searchParams['body']['query']['query_string'] = array(
+		$searchParams['body']['query']['query_string'] = [
 			'default_field' => 'network',
 		    'query' => 'docType:"subnet" AND ' . $query
-		);
+		];
 
 		$result = Es::search($searchParams);
 
-		$docIds = array();
+		$docIds = [];
 
 		if (is_array($result)) {
 			foreach ($result['hits']['hits'] as $hit) {
@@ -47,7 +47,7 @@ class CouchbaseElasticsearchSubnet implements SubnetInterface, ResourceInterface
 				}, $docIds
 			);
 		} else {
-			$subnets = array();
+			$subnets = [];
 
 			$docCollection = Cb::findByKey($docIds);
 
@@ -80,7 +80,7 @@ class CouchbaseElasticsearchSubnet implements SubnetInterface, ResourceInterface
 		// list all subnets by default
 		if ($subnet == null) {
 
-			$subnets = array();
+			$subnets = [];
 
 			$query = new BasementQuery();
 			$viewResult = Cb::findByView('subnets', 'bySubnet', $query);
@@ -91,7 +91,7 @@ class CouchbaseElasticsearchSubnet implements SubnetInterface, ResourceInterface
 
 				foreach ($docCollection as $doc) {
 					if ($doc instanceof Document) {
-						$subnets[] = str_replace('_', '/', str_replace('subnet_', '', $doc->key()));
+						$subnets[] = str_replace('subnet_', '', $doc->key());
 					}
 				}
 			}
@@ -100,9 +100,8 @@ class CouchbaseElasticsearchSubnet implements SubnetInterface, ResourceInterface
 			return $subnets;
 
 		} else {
-			$subnet = str_replace('/', '_', $subnet);
 
-			$result = Cb::findByKey("subnet_$subnet", array('first' => true));
+			$result = Cb::findByKey("subnet_$subnet", ['first' => true]);
 			//Log::debug(print_r($result, true));
 
 			if (!($result instanceof Document)) {
@@ -126,12 +125,12 @@ class CouchbaseElasticsearchSubnet implements SubnetInterface, ResourceInterface
 
 		$validator = Validator::make(
 			$data,
-			array(
+			[
 			     'network'  => 'required',
 			     'netmask'  => 'required',
 			     'gateway'  => 'required',
 			     'cidr'     => 'required'
-			)
+			]
 		);
 
 		if ($validator->fails()) {
@@ -144,12 +143,12 @@ class CouchbaseElasticsearchSubnet implements SubnetInterface, ResourceInterface
 
 		$subnet = "{$data['network']}_{$data['cidr']}";
 
-		$doc = array(
+		$doc = [
 			'key' => "subnet_$subnet",
 			'doc' => $data
-		);
+		];
 
-		if (!Cb::save($doc, array('override' => false))) {
+		if (!Cb::save($doc, ['override' => false])) {
 			throw new \Exception("'$subnet' already exists");
 		}
 
@@ -166,9 +165,7 @@ class CouchbaseElasticsearchSubnet implements SubnetInterface, ResourceInterface
 	 */
 	public function update($subnet, array $data)
 	{
-		$subnet = str_replace('/', '_', $subnet);
-
-		$result = Cb::findByKey("subnet_$subnet", array('first' => true));
+		$result = Cb::findByKey("subnet_$subnet", ['first' => true]);
 		//Log::debug(print_r($result, true));
 
 		if (!($result instanceof Document)) {
@@ -189,14 +186,14 @@ class CouchbaseElasticsearchSubnet implements SubnetInterface, ResourceInterface
 
 		$updateData['updatedDateTime'] = date('c');
 
-		$doc = array(
+		$doc = [
 			'key' => "subnet_$subnet",
 			'doc' => $updateData
-		);
+		];
 
 		//Log::debug(print_r($doc, true));
 
-		if (!Cb::save($doc, array('replace' => true))) {
+		if (!Cb::save($doc, ['replace' => true])) {
 			throw new \Exception("Unable to update '$subnet'");
 		}
 
@@ -212,8 +209,6 @@ class CouchbaseElasticsearchSubnet implements SubnetInterface, ResourceInterface
 	 */
 	public function destroy($subnet)
 	{
-		$subnet = str_replace('/', '_', $subnet);
-
 		$this->show($subnet);
 
 		$cbConnection = Cb::connection();

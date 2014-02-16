@@ -25,14 +25,14 @@ class CouchbaseElasticsearchIpAddress implements IpAddressInterface, ResourceInt
 	{
 		$searchParams['index'] = 'hostbase';
 		$searchParams['size'] = $limit;
-		$searchParams['body']['query']['query_string'] = array(
+		$searchParams['body']['query']['query_string'] = [
 			'default_field' => 'ipAddress',
 			'query' => 'docType:"ipAddress" AND ' . $query
-		);
+		];
 
 		$result = Es::search($searchParams);
 
-		$docIds = array();
+		$docIds = [];
 
 		if (is_array($result)) {
 			foreach ($result['hits']['hits'] as $hit) {
@@ -47,7 +47,7 @@ class CouchbaseElasticsearchIpAddress implements IpAddressInterface, ResourceInt
 				}, $docIds
 			);
 		} else {
-			$ipAddresses = array();
+			$ipAddresses = [];
 
 			$docCollection = Cb::findByKey($docIds);
 
@@ -80,7 +80,7 @@ class CouchbaseElasticsearchIpAddress implements IpAddressInterface, ResourceInt
 		// list all IP addresses by default
 		if ($ipAddress == null) {
 
-			$ipAddresses = array();
+			$ipAddresses = [];
 
 			$query = new BasementQuery();
 			$viewResult = Cb::findByView('ipAddresses', 'byIpAddress', $query);
@@ -100,7 +100,7 @@ class CouchbaseElasticsearchIpAddress implements IpAddressInterface, ResourceInt
 			return $ipAddresses;
 
 		} else {
-			$result = Cb::findByKey("ipAddress_$ipAddress", array('first' => true));
+			$result = Cb::findByKey("ipAddress_$ipAddress", ['first' => true]);
 			//Log::debug(print_r($result, true));
 
 			if (!($result instanceof Document)) {
@@ -122,10 +122,10 @@ class CouchbaseElasticsearchIpAddress implements IpAddressInterface, ResourceInt
 	{
 		$validator = Validator::make(
 			$data,
-			array(
-			     'subnet'       => 'required',
-			     'ipAddress'    => 'required'
-			)
+			[
+				'subnet'       => 'required',
+			    'ipAddress'    => 'required'
+			]
 		);
 
 		if ($validator->fails()) {
@@ -138,12 +138,12 @@ class CouchbaseElasticsearchIpAddress implements IpAddressInterface, ResourceInt
 
 		$ipAddress = $data['ipAddress'];
 
-		$doc = array(
+		$doc = [
 			'key' => "ipAddress_$ipAddress",
 			'doc' => $data
-		);
+		];
 
-		if (!Cb::save($doc, array('override' => false))) {
+		if (!Cb::save($doc, ['override' => false])) {
 			throw new \Exception("'$ipAddress' already exists");
 		}
 
@@ -160,7 +160,7 @@ class CouchbaseElasticsearchIpAddress implements IpAddressInterface, ResourceInt
 	 */
 	public function update($ipAddress, array $data)
 	{
-		$result = Cb::findByKey("ipAddress_$ipAddress", array('first' => true));
+		$result = Cb::findByKey("ipAddress_$ipAddress", ['first' => true]);
 		//Log::debug(print_r($result, true));
 
 		if (!($result instanceof Document)) {
@@ -181,14 +181,14 @@ class CouchbaseElasticsearchIpAddress implements IpAddressInterface, ResourceInt
 
 		$updateData['updatedDateTime'] = date('c');
 
-		$doc = array(
+		$doc = [
 			'key' => "ipAddress_$ipAddress",
 			'doc' => $updateData
-		);
+		];
 
 		//Log::debug(print_r($doc, true));
 
-		if (!Cb::save($doc, array('replace' => true))) {
+		if (!Cb::save($doc, ['replace' => true])) {
 			throw new \Exception("Unable to update '$ipAddress'");
 		}
 

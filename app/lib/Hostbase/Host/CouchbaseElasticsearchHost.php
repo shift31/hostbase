@@ -25,14 +25,14 @@ class CouchbaseElasticsearchHost implements HostInterface, ResourceInterface
 	{
 		$searchParams['index'] = 'hostbase';
 		$searchParams['size'] = $limit;
-		$searchParams['body']['query']['query_string'] = array(
+		$searchParams['body']['query']['query_string'] = [
 			'default_field' => 'hostname',
 			'query' => 'docType:"host" AND ' . $query
-		);
+		];
 
 		$result = Es::search($searchParams);
 
-		$docIds = array();
+		$docIds = [];
 
 		if (is_array($result)) {
 			foreach ($result['hits']['hits'] as $hit) {
@@ -47,7 +47,7 @@ class CouchbaseElasticsearchHost implements HostInterface, ResourceInterface
 				}, $docIds
 			);
 		} else {
-			$hosts = array();
+			$hosts = [];
 
 			$docCollection = Cb::findByKey($docIds);
 
@@ -85,7 +85,7 @@ class CouchbaseElasticsearchHost implements HostInterface, ResourceInterface
 		// list all hosts by default
 		if ($fqdn == null) {
 
-			$hosts = array();
+			$hosts = [];
 
 			$query = new BasementQuery();
 			$viewResult = Cb::findByView('hosts', 'byFqdn', $query);
@@ -106,7 +106,7 @@ class CouchbaseElasticsearchHost implements HostInterface, ResourceInterface
 
 		} else {
 			/** @noinspection PhpVoidFunctionResultUsedInspection */
-			$result = Cb::findByKey("host_$fqdn", array('first' => true));
+			$result = Cb::findByKey("host_$fqdn", ['first' => true]);
 			//Log::debug(print_r($result, true));
 
 			if (!($result instanceof Document)) {
@@ -152,12 +152,12 @@ class CouchbaseElasticsearchHost implements HostInterface, ResourceInterface
 
 		$fqdn = $data['fqdn'];
 
-		$doc = array(
+		$doc = [
 			'key' => "host_$fqdn",
 			'doc' => $data
-		);
+		];
 
-		if (!Cb::save($doc, array('override' => false))) {
+		if (!Cb::save($doc, ['override' => false])) {
 			throw new \Exception("'$fqdn' already exists");
 		}
 
@@ -175,7 +175,7 @@ class CouchbaseElasticsearchHost implements HostInterface, ResourceInterface
 	public function update($fqdn, array $data)
 	{
 		/** @noinspection PhpVoidFunctionResultUsedInspection */
-		$result = Cb::findByKey("host_$fqdn", array('first' => true));
+		$result = Cb::findByKey("host_$fqdn", ['first' => true]);
 		//Log::debug(print_r($result, true));
 
 		if (!($result instanceof Document)) {
@@ -199,15 +199,15 @@ class CouchbaseElasticsearchHost implements HostInterface, ResourceInterface
 
 		$updateData['updatedDateTime'] = date('c');
 
-		$doc = array(
+		$doc = [
 			'key' => "host_$fqdn",
 			'doc' => $updateData
-		);
+		];
 
 		//Log::debug(print_r($doc, true));
 
 		/** @noinspection PhpVoidFunctionResultUsedInspection */
-		if (!Cb::save($doc, array('replace' => true))) {
+		if (!Cb::save($doc, ['replace' => true])) {
 			throw new \Exception("Unable to update '$fqdn'");
 		}
 

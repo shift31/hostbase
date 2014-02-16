@@ -1,6 +1,7 @@
 <?php
 
 use Hostbase\ResourceInterface;
+use Hostbase\PassThruResourceTransformer;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
@@ -58,12 +59,12 @@ abstract class ResourceControllerAbstract extends BaseController
 					Input::has('size') ? Input::get('size') : 10000,
 					Input::has('showData') ? (bool) Input::get('showData') : true);
 
-				return $this->respondWithArray($resources);
+				return $this->respondWithCollection($resources, new PassThruResourceTransformer());
 			} catch (Exception $e) {
 				return $this->errorInternalError($e->getMessage());
 			}
 		} else {
-			return $this->respondWithArray($this->resources->show());
+			return $this->respondWithCollection($this->resources->show(), new PassThruResourceTransformer());
 		}
 	}
 
@@ -100,7 +101,7 @@ abstract class ResourceControllerAbstract extends BaseController
 
 		try {
 			$resource = $this->resources->store($data);
-			return $this->setStatusCode(201)->respondWithArray($resource);
+			return $this->setStatusCode(201)->respondWithItem($resource, new PassThruResourceTransformer());
 		} catch (Exception $e) {
 			return $this->errorInternalError($e->getMessage());
 		}
@@ -117,7 +118,7 @@ abstract class ResourceControllerAbstract extends BaseController
 	public function show($id)
 	{
 		try {
-			return $this->respondWithArray($this->resources->show($id));
+			return $this->respondWithItem($this->resources->show($id), new PassThruResourceTransformer());
 		} catch (Exception $e) {
 			return $this->errorNotFound($e->getMessage());
 		}
@@ -160,7 +161,7 @@ abstract class ResourceControllerAbstract extends BaseController
 
 		try {
 			$updatedData = $this->resources->update($id, $data);
-			return $this->respondWithArray($updatedData);
+			return $this->respondWithItem($updatedData, new PassThruResourceTransformer());
 		} catch (Exception $e) {
 			return $this->errorInternalError($e->getMessage());
 		}
@@ -187,7 +188,9 @@ abstract class ResourceControllerAbstract extends BaseController
 	}
 
 
-
+	/*
+	 * Request & Response Handling
+	 */
 
 	/**
 	 * Getter for statusCode
@@ -212,11 +215,19 @@ abstract class ResourceControllerAbstract extends BaseController
 		return $this;
 	}
 
+
+	/**
+	 * @return bool
+	 */
 	protected function requestAcceptsYaml()
 	{
 		return Request::header('Accept') == 'application/yaml';
 	}
 
+
+	/**
+	 * @return bool
+	 */
 	protected function requestContainsYaml()
 	{
 		return Request::header('Content-Type') == 'application/yaml';
@@ -298,6 +309,7 @@ abstract class ResourceControllerAbstract extends BaseController
 				]
 			]);
 	}
+
 
 	/*
 	 * Error responses
