@@ -7,7 +7,7 @@
 
 Hostbase is a systems and network administration tool for keeping track of hosts, subnets, and IP addresses.  It is designed to support private or public cloud operations of any size.  If you have a few dozen (or even thousands) of servers across multiple environments and data centers, Hostbase can provide the foundation of a service-oriented architecture for tracking the lifecycle of servers and networks.  Instead of storing separate lists of servers in your continuous integration server, deployment tool configuration files, or provisioning system, Hostbase can provide a single interface for retrieving this information dynamically.  This is especially useful in environments where scaling horizontally is commonplace.  Even if you don't have so many servers, it's nice to be able to keep track of everything in one place.
 
-Hostbase uses Couchbase Server to store data in a completely schema-less fashion, so you're not locked in to any particular data model other than the primary concepts of hosts, subnets, and IPs.  Using the Couchbase plug-in for Elasticsearch, data becomes almost instantly searchable as it's entered into the database.  All fields can be searched using [Elasticsearch query string syntax](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html).  So if you track your servers by role, environment, and data center, it's really easy to ask Hostbase to retrieve a list of all servers in the 'QA' environment for application 'X' in the 'Y' data center.
+Hostbase uses Couchbase Server to store data in a completely schema-less fashion, so you're not locked in to any particular data model other than the primary concepts of hosts, subnets, and IPs.  Using the Couchbase plug-in for Elasticsearch, data becomes almost instantly searchable as it's entered into the database.  All fields can be searched using [Elasticsearch query string syntax](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html).  So if you track your servers by role, environment, and data center, it's really easy, for example, to ask Hostbase to retrieve a list of all servers in the 'QA' environment for application 'X' in the 'Y' data center.
 
 In addition to Couchbase and Elasticsearch, Hostbase requires a web server with PHP 5.4 or greater.  All search and CRUD operations are exposed through a RESTful web service.
 
@@ -41,8 +41,8 @@ https://github.com/shift31/hostbase-cli
 
 ## Importers
 
-PuppetDB: https://github.com/shift31/hostbase-importer-puppetdb
-SoftLayer: https://github.com/shift31/hostbase-importer-softlayer
+- PuppetDB: https://github.com/shift31/hostbase-importer-puppetdb
+- SoftLayer: https://github.com/shift31/hostbase-importer-softlayer
 
 ## PHP Client Library
 
@@ -50,9 +50,11 @@ https://github.com/shift31/hostbase-api-client-php
 
 ## To-do
 
-- Implement HTTP Basic Authentication
+- Implement HTTP Basic Authentication with users stored in Hostbase and/or LDAP
 - Tests (unit, integration, etc.)
 - More Documentation
 - Puppet Module and Chef Cookbook to help automate installation
+- Script to update Hostbase from Facter output, to be run via Cron
+- Puppet function to retrieve data from Hostbase (perhaps in addition to Hiera)
 - Command line tool to aid initial configuration (driven by Laravel's artisan command)
 - ...
