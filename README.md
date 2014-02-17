@@ -52,7 +52,7 @@ https://github.com/shift31/hostbase-api-client-php
 
 - Implement HTTP Basic Authentication with users stored in Hostbase and/or LDAP
 - Tests (unit, integration, etc.)
-- More Documentation
+- More Documentation and a video demo
 - Puppet Module and Chef Cookbook to help automate installation
 - Script to update Hostbase from Facter output, to be run via Cron
 - Puppet function to retrieve data from Hostbase (perhaps in addition to Hiera)
