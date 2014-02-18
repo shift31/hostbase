@@ -1,6 +1,6 @@
 {
 	"name": "shift31/hostbase",
-	"description": "A host information database",
+	"description": "A highly scalable host and network database with full-text search and a RESTful API",
 	"license": "MIT",
 	"require": {
         "php": ">=5.4",
