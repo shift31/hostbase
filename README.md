@@ -24,9 +24,11 @@ _A rough overview..._
 5. Install the [Couchbase Plug-in for Elasticsearch](http://www.couchbase.com/couchbase-server/connectors/elasticsearch)
 6. Configure Couchbase XDCR to replicate the 'hostbase' bucket to the Elasticsearch cluster
 7. Install PHP 5.4 and the web server of your choice (tested with Apache)
-8. Download/clone this whole repository to the directory of your choice, and configure your web server to serve it as you would any other Laravel-based project.  See http://laravel.com/docs/installation for more info.  You can also download it with [Composer](http://getcomposer.org) by running `composer create-project shift31/hostbase`.
-9. Run `composer install` from the root of the project
-10. Download the [CLI](https://github.com/shift31/hostbase-cli) ([PHAR](https://github.com/shift31/hostbase-cli/raw/master/hostbase.phar))
+8. Install the [Couchbase PHP Client Library](http://www.couchbase.com/communities/php/getting-started)
+9. Download/clone this whole repository to the directory of your choice, and configure your web server to serve it as you would any other Laravel-based project.  See http://laravel.com/docs/installation for more info.  You can also download it with [Composer](http://getcomposer.org) by running `composer create-project shift31/hostbase`.
+10. From the project root, run: `composer install`
+
+Optional, but recommended, download the [CLI](https://github.com/shift31/hostbase-cli) ([PHAR](https://github.com/shift31/hostbase-cli/raw/master/hostbase.phar))
 
 ## Configuration
 
@@ -36,16 +38,20 @@ See http://laravel.com/docs/configuration for background information on configur
 2. Edit app/config/database.php with your Couchbase server info (if you're running on a separate host)
 3. Edit app/config/elasticsearch.php as needed.  See https://github.com/shift31/laravel-elasticsearch for details.
 
-## Command Line Interface
+## Usage
+
+There's no web UI or bulk raw data (JSON, CSV) import tool yet. So if you have a lot of hosts, your best bet is to use the PHP Client Library and write your own importer.  Feel free to explore the importers below for examples.
+
+### Command Line Interface
 
 https://github.com/shift31/hostbase-cli
 
-## Importers
+### Importers
 
 - PuppetDB: https://github.com/shift31/hostbase-importer-puppetdb
 - SoftLayer: https://github.com/shift31/hostbase-importer-softlayer
 
-## PHP Client Library
+### PHP Client Library
 
 https://github.com/shift31/hostbase-api-client-php
 
@@ -55,7 +61,10 @@ https://github.com/shift31/hostbase-api-client-php
 - Tests (unit, integration, etc.)
 - More Documentation and a video demo
 - Puppet Module and Chef Cookbook to help automate installation
-- Script to update Hostbase from Facter output, to be run via Cron
+- Script to update Hostbase from Puppet Facts...perhaps using Facter output, run via Cron...or somehow during Puppet agent execution
 - Puppet function to retrieve data from Hostbase (perhaps in addition to Hiera)
 - Command line tool to aid initial configuration (driven by Laravel's artisan command)
+- API
+    - Pagination
+    - Bulk operations
 - ...

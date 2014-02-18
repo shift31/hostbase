@@ -3,8 +3,6 @@
 use Hostbase\ResourceInterface;
 use Basement\data\Document;
 use Basement\data\DocumentCollection;
-use Basement\view\Query as BasementQuery;
-use Basement\view\ViewResult;
 use Cb;
 use Es;
 use Validator;
@@ -79,26 +77,7 @@ class CouchbaseElasticsearchSubnet implements SubnetInterface, ResourceInterface
 	{
 		// list all subnets by default
 		if ($subnet == null) {
-
-			$subnets = [];
-
-			$query = new BasementQuery();
-			$viewResult = Cb::findByView('subnets', 'bySubnet', $query);
-
-			if ($viewResult instanceof ViewResult) {
-
-				$docCollection = $viewResult->get();
-
-				foreach ($docCollection as $doc) {
-					if ($doc instanceof Document) {
-						$subnets[] = str_replace('subnet_', '', $doc->key());
-					}
-				}
-			}
-
-			//Log::debug(print_r($subnets, true));
-			return $subnets;
-
+			return $this->search('_exists_:network');
 		} else {
 
 			$result = Cb::findByKey("subnet_$subnet", ['first' => true]);

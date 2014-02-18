@@ -3,8 +3,6 @@
 use Hostbase\ResourceInterface;
 use Basement\data\Document;
 use Basement\data\DocumentCollection;
-use Basement\view\Query as BasementQuery;
-use Basement\view\ViewResult;
 use Cb;
 use Es;
 use Crypt;
@@ -84,26 +82,7 @@ class CouchbaseElasticsearchHost implements HostInterface, ResourceInterface
 	{
 		// list all hosts by default
 		if ($fqdn == null) {
-
-			$hosts = [];
-
-			$query = new BasementQuery();
-			$viewResult = Cb::findByView('hosts', 'byFqdn', $query);
-
-			if ($viewResult instanceof ViewResult) {
-
-				$docCollection = $viewResult->get();
-
-				foreach ($docCollection as $doc) {
-					if ($doc instanceof Document) {
-						$hosts[] = str_replace('host_', '', $doc->key());
-					}
-				}
-			}
-
-			//Log::debug(print_r($hosts, true));
-			return $hosts;
-
+			return $this->search('_exists_:fqdn');
 		} else {
 			/** @noinspection PhpVoidFunctionResultUsedInspection */
 			$result = Cb::findByKey("host_$fqdn", ['first' => true]);

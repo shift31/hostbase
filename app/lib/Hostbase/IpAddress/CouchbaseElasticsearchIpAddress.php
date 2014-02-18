@@ -3,8 +3,6 @@
 use Hostbase\ResourceInterface;
 use Basement\data\Document;
 use Basement\data\DocumentCollection;
-use Basement\view\Query as BasementQuery;
-use Basement\view\ViewResult;
 use Cb;
 use Es;
 use Validator;
@@ -79,26 +77,7 @@ class CouchbaseElasticsearchIpAddress implements IpAddressInterface, ResourceInt
 	{
 		// list all IP addresses by default
 		if ($ipAddress == null) {
-
-			$ipAddresses = [];
-
-			$query = new BasementQuery();
-			$viewResult = Cb::findByView('ipAddresses', 'byIpAddress', $query);
-
-			if ($viewResult instanceof ViewResult) {
-
-				$docCollection = $viewResult->get();
-
-				foreach ($docCollection as $doc) {
-					if ($doc instanceof Document) {
-						$ipAddresses[] = str_replace('ipAddress_', '', $doc->key());
-					}
-				}
-			}
-
-			//Log::debug(print_r($ipAddresses, true));
-			return $ipAddresses;
-
+			return $this->search('_exists_:ipAddress');
 		} else {
 			$result = Cb::findByKey("ipAddress_$ipAddress", ['first' => true]);
 			//Log::debug(print_r($result, true));
