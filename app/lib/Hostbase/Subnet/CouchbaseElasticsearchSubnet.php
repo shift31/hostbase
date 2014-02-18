@@ -120,7 +120,7 @@ class CouchbaseElasticsearchSubnet implements SubnetInterface, ResourceInterface
 		$data['createdDateTime'] = date('c');
 		$data['docType'] = 'subnet';
 
-		$subnet = "{$data['network']}_{$data['cidr']}";
+		$subnet = "{$data['network']}/{$data['cidr']}";
 
 		$doc = [
 			'key' => "subnet_$subnet",
