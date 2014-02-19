@@ -8,17 +8,17 @@ class CbEsHostRepository extends CbEsRepository implements HostRepository
 {
 
     /**
-     * @var $resourceName
+     * @var string $resourceName
      */
     static protected $resourceName = 'host';
 
     /**
-     * @var $primaryKey
+     * @var string $keySuffixField
      */
     static protected $keySuffixField = 'fqdn';
 
     /**
-     * @var $defaultSearchField
+     * @var string $defaultSearchField
      */
     static protected $defaultSearchField = 'fqdn';
 

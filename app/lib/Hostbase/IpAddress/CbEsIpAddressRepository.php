@@ -7,17 +7,17 @@ use Validator;
 class CbEsIpAddressRepository extends CbEsRepository implements IpAddressRepository
 {
     /**
-     * @var $resourceName
+     * @var string $resourceName
      */
     static protected $resourceName = 'ipAddress';
 
     /**
-     * @var $primaryKey
+     * @var string $keySuffixField
      */
     static protected $keySuffixField = 'ipAddress';
 
     /**
-     * @var $defaultSearchField
+     * @var string $defaultSearchField
      */
     static protected $defaultSearchField = 'ipAddress';
 

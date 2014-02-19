@@ -8,17 +8,17 @@ class CbEsSubnetRepository extends CbEsRepository implements SubnetRepository
 {
 
     /**
-     * @var $resourceName
+     * @var string $resourceName
      */
     static protected $resourceName = 'subnet';
 
     /**
-     * @var $primaryKey
+     * @var string $keySuffixField
      */
     static protected $keySuffixField = 'network';
 
     /**
-     * @var $defaultSearchField
+     * @var string $defaultSearchField
      */
     static protected $defaultSearchField = 'network';
 

@@ -17,17 +17,23 @@ abstract class CbEsRepository implements ResourceRepository
 
 
     /**
-     * @var $resourceName
+     * The resource name/document type.  Used as the key prefix.
+     *
+     * @var string $resourceName
      */
     static protected $resourceName = null;
 
     /**
-     * @var $primaryKey
+     * The document field to use as the key suffix.
+     *
+     * @var string $keySuffixField
      */
     static protected $keySuffixField = null;
 
     /**
-     * @var $defaultSearchField
+     * The default elasticsearch field.
+     *
+     * @var string $defaultSearchField
      */
     static protected $defaultSearchField = null;
 
