@@ -3,11 +3,12 @@
 use Illuminate\Support\ServiceProvider;
 
 
-class SubnetServiceProvider extends ServiceProvider {
+class SubnetServiceProvider extends ServiceProvider
+{
 
 
     public function register()
     {
-        $this->app->bind('Hostbase\Subnet\SubnetInterface', 'Hostbase\Subnet\CouchbaseElasticsearchSubnet');
+        $this->app->bind('Hostbase\Subnet\SubnetRepository', 'Hostbase\Subnet\CbEsSubnetRepository');
     }
 }

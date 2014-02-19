@@ -1,17 +1,19 @@
 <?php
 
-use Hostbase\IpAddress\IpAddressInterface;
+use Hostbase\IpAddress\IpAddressRepository;
 use League\Fractal\Manager;
 
 
-class IpAddressController extends ResourceControllerAbstract {
+class IpAddressController extends ResourceController
+{
 
-	/**
-	 * @param IpAddressInterface $ipAddresses
-	 * @param Manager            $fractal
-	 */
-	public function __construct(IpAddressInterface $ipAddresses, Manager $fractal) {
-		$this->resources = $ipAddresses;
-		$this->fractal = $fractal;
-	}
+    /**
+     * @param IpAddressRepository $ipAddresses
+     * @param Manager             $fractal
+     */
+    public function __construct(IpAddressRepository $ipAddresses, Manager $fractal)
+    {
+        $this->resources = $ipAddresses;
+        $this->fractal = $fractal;
+    }
 } 

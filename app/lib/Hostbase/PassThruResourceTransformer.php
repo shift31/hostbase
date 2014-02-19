@@ -2,10 +2,11 @@
 
 use League\Fractal\TransformerAbstract;
 
-class PassThruResourceTransformer extends TransformerAbstract {
+class PassThruResourceTransformer extends TransformerAbstract
+{
 
-	public function transform($resource)
-	{
-		return $resource;
-	}
+    public function transform($resource)
+    {
+        return $resource;
+    }
 } 

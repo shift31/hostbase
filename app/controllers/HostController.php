@@ -1,17 +1,19 @@
 <?php
 
-use Hostbase\Host\HostInterface;
+use Hostbase\Host\HostRepository;
 use League\Fractal\Manager;
 
 
-class HostController extends ResourceControllerAbstract {
+class HostController extends ResourceController
+{
 
-	/**
-	 * @param HostInterface $hosts
-	 * @param Manager       $fractal
-	 */
-	public function __construct(HostInterface $hosts, Manager $fractal) {
-		$this->resources = $hosts;
-		$this->fractal = $fractal;
-	}
+    /**
+     * @param HostRepository $hosts
+     * @param Manager        $fractal
+     */
+    public function __construct(HostRepository $hosts, Manager $fractal)
+    {
+        $this->resources = $hosts;
+        $this->fractal = $fractal;
+    }
 } 
