@@ -25,17 +25,18 @@ _A rough overview..._
 6. Configure Couchbase XDCR to replicate the 'hostbase' bucket to the Elasticsearch cluster
 7. Install PHP 5.4 and the web server of your choice (tested with Apache)
 8. Install the [Couchbase PHP Client Library](http://www.couchbase.com/communities/php/getting-started)
-9. Download/clone this whole repository to the directory of your choice, and configure your web server to serve it as you would any other Laravel-based project.  See http://laravel.com/docs/installation for more info.  You can also download it with [Composer](http://getcomposer.org) by running `composer create-project shift31/hostbase`.
+9. Download/clone this whole repository to the directory of your choice, and configure your web server to serve it as you would any other Laravel-based project.  See http://laravel.com/docs/installation for more info.  You can also download it with [Composer](http://getcomposer.org) by running `composer create-project shift31/hostbase -s dev`.
 10. From the project root, run: `composer install`
 
 Optional, but recommended, download the [CLI](https://github.com/shift31/hostbase-cli) ([PHAR](https://github.com/shift31/hostbase-cli/raw/master/hostbase.phar))
 
 ### Vagrant
 
-For testing purposes, save yourself some installation time and use [Vagrant](http://vagrantup.com).  **You'll need 1GB free RAM.**
+For testing purposes, save yourself some installation time and use [Vagrant](http://vagrantup.com).  **You'll need 1 GB free RAM.**
 
-1. `composer create-project shift31/hostbase`
-2. `vagrant up`
+1. `git clone https://github.com/shift31/hostbase.git`
+2. `cd hostbase`
+3. `vagrant up`
 
 ## Configuration
 
