@@ -3,14 +3,15 @@
 # htop
 sudo apt-get -y install htop
 
+sudo service elasticsearch stop
 
 # install and configure couchbase plugin for elasticsearch
 sudo /usr/share/elasticsearch/bin/plugin -install transport-couchbase -url http://packages.couchbase.com.s3.amazonaws.com/releases/elastic-search-adapter/1.2.0/elasticsearch-transport-couchbase-1.2.0.zip
 echo "couchbase.username: Administrator"  | sudo tee -a /etc/elasticsearch/elasticsearch.yml
 echo "couchbase.password: password"  | sudo tee -a /etc/elasticsearch/elasticsearch.yml
 
-sudo service elasticsearch restart
-sleep 15
+sudo service elasticsearch start
+sleep 20
 
 # import index template to define the scope of indexing and searching
 curl -XPUT http://localhost:9200/_template/couchbase -d @/usr/share/elasticsearch/plugins/transport-couchbase/couchbase_template.json
@@ -18,12 +19,13 @@ sleep 1
 
 # create empty index
 curl -XPUT http://localhost:9200/hostbase
+sleep 1
 
 # change the number of concurrent requests elasticsearch will handle
 echo "couchbase.maxConcurrentRequests: 1024" | sudo tee -a /etc/elasticsearch/elasticsearch.yml
 
 sudo service elasticsearch restart
-sleep 15
+sleep 20
 
 
 # configure couchbase
@@ -37,12 +39,16 @@ sleep 15
        --bucket=default \
        --bucket-type=couchbase \
        --bucket-ramsize=128 \
+       --bucket-replica=0 \
+       --enable-index-replica=0 \
        --enable-flush=1
 
 /opt/couchbase/bin/couchbase-cli bucket-create -c localhost:8091 -u Administrator -p password \
        --bucket=hostbase \
        --bucket-type=couchbase \
        --bucket-ramsize=128 \
+       --bucket-replica=0 \
+       --enable-index-replica=0 \
        --enable-flush=1
 
 /opt/couchbase/bin/couchbase-cli setting-xdcr -c localhost:8091 -u Administrator -p password --max-concurrent-reps=8
@@ -54,6 +60,8 @@ sleep 15
         --xdcr-username=Administrator \
         --xdcr-password=password
 
+sleep 5
+
 /opt/couchbase/bin/couchbase-cli xdcr-replicate -c localhost:8091 -u Administrator -p password \
         --create \
         --xdcr-cluster-name=elasticsearch \
@@ -62,5 +70,9 @@ sleep 15
         --xdcr-replication-mode=capi
 
 
-# apache vhost
+# run composer
+cd /vagrant && composer install
+
+
+# create apache vhost
 sudo vhost -d /vagrant/public -s hostbase.192.168.33.10.xip.io
