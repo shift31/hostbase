@@ -1,6 +1,7 @@
 <?php namespace Hostbase\Host;
 
 use Crypt;
+use Log;
 use Hostbase\CbEsRepository;
 
 
@@ -36,7 +37,7 @@ class CbEsHostRepository extends CbEsRepository implements HostRepository
         $hosts = parent::search($query, $limit, $showData);
 
         if ($showData === true) {
-            foreach ($hosts as $host) {
+            foreach ($hosts as &$host) {
                 $this->decryptAdminPassword($host);
             }
         }
@@ -128,6 +129,7 @@ class CbEsHostRepository extends CbEsRepository implements HostRepository
     public function decryptAdminPassword(array &$data)
     {
         if (isset($data['adminCredentials'])) {
+            Log::debug("Decrypting admin password for {$data['fqdn']}");
             $data['adminCredentials']['password'] = Crypt::decrypt($data['adminCredentials']['encryptedPassword']);
             unset($data['adminCredentials']['encryptedPassword']);
         }
