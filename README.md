@@ -30,6 +30,13 @@ _A rough overview..._
 
 Optional, but recommended, download the [CLI](https://github.com/shift31/hostbase-cli) ([PHAR](https://github.com/shift31/hostbase-cli/raw/master/hostbase.phar))
 
+### Vagrant
+
+For testing purposes, save yourself some installation time and use [Vagrant](http://vagrantup.com).  **You'll need 1GB free RAM.**
+
+1. `composer create-project shift31/hostbase`
+2. `vagrant up`
+
 ## Configuration
 
 See http://laravel.com/docs/configuration for background information on configuring a Laravel-based project.

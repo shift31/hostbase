@@ -9,3 +9,4 @@ test.json
 /app/storage
 /workbench
 /workbench.php
+.vagrant
