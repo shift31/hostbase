@@ -83,22 +83,25 @@ There's no web UI or bulk raw data (JSON, CSV) import tool yet. So if you have a
 
 - Must receive JSON ('Host' header should be 'Content-type: application/json')
     - /hosts
-        - Required fields:
-            - fqdn
-            - hostname (automatically generated from FQDN if not specified)
-            - domain (automatically generated from FQDN if not specified)
-        - Special (optional) fields:
-            - Admin Credentials: Passwords will be encrypted prior to storage in the database, and decrypted on retrieval via the API
+        - Example:
 
             ```json
             {
                 "fqdn": "hostname.domain.tld",
+                "hostname": "hostname",
+                "domain": "domain.tld",
                 "adminCredentials": {
                     "username": "admin_username",
                     "password": "admin_password"
                 }
             }
             ```
+        - Required fields:
+            - fqdn
+            - hostname (automatically generated from FQDN if not specified)
+            - domain (automatically generated from FQDN if not specified)
+        - Special (optional) fields:
+            - Admin Credentials: Passwords will be encrypted prior to storage in the database, and decrypted on retrieval via the API
     - /subnets
         - Example:
 
