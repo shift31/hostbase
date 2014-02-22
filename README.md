@@ -3,7 +3,7 @@
 
 ## Overview
 
-Hostbase is a systems and network administration tool for keeping track of hosts, subnets, and IP addresses.  It is designed to support private or public cloud operations of any size.  If you have a few dozen (or even thousands) of servers across multiple environments and data centers, Hostbase can provide the foundation of a service-oriented architecture for tracking the lifecycle of servers and networks.  Instead of storing duplicate server information across your continuous integration server, deployment tools, and provisioning system, Hostbase can provide a single, centralized interface for retrieving this information dynamically.  This is especially useful in environments where scaling horizontally is commonplace.  Even if you don't have so many servers, it's nice to be able to keep track of everything in one place.
+Hostbase is a systems and network administration tool for keeping track of hosts, subnets, and IP addresses.  It is designed to support private or public cloud operations of any size.  If you have a few dozen (or even thousands) of servers across multiple environments and data centers, Hostbase can provide the foundation of a service-oriented architecture for tracking the lifecycle of servers and networks.  Instead of storing duplicate server information across your continuous integration server, deployment tools, and provisioning system, Hostbase can provide a single, centralized interface for retrieving this information dynamically.  This is especially useful in environments where scaling horizontally is commonplace.
 
 ### Technology
 
@@ -15,10 +15,12 @@ _**Hostbase is currently under heavy development and should be considered to be 
 
 ## Installation
 
-_A rough overview..._
+_A rough overview (everything on a single machine)..._
 
 1. Download and install [Couchbase Server](http://www.couchbase.com/download)
-2. On your Couchbase server, create a bucket called 'hostbase' (you can call it whatever you want, but the default config supports this naming convention)
+2. On your Couchbase server:
+    - Create (or keep) the 'default' bucket.  This will be used for sessions / cache.
+    - Create a bucket called 'hostbase' (you can call it whatever you want, but the default config supports this naming convention)
 3. Download and install [Elasticsearch 0.90.5](http://www.elasticsearch.org/downloads/page/2/).  (Yes, ES 1.0 is out, but the Couchbase Plug-in hasn't been updated yet, and the versions must match.)
 4. On your Elasticsearch server, create an index called 'hostbase' with at least 1 shard...replicas are optional but recommended. The data can always be re-indexed by replicating from Couchbase again.
 5. Install the [Couchbase Plug-in for Elasticsearch](http://www.couchbase.com/couchbase-server/connectors/elasticsearch)
@@ -32,7 +34,7 @@ Optional, but recommended, download the [CLI](https://github.com/shift31/hostbas
 
 ### Vagrant
 
-For testing purposes, save yourself some installation time and use [Vagrant](http://vagrantup.com).  **You'll need 1 GB free RAM.**
+**For testing/trial purposes, save yourself some installation time and use [Vagrant](http://vagrantup.com).  _You'll need 1 GB free RAM._**
 
 1. `git clone https://github.com/shift31/hostbase.git`
 2. `cd hostbase`
@@ -42,15 +44,53 @@ For testing purposes, save yourself some installation time and use [Vagrant](htt
 
 See http://laravel.com/docs/configuration for background information on configuring a Laravel-based project.
 
-1. Edit app/config/app.php accordingly
-2. Edit app/config/database.php with your Couchbase server info (if you're running on a separate host)
+1. Edit app/config/app.php accordingly.
+2. Edit app/config/database.php with your Couchbase server info (if you're running Couchbase on a separate host).
 3. Edit app/config/elasticsearch.php as needed.  See https://github.com/shift31/laravel-elasticsearch for details.
+4. If you don't want to use Couchbase (memcache) for sessions/cache, edit app/config/session.php and app/config/cache.php accordingly.
 
 ## Usage
 
 There's no web UI or bulk raw data (JSON, CSV) import tool yet. So if you have a lot of hosts, your best bet is to use the PHP Client Library and write your own importer.  Feel free to explore the importers below for examples.
 
+### REST API endpoints (must receive JSON [Content-type: application/json])
+
+- GET/POST/PUT/DELETE:
+    - /hosts
+        - required fields:
+            - fqdn
+            - hostname (automatically generated from FQDN if not specified)
+            - domain (automatically generated from FQDN if not specified)
+    - /subnets
+        - required fields:
+            - network
+            - netmask
+            - gateway
+            - cidr
+    - /ipaddresses
+        - required fields:
+            - subnet
+            - ipAddress
+- Search, where the 'q' parameter is an elasticsearch/lucene query string:
+    - /hosts?q=
+    - /subnets?q=
+    - /ipaddresses?q=
+
+#### cURL examples
+
+_Todo_
+
+##### Store a host
+
+##### Show a host
+
+##### Update a host
+
+##### Delete a host
+
 ### Command Line Interface
+
+The CLI leverages the API client library so you can administer your Hostbase server from anywhere PHP is installed.
 
 https://github.com/shift31/hostbase-cli
 
@@ -59,9 +99,15 @@ https://github.com/shift31/hostbase-cli
 - PuppetDB: https://github.com/shift31/hostbase-importer-puppetdb
 - SoftLayer: https://github.com/shift31/hostbase-importer-softlayer
 
-### PHP Client Library
+### API Client Library for PHP
 
 https://github.com/shift31/hostbase-api-client-php
+
+## Security
+
+_**If your host and network data is sensitive, it's up to you to provide the firewalls, VPNs, and associated authentication methods to protect your data.**_
+
+Basic authentication will be implemented soon, but until then it is recommended (at the very least) to only operate Hostbase server/client on a private network.
 
 ## To-do
 
@@ -70,9 +116,9 @@ https://github.com/shift31/hostbase-api-client-php
 - More Documentation and a video demo
 - Puppet Module and Chef Cookbook to help automate installation
 - Script to update Hostbase from Puppet Facts...perhaps using Facter output, run via Cron...or somehow during Puppet agent execution
-- Puppet function to retrieve data from Hostbase (perhaps in addition to Hiera)
+- Puppet function to retrieve data from Hostbase (perhaps in addition to or in lieu of Hiera)
 - Command line tool to aid initial configuration (driven by Laravel's artisan command)
 - API
-    - Pagination
+    - Pagination?
     - Bulk operations
 - ...

@@ -8,7 +8,7 @@ github_branch   = "hostbase"
 
 # Server Configuration
 server_ip             = "192.168.33.10"
-
+server_memory         = "1024" # MB
 
 # Languages and Packages
 ruby_version          = "latest" # Choose what ruby version should be installed (will also be the default version)
@@ -47,7 +47,7 @@ Vagrant.configure("2") do |config|
   # allocated to the VM. Default is 384MB
   config.vm.provider :virtualbox do |vb|
 
-    vb.customize ["modifyvm", :id, "--memory", "1024"]
+    vb.customize ["modifyvm", :id, "--memory", server_memory]
     vb.customize ["modifyvm", :id, "--cpus", 4]
 
     # Set the timesync threshold to 10 seconds, instead of the default 20 minutes.
@@ -64,7 +64,7 @@ Vagrant.configure("2") do |config|
   # If using VMWare Fusion
   config.vm.provider :vmware_fusion do |vb|
 
-    vb.vmx["memsize"] = "1024"
+    vb.vmx["memsize"] = server_memory
 
   end
 
