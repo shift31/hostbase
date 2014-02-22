@@ -36,9 +36,14 @@ Optional, but recommended, download the [CLI](https://github.com/shift31/hostbas
 
 **For testing/trial purposes, save yourself some installation time and use [Vagrant](http://vagrantup.com).  _You'll need 1 GB free RAM._**
 
-1. `git clone https://github.com/shift31/hostbase.git`
-2. `cd hostbase`
-3. `vagrant up`
+```bash
+git clone https://github.com/shift31/hostbase.git
+cd hostbase
+vagrant up
+vagrant ssh
+cd /vagrant
+composer install
+```
 
 ## Configuration
 
