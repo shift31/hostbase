@@ -93,6 +93,9 @@ There's no web UI or bulk raw data (JSON, CSV) import tool yet. So if you have a
     - /hosts?q=
     - /subnets?q=
     - /ipaddresses?q=
+    - Other parameters:
+        - limit (defaults to 10,000; sets the 'size' of Elasticsearch results)
+        - showData ('1' = true [default], '0' = false)
 
 #### cURL examples
 
