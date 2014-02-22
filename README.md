@@ -64,22 +64,22 @@ There's no web UI or bulk raw data (JSON, CSV) import tool yet. So if you have a
 | ---------------------------------- | --------------------------- | ------------------------------ |
 | GET hosts                          | HostController@index        | Lists all hosts                |
 | POST hosts                         | HostController@store        |                                |
-| GET hosts/{hosts}                  | HostController@show         |                                |
-| PUT hosts/{hosts}                  | HostController@update       |                                |
-| PATCH hosts/{hosts}                | HostController@update       |                                |
-| DELETE hosts/{hosts}               | HostController@destroy      |                                |
+| GET hosts/{host}                   | HostController@show         |                                |
+| PUT hosts/{host}                   | HostController@update       |                                |
+| PATCH hosts/{host}                 | HostController@update       |                                |
+| DELETE hosts/{host}                | HostController@destroy      |                                |
 | GET subnets                        | SubnetController@index      | Lists all subnets              |
 | POST subnets                       | SubnetController@store      |                                |
-| GET subnets/{subnets}              | SubnetController@show       |                                |
-| PUT subnets/{subnets}              | SubnetController@update     |                                |
-| PATCH subnets/{subnets}            | SubnetController@update     |                                |
-| DELETE subnets/{subnets}           | SubnetController@destroy    |                                |
+| GET subnets/{subnet}               | SubnetController@show       |                                |
+| PUT subnets/{subnet}               | SubnetController@update     |                                |
+| PATCH subnets/{subnet}             | SubnetController@update     |                                |
+| DELETE subnets/{subnet}            | SubnetController@destroy    |                                |
 | GET ipaddresses                    | IpAddressController@index   | Lists all IP addresses         |
 | POST ipaddresses                   | IpAddressController@store   |                                |
-| GET ipaddresses/{ipaddresses}      | IpAddressController@show    |                                |
-| PUT ipaddresses/{ipaddresses}      | IpAddressController@update  |                                |
-| PATCH ipaddresses/{ipaddresses}    | IpAddressController@update  |                                |
-| DELETE ipaddresses/{ipaddresses}   | IpAddressController@destroy |                                |
+| GET ipaddresses/{ipaddress}        | IpAddressController@show    |                                |
+| PUT ipaddresses/{ipaddress}        | IpAddressController@update  |                                |
+| PATCH ipaddresses/{ipaddress}      | IpAddressController@update  |                                |
+| DELETE ipaddresses/{ipaddress}     | IpAddressController@destroy |                                |
 
 - Must receive JSON ('Host' header should be 'Content-type: application/json')
     - /hosts
