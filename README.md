@@ -83,11 +83,11 @@ There's no web UI or bulk raw data (JSON, CSV) import tool yet. So if you have a
 
 - Must receive JSON ('Host' header should be 'Content-type: application/json')
     - /hosts
-        - required fields:
+        - Required fields:
             - fqdn
             - hostname (automatically generated from FQDN if not specified)
             - domain (automatically generated from FQDN if not specified)
-        - special (optional) fields:
+        - Special (optional) fields:
             - Admin Credentials: Passwords will be encrypted prior to storage in the database, and decrypted on retrieval via the API
 
             ```json
@@ -100,22 +100,32 @@ There's no web UI or bulk raw data (JSON, CSV) import tool yet. So if you have a
             }
             ```
     - /subnets
+        - Example:
 
-        ```json
-        {
-            "network": "10.0.0.0",
-            "netmask": "255.255.255.0",
-            "gateway": "10.0.0.254",
-            "cidr": "24"
-        }
-        ```
-        - required fields:
+            ```json
+            {
+                "network": "10.0.0.0",
+                "netmask": "255.255.255.0",
+                "gateway": "10.0.0.254",
+                "cidr": "24"
+            }
+            ```
+        - Required fields:
             - network
             - netmask
             - gateway
             - cidr
     - /ipaddresses
-        - required fields:
+        - Example:
+
+            ```json
+            {
+                "subnet": "10.0.0.0/24",
+                "ipAddress": "10.0.0.1",
+                "host": "hostname.domain.tld"
+            }
+            ```
+        - Required fields:
             - subnet
             - ipAddress
 - Search, where the 'q' parameter is an elasticsearch/lucene query string:
