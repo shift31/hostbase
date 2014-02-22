@@ -100,6 +100,15 @@ There's no web UI or bulk raw data (JSON, CSV) import tool yet. So if you have a
             }
             ```
     - /subnets
+
+        ```json
+        {
+            "network": "10.0.0.0",
+            "netmask": "255.255.255.0",
+            "gateway": "10.0.0.254",
+            "cidr": "24"
+        }
+        ```
         - required fields:
             - network
             - netmask
