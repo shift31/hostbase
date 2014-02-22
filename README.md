@@ -66,11 +66,14 @@ There's no web UI or bulk raw data (JSON, CSV) import tool yet. So if you have a
             - Admin Credentials: Passwords will be encrypted prior to storage in the database, and decrypted on retrieval via the API
 
             ```json
-            "adminCredentials": {
-                "username": "admin_username",
-                "password": "admin_password"
-              }
-            ````
+            {
+                "fqdn": "hostname.domain.tld",
+                "adminCredentials": {
+                    "username": "admin_username",
+                    "password": "admin_password"
+                }
+            }
+            ```
     - /subnets
         - required fields:
             - network
