@@ -1,3 +1,24 @@
+**Table of Contents**
+
+- [Hostbase](#hostbase)
+	- [Overview](#overview)
+		- [Technology](#technology)
+	- [Installation](#installation)
+		- [Vagrant](#vagrant)
+	- [Configuration](#configuration)
+	- [Usage](#usage)
+		- [REST API endpoints](#rest-api-endpoints)
+			- [cURL examples](#curl-examples)
+				- [Store a host](#store-a-host)
+				- [Show a host](#show-a-host)
+				- [Update a host](#update-a-host)
+				- [Delete a host](#delete-a-host)
+		- [Command Line Interface](#command-line-interface)
+		- [Importers](#importers)
+		- [API Client Library for PHP](#api-client-library-for-php)
+	- [Security](#security)
+	- [To-do](#to-do)
+
 # Hostbase
 **A highly scalable host and network database with full-text search and a RESTful API**
 
