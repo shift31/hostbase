@@ -53,14 +53,24 @@ See http://laravel.com/docs/configuration for background information on configur
 
 There's no web UI or bulk raw data (JSON, CSV) import tool yet. So if you have a lot of hosts, your best bet is to use the PHP Client Library and write your own importer.  Feel free to explore the importers below for examples.
 
-### REST API endpoints (must receive JSON [Content-type: application/json])
+### REST API endpoints
 
+- Must receive JSON ('Host' header should be 'Content-type: application/json')
 - GET/POST/PUT/DELETE:
     - /hosts
         - required fields:
             - fqdn
             - hostname (automatically generated from FQDN if not specified)
             - domain (automatically generated from FQDN if not specified)
+        - special (optional) fields:
+            - Admin Credentials: Passwords will be encrypted prior to storage in the database, and decrypted on retrieval via the API
+
+            ```json
+            "adminCredentials": {
+                "username": "admin_username",
+                "password": "admin_password"
+              }
+            ````
     - /subnets
         - required fields:
             - network
