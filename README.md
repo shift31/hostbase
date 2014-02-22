@@ -60,8 +60,28 @@ There's no web UI or bulk raw data (JSON, CSV) import tool yet. So if you have a
 
 ### REST API endpoints
 
+| URI                                | Name                | Action                      | Comments                       |
+| ---------------------------------- | ------------------- | --------------------------- | ------------------------------ |
+| GET hosts                          | hosts.index         | HostController@index        | Lists all hosts                |
+| POST hosts                         | hosts.store         | HostController@store        |                                |
+| GET hosts/{hosts}                  | hosts.show          | HostController@show         |                                |
+| PUT hosts/{hosts}                  | hosts.update        | HostController@update       |                                |
+| PATCH hosts/{hosts}                |                     | HostController@update       |                                |
+| DELETE hosts/{hosts}               | hosts.destroy       | HostController@destroy      |                                |
+| GET subnets                        | subnets.index       | SubnetController@index      | Lists all subnets              |
+| POST subnets                       | subnets.store       | SubnetController@store      |                                |
+| GET subnets/{subnets}              | subnets.show        | SubnetController@show       |                                |
+| PUT subnets/{subnets}              | subnets.update      | SubnetController@update     |                                |
+| PATCH subnets/{subnets}            |                     | SubnetController@update     |                                |
+| DELETE subnets/{subnets}           | subnets.destroy     | SubnetController@destroy    |                                |
+| GET ipaddresses                    | ipaddresses.index   | IpAddressController@index   | Lists all IP addresses         |
+| POST ipaddresses                   | ipaddresses.store   | IpAddressController@store   |                                |
+| GET ipaddresses/{ipaddresses}      | ipaddresses.show    | IpAddressController@show    |                                |
+| PUT ipaddresses/{ipaddresses}      | ipaddresses.update  | IpAddressController@update  |                                |
+| PATCH ipaddresses/{ipaddresses}    |                     | IpAddressController@update  |                                |
+| DELETE ipaddresses/{ipaddresses}   | ipaddresses.destroy | IpAddressController@destroy |                                |
+
 - Must receive JSON ('Host' header should be 'Content-type: application/json')
-- GET/POST/PUT/DELETE:
     - /hosts
         - required fields:
             - fqdn
