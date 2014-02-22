@@ -1,4 +1,5 @@
-**Table of Contents**
+# Hostbase
+**A highly scalable host and network database with full-text search and a RESTful API**
 
 - [Overview](#overview)
     - [Technology](#technology)
@@ -12,9 +13,6 @@
     - [API Client Library for PHP](#api-client-library-for-php)
 - [Security](#security)
 - [To-do](#to-do)
-
-# Hostbase
-**A highly scalable host and network database with full-text search and a RESTful API**
 
 ## Overview
 
