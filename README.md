@@ -4,7 +4,7 @@
 - [Overview](#overview)
     - [Technology](#technology)
 - [Installation](#installation)
-    - [Vagrant](#vagrant)
+    - [Development Server (Vagrant)](#development-server-vagrant)
 - [Configuration](#configuration)
 - [Usage](#usage)
     - [REST API endpoints](#rest-api-endpoints)
@@ -45,7 +45,7 @@ _A rough overview (everything on a single machine)..._
 
 Optional, but recommended, download the [CLI](https://github.com/shift31/hostbase-cli) ([PHAR](https://github.com/shift31/hostbase-cli/raw/master/hostbase.phar))
 
-### Vagrant
+### Development Server (Vagrant)
 
 **For testing/trial purposes, save yourself some installation time and use [Vagrant](http://vagrantup.com).  _You'll need 1 GB free RAM._**
 
