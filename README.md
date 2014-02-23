@@ -47,7 +47,7 @@ Optional, but recommended, download the [CLI](https://github.com/shift31/hostbas
 
 ### Development Server (Vagrant)
 
-**For testing/trial purposes, save yourself some installation time and use [Vagrant](http://vagrantup.com).  _You'll need 1 GB free RAM._**
+**For development or trial purposes, save yourself some installation time and use [Vagrant](http://vagrantup.com).  _You'll need 1 GB free RAM._**
 
 ```bash
 git clone https://github.com/shift31/hostbase.git
