@@ -100,6 +100,14 @@ Vagrant.configure("2") do |config|
 
 
   ####
+  # Database Servers
+  ##########
+
+  # Install Couchbase
+  config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/couchbase.sh"
+
+
+  ####
   # Search Servers
   ##########
 
@@ -118,24 +126,11 @@ Vagrant.configure("2") do |config|
 
 
   ####
-  # In-Memory Stores
-  ##########
-
-  # Install Couchbase
-  config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/couchbase.sh"
-
-  # Install Memcached
-  # config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/memcached.sh"
-
-
-
-  ####
   # Utility (queue)
   ##########
 
   # Install Beanstalkd
   # config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/beanstalkd.sh"
-
 
 
   ####
