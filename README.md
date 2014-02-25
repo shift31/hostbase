@@ -65,7 +65,7 @@ See http://laravel.com/docs/configuration for background information on configur
 1. Edit app/config/app.php accordingly.
 2. Edit app/config/database.php with your Couchbase server info (if you're running Couchbase on a separate host).
 3. Edit app/config/elasticsearch.php as needed.  See https://github.com/shift31/laravel-elasticsearch for details.
-4. If you don't want to use Couchbase (memcache) for sessions/cache, edit app/config/session.php and app/config/cache.php accordingly.
+4. If you don't want to use Couchbase's memcached functionality for sessions/cache, edit app/config/session.php and app/config/cache.php accordingly.
 
 ## Usage
 
@@ -154,7 +154,7 @@ There's no web UI or bulk raw data (JSON, CSV) import tool yet. So if you have a
 
 #### cURL examples
 
-_Todo_
+_Todo_ ... using the [CLI](#command-line-interface) is easier anyway
 
 ##### Store a host
 
@@ -166,7 +166,7 @@ _Todo_
 
 ### Command Line Interface
 
-The CLI leverages the API client library, so you can administer your Hostbase server from anywhere PHP is installed.
+The CLI leverages the [API client library](#api-client-library-for-php), so you can administer your Hostbase server from anywhere PHP is installed.
 
 https://github.com/shift31/hostbase-cli
 
