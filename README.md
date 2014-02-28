@@ -191,8 +191,11 @@ Basic authentication will be implemented soon, but until then it is recommended 
 - Tests (unit, integration, etc.)
 - More Documentation and a video demo
 - Puppet Module and Chef Cookbook to help automate installation
-- Script to update Hostbase from Puppet Facts...perhaps using Facter output, run via Cron...or somehow during Puppet agent execution
-- Puppet function to retrieve data from Hostbase (perhaps in addition to or in lieu of Hiera)
+- CMDB integration
+    - Script to periodically update Hostbase from Puppet Facts...likely using Facter output, run via Cron
+    - Puppet function to allow querying of Hostbase from Puppet manifests
+    - Hiera backend to allow querying of Hostbase from Hiera
+    - Chef equivalents of the above
 - Command line tool to aid initial configuration (driven by Laravel's artisan command)
 - API
     - Pagination?
