@@ -7,7 +7,7 @@
         "laravel/framework": "4.1.*",
         "barryvdh/laravel-ide-helper": "1.*",
         "shift31/laravel-basement": "dev-master",
-        "shift31/laravel-elasticsearch": "dev-master",
+        "shift31/laravel-elasticsearch": "0.4.*@dev",
         "symfony/yaml": "2.3.x-dev",
         "league/fractal": "0.7.*"
     },
