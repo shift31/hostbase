@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "ed6b40a92fb48129e25d9b6de2e50a05",
+    "hash": "7a82b9a6e66e446d1d89941a1925e72f",
     "packages": [
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -1003,16 +1003,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v4.1.21",
+            "version": "v4.1.23",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "d4b2d82d7ec26d193d179df7b4fc653f37dcae6b"
+                "reference": "054c1a29aaf537c6c6ca7e7804375c671eddcaaf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/d4b2d82d7ec26d193d179df7b4fc653f37dcae6b",
-                "reference": "d4b2d82d7ec26d193d179df7b4fc653f37dcae6b",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/054c1a29aaf537c6c6ca7e7804375c671eddcaaf",
+                "reference": "054c1a29aaf537c6c6ca7e7804375c671eddcaaf",
                 "shasum": ""
             },
             "require": {
@@ -1072,8 +1072,8 @@
             },
             "require-dev": {
                 "aws/aws-sdk-php": "2.5.*",
-                "iron-io/iron_mq": "1.4.*",
-                "mockery/mockery": "0.8.0",
+                "iron-io/iron_mq": "1.5.*",
+                "mockery/mockery": "0.9.*",
                 "pda/pheanstalk": "2.1.*",
                 "phpunit/phpunit": "3.7.*"
             },
@@ -1116,7 +1116,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2014-02-04 01:21:04"
+            "time": "2014-02-28 22:07:47"
         },
         {
             "name": "league/fractal",
@@ -1422,25 +1422,28 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "0.3.5",
+            "version": "0.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "fe3765fe1773c9d62985d05d5b5da24c921c4bd0"
+                "reference": "76c9692908a6c25601df2db373043fcbb335332e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/fe3765fe1773c9d62985d05d5b5da24c921c4bd0",
-                "reference": "fe3765fe1773c9d62985d05d5b5da24c921c4bd0",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/76c9692908a6c25601df2db373043fcbb335332e",
+                "reference": "76c9692908a6c25601df2db373043fcbb335332e",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.0.0"
             },
+            "require-dev": {
+                "squizlabs/php_codesniffer": "1.*"
+            },
             "suggest": {
                 "ext-gmp": "Install the GMP (GNU Multiple Precision) extension in order to speed up arbitrary precision integer arithmetic operations.",
                 "ext-mcrypt": "Install the Mcrypt extension in order to speed up a wide variety of cryptographic operations.",
-                "pear-pear/PHP_Compat": "Install PHP_Compat to get phpseclib working on PHP >= 4.3.3."
+                "pear-pear/PHP_Compat": "Install PHP_Compat to get phpseclib working on PHP < 4.3.3."
             },
             "type": "library",
             "extra": {
@@ -1471,6 +1474,21 @@
                     "name": "Jim Wigginton",
                     "email": "terrafrost@php.net",
                     "role": "Lead Developer"
+                },
+                {
+                    "name": "Patrick Monnerat",
+                    "email": "pm@datasphere.ch",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Andreas Fischer",
+                    "email": "bantu@phpbb.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Hans-Jürgen Petrich",
+                    "email": "petrich@tronic-media.com",
+                    "role": "Developer"
                 }
             ],
             "description": "PHP Secure Communications Library - Pure-PHP implementations of RSA, AES, SSH2, SFTP, X.509 etc.",
@@ -1480,6 +1498,7 @@
                 "aes",
                 "asn.1",
                 "asn1",
+                "blowfish",
                 "crypto",
                 "cryptography",
                 "encryption",
@@ -1489,10 +1508,11 @@
                 "signature",
                 "signing",
                 "ssh",
+                "twofish",
                 "x.509",
                 "x509"
             ],
-            "time": "2013-06-08 17:40:39"
+            "time": "2014-02-23 01:03:22"
         },
         {
             "name": "pimple/pimple",
@@ -1668,16 +1688,16 @@
         },
         {
             "name": "shift31/laravel-elasticsearch",
-            "version": "dev-master",
+            "version": "0.4.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/shift31/laravel-elasticsearch.git",
-                "reference": "9fad84586ab88e2389a8263845714225b380b6e7"
+                "reference": "7c7c00bfd3171b7597791a3019a87b3364e35894"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shift31/laravel-elasticsearch/zipball/9fad84586ab88e2389a8263845714225b380b6e7",
-                "reference": "9fad84586ab88e2389a8263845714225b380b6e7",
+                "url": "https://api.github.com/repos/shift31/laravel-elasticsearch/zipball/7c7c00bfd3171b7597791a3019a87b3364e35894",
+                "reference": "7c7c00bfd3171b7597791a3019a87b3364e35894",
                 "shasum": ""
             },
             "require": {
@@ -1702,7 +1722,7 @@
                 }
             ],
             "description": "A Laravel 4 Service Provider for the Elasticsearch API client",
-            "time": "2013-12-13 05:06:39"
+            "time": "2014-03-01 04:26:33"
         },
         {
             "name": "stack/builder",
@@ -2592,12 +2612,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Yaml.git",
-                "reference": "d6ce55d18a957591312a1c1dd7098d72db0e2ed5"
+                "reference": "40cd9e201a7dfef7aeae7788f7cf1463bea891db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/d6ce55d18a957591312a1c1dd7098d72db0e2ed5",
-                "reference": "d6ce55d18a957591312a1c1dd7098d72db0e2ed5",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/40cd9e201a7dfef7aeae7788f7cf1463bea891db",
+                "reference": "40cd9e201a7dfef7aeae7788f7cf1463bea891db",
                 "shasum": ""
             },
             "require": {
@@ -2621,7 +2641,9 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 },
                 {
                     "name": "Symfony Community",
@@ -2630,7 +2652,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2014-01-07 13:19:25"
+            "time": "2014-02-25 21:36:55"
         }
     ],
     "packages-dev": [
@@ -2645,9 +2667,9 @@
         "shift31/laravel-elasticsearch": 20,
         "symfony/yaml": 20
     },
-    "platform": [
-
-    ],
+    "platform": {
+        "php": ">=5.4"
+    },
     "platform-dev": [
 
     ]
