@@ -154,15 +154,36 @@ There's no web UI or bulk raw data (JSON, CSV) import tool yet. So if you have a
 
 #### cURL examples
 
-_Todo_ ... using the [CLI](#command-line-interface) is easier anyway
-
 ##### Store a host
+
+```bash
+curl -H 'Content-Type: application/json' http://hostbase.192.168.33.10.xip.io/hosts -d '
+{
+    "fqdn": "hostname.domain.tld",
+    "hostname": "hostname",
+    "domain": "domain.tld",
+    "adminCredentials": {
+        "username": "admin_username",
+        "password": "admin_password"
+    }
+}' | python -m json.tool
+```
 
 ##### Show a host
 
-##### Update a host
+`curl http://hostbase.192.168.33.10.xip.io/hosts/hostname.domain.tld | python -m json.tool`
+
+##### Update a host (add a field)
+
+`curl -X PUT -H 'Content-Type: application/json' http://hostbase.192.168.33.10.xip.io/hosts/hostname.domain.tld -d '{ "foo": "bar" }' | python -m json.tool`
+
+##### Update a host (delete a field)
+
+`curl -X PUT -H 'Content-Type: application/json' http://hostbase.192.168.33.10.xip.io/hosts/hostname.domain.tld -d '{ "foo": null }' | python -m json.tool`
 
 ##### Delete a host
+
+`curl -X DELETE http://hostbase.192.168.33.10.xip.io/hosts/hostname.domain.tld | python -m json.tool`
 
 ### Command Line Interface
 
@@ -187,9 +208,9 @@ Basic authentication will be implemented soon, but until then it is recommended 
 
 ## To-do
 
-- Implement HTTP Basic Authentication with users stored in Hostbase and/or LDAP
 - Tests (unit, integration, etc.)
-- More Documentation and a video demo
+- Implement HTTP Basic Authentication with users stored in Hostbase and/or LDAP
+- More documentation; video demo
 - Puppet Module and Chef Cookbook to help automate installation
 - CMDB integration
     - Script to periodically update Hostbase from Puppet Facts...likely using Facter output, run via Cron
@@ -198,6 +219,7 @@ Basic authentication will be implemented soon, but until then it is recommended 
     - Chef equivalents of the above
 - Command line tool to aid initial configuration (driven by Laravel's artisan command)
 - API
-    - Pagination?
+    - Pagination
+    - Sorting
     - Bulk operations
 - ...

@@ -75,17 +75,6 @@ abstract class ResourceController extends Controller
 
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
-    }
-
-
-    /**
      * Store a newly created resource in storage.
      *
      * @return \Illuminate\Http\JsonResponse
@@ -130,19 +119,6 @@ abstract class ResourceController extends Controller
         } catch (Exception $e) {
             return $this->errorInternalError($e->getMessage());
         }
-    }
-
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  string $id
-     *
-     * @return Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
 
