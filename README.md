@@ -94,7 +94,7 @@ There's no web UI or bulk raw data (JSON, CSV) import tool yet. So if you have a
 | PATCH ipaddresses/{ipaddress}      | IpAddressController@update  |                                |
 | DELETE ipaddresses/{ipaddress}     | IpAddressController@destroy |                                |
 
-- Must receive JSON ('Host' header should be 'Content-type: application/json')
+- Must receive JSON (`Content-Type: application/json`)
     - /hosts
         - Example:
 
