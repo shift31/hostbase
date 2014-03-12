@@ -8,6 +8,7 @@ use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use Symfony\Component\Yaml\Yaml;
+use Illuminate\Http\Response as HttpResponse;
 
 
 abstract class ResourceController extends Controller
@@ -25,7 +26,7 @@ abstract class ResourceController extends Controller
     /**
      * @var int
      */
-    protected $statusCode = 200;
+    protected $statusCode = HttpResponse::HTTP_OK;
 
 
     const CODE_WRONG_ARGS = 'Incorrect arguments';
@@ -96,7 +97,7 @@ abstract class ResourceController extends Controller
         try {
             $resource = $this->resources->store($data);
 
-            return $this->setStatusCode(201)->respondWithItem($resource, new PassThruResourceTransformer());
+            return $this->setStatusCode(HttpResponse::HTTP_CREATED)->respondWithItem($resource, new PassThruResourceTransformer());
         } catch (Exception $e) {
             return $this->errorInternalError($e->getMessage());
         }
@@ -285,7 +286,7 @@ abstract class ResourceController extends Controller
      */
     protected function respondWithError($message, $errorCode)
     {
-        if ($this->statusCode === 200) {
+        if ($this->statusCode === HttpResponse::HTTP_OK) {
             trigger_error(
                 "An error response was requested, but the HTTP status code is 200!?",
                 E_USER_WARNING
@@ -317,7 +318,7 @@ abstract class ResourceController extends Controller
      */
     protected function errorForbidden($message = 'Forbidden')
     {
-        return $this->setStatusCode(403)->respondWithError($message, self::CODE_FORBIDDEN);
+        return $this->setStatusCode(HttpResponse::HTTP_FORBIDDEN)->respondWithError($message, self::CODE_FORBIDDEN);
     }
 
 
@@ -330,7 +331,7 @@ abstract class ResourceController extends Controller
      */
     protected function errorInternalError($message = 'Internal Error')
     {
-        return $this->setStatusCode(500)->respondWithError($message, self::CODE_INTERNAL_ERROR);
+        return $this->setStatusCode(HttpResponse::HTTP_INTERNAL_SERVER_ERROR)->respondWithError($message, self::CODE_INTERNAL_ERROR);
     }
 
 
@@ -343,7 +344,7 @@ abstract class ResourceController extends Controller
      */
     protected function errorNotFound($message = 'Resource Not Found')
     {
-        return $this->setStatusCode(404)->respondWithError($message, self::CODE_NOT_FOUND);
+        return $this->setStatusCode(HttpResponse::HTTP_NOT_FOUND)->respondWithError($message, self::CODE_NOT_FOUND);
     }
 
 
@@ -356,7 +357,7 @@ abstract class ResourceController extends Controller
      */
     protected function errorUnauthorized($message = 'Unauthorized')
     {
-        return $this->setStatusCode(401)->respondWithError($message, self::CODE_UNAUTHORIZED);
+        return $this->setStatusCode(HttpResponse::HTTP_UNAUTHORIZED)->respondWithError($message, self::CODE_UNAUTHORIZED);
     }
 
 
@@ -369,6 +370,6 @@ abstract class ResourceController extends Controller
      */
     protected function errorWrongArgs($message = 'Wrong Arguments')
     {
-        return $this->setStatusCode(400)->respondWithError($message, self::CODE_WRONG_ARGS);
+        return $this->setStatusCode(HttpResponse::HTTP_BAD_REQUEST)->respondWithError($message, self::CODE_WRONG_ARGS);
     }
 }

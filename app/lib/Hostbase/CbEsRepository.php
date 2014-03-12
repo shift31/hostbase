@@ -73,6 +73,10 @@ abstract class CbEsRepository implements ResourceRepository
             }
         }
 
+        if (count($docIds) === 0) {
+            throw new NoSearchResultsException('No ' . static::$resourceName . "s matching '$query' were found");
+        }
+
         if ($showData === false) {
             $resources = array_map(
                 function ($resource) {
@@ -93,11 +97,6 @@ abstract class CbEsRepository implements ResourceRepository
                     }
                 }
             }
-        }
-
-        //Log::debug(print_r($hosts, true));
-        if (count($resources) == 0) {
-            throw new NoSearchResultsException('No ' . static::$resourceName . "s matching '$query' were found");
         }
 
         return $resources;

@@ -84,10 +84,6 @@ class CbEsHostRepository extends CbEsRepository implements HostRepository
             $data['domain'] = $fqdnParts[1];
         }
 
-        // set document type and creation time
-        $data['docType'] = 'host';
-        $data['createdDateTime'] = date('c');
-
         // encrypt admin password
         $this->encryptAdminPassword($data);
 

@@ -26,14 +26,6 @@ class SubnetController extends ResourceController
     }
 
 
-    public function edit($id)
-    {
-        $this->restoreCidrNotation($id);
-
-        return parent::edit($id);
-    }
-
-
     public function update($id)
     {
         $this->restoreCidrNotation($id);
