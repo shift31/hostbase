@@ -2,7 +2,7 @@
 
 use Hostbase\Exceptions\NoSearchResultsException;
 use Hostbase\Exceptions\ResourceNotFoundException;
-use Hostbase\PassThruResourceTransformer;
+use Hostbase\ResourceTransformer;
 use Hostbase\ResourceRepository;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
@@ -11,6 +11,13 @@ use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\Response as HttpResponse;
 
 
+/**
+ * Class ResourceController
+ *
+ * Abstract class for handling API routes
+ *
+ * @todo use transformer to dynamically filter data
+ */
 abstract class ResourceController extends Controller
 {
     /**
@@ -22,6 +29,11 @@ abstract class ResourceController extends Controller
      * @var League\Fractal\Manager
      */
     protected $fractal;
+
+    /**
+     * @var League\Fractal\TransformerAbstract
+     */
+    protected $transformer;
 
     /**
      * @var int
@@ -38,12 +50,14 @@ abstract class ResourceController extends Controller
 
     /**
      * @param ResourceRepository $resources
-     * @param Manager            $fractal
+     * @param Manager $fractal
+     * @param ResourceTransformer $transformer
      */
-    public function __construct(ResourceRepository $resources, Manager $fractal)
+    public function __construct(ResourceRepository $resources, Manager $fractal, ResourceTransformer $transformer)
     {
         $this->resources = $resources;
         $this->fractal = $fractal;
+        $this->transformer = $transformer;
     }
 
 
@@ -56,21 +70,27 @@ abstract class ResourceController extends Controller
     {
         // handle search
         if (Input::has('q')) {
+
+            $showData = Input::has('showData') ? (bool) Input::get('showData') : true;
+
+            if ($showData === true) {
+                $this->setTransformerFilters();
+            }
+
             try {
                 $resources = $this->resources->search(
                     Input::get('q'),
                     Input::has('size') ? Input::get('size') : 10000,
-                    Input::has('showData') ? (bool) Input::get('showData') : true
+                    $showData
                 );
-
-                return $this->respondWithCollection($resources, new PassThruResourceTransformer());
+                return $this->respondWithCollection($resources, $this->transformer);
             } catch (NoSearchResultsException $e) {
                 return $this->errorNotFound($e->getMessage());
             } catch (Exception $e) {
                 return $this->errorInternalError($e->getMessage());
             }
         } else {
-            return $this->respondWithCollection($this->resources->show(), new PassThruResourceTransformer());
+            return $this->respondWithCollection($this->resources->show(), $this->transformer);
         }
     }
 
@@ -97,7 +117,7 @@ abstract class ResourceController extends Controller
         try {
             $resource = $this->resources->store($data);
 
-            return $this->setStatusCode(HttpResponse::HTTP_CREATED)->respondWithItem($resource, new PassThruResourceTransformer());
+            return $this->setStatusCode(HttpResponse::HTTP_CREATED)->respondWithItem($resource, $this->transformer);
         } catch (Exception $e) {
             return $this->errorInternalError($e->getMessage());
         }
@@ -113,8 +133,10 @@ abstract class ResourceController extends Controller
      */
     public function show($id)
     {
+        $this->setTransformerFilters();
+
         try {
-            return $this->respondWithItem($this->resources->show($id), new PassThruResourceTransformer());
+            return $this->respondWithItem($this->resources->show($id), $this->transformer);
         } catch (ResourceNotFoundException $e) {
             return $this->errorNotFound($e->getMessage());
         } catch (Exception $e) {
@@ -147,7 +169,7 @@ abstract class ResourceController extends Controller
         try {
             $updatedData = $this->resources->update($id, $data);
 
-            return $this->respondWithItem($updatedData, new PassThruResourceTransformer());
+            return $this->respondWithItem($updatedData, $this->transformer);
         } catch (ResourceNotFoundException $e) {
             return $this->errorNotFound($e->getMessage());
         } catch (Exception $e) {
@@ -179,6 +201,16 @@ abstract class ResourceController extends Controller
     /*
      * Request & Response Handling
      */
+
+    protected function setTransformerFilters()
+    {
+        if (Input::has('include')) {
+            $this->transformer->setIncludes(explode(',', Input::get('include')));
+        } elseif (Input::has('exclude')) {
+            $this->transformer->setExcludes(explode(',', Input::get('exclude')));
+        }
+    }
+
 
     /**
      * Getter for statusCode
