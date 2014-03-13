@@ -35,17 +35,21 @@ Vagrant.configure("2") do |config|
   config.vm.hostname = "hostbase.dev"
 
   # Create a static IP
-  config.vm.network :private_network, ip: server_ip
+  #config.vm.network :private_network, ip: server_ip
 
-  # Use NFS for the shared folder
-  config.vm.synced_folder ".", "/vagrant",
-            id: "core",
-            :nfs => true,
-            :mount_options => ['nolock,vers=3,udp,noatime']
 
-  # Optionally customize amount of RAM
-  # allocated to the VM. Default is 384MB
-  config.vm.provider :virtualbox do |vb|
+  if Vagrant::Util::Platform.windows?
+    config.vm.synced_folder ".", "/vagrant", type: "smb"
+  else
+    # Use NFS for the shared folder
+    config.vm.synced_folder ".", "/vagrant",
+      id: "core",
+      :nfs => !Vagrant::Util::Platform.windows?,
+      :mount_options => ['nolock,vers=3,udp,noatime']
+  end
+
+  # If using VirtualBox
+  config.vm.provider :virtualbox do |vb, override|
 
     vb.customize ["modifyvm", :id, "--memory", server_memory]
     vb.customize ["modifyvm", :id, "--cpus", 4]
@@ -59,14 +63,28 @@ Vagrant.configure("2") do |config|
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
 
+    override.vm.network :private_network, ip: server_ip
   end
   
   # If using VMWare Fusion
-  config.vm.provider :vmware_fusion do |vb|
+  config.vm.provider :vmware_fusion do |vf, override|
+    vf.vmx["memsize"] = server_memory
+    vf.vmx["numvcpus"] = "4"
 
-    vb.vmx["memsize"] = server_memory
-
+    override.vm.box = "precise64_vmware"
+    override.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
   end
+
+  # If using VMWare Workstation
+  config.vm.provider :vmware_workstation do |vw, override|
+     vw.vmx["memsize"] = server_memory
+     vw.vmx["numvcpus"] = "4"
+
+     override.vm.box = "precise64_vmware"
+     override.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
+     override.vm.network :private_network, ip: '192.168.206.10'
+  end
+
 
   ####
   # Base Items
