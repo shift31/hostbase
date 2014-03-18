@@ -1,25 +1,34 @@
 <?php namespace Hostbase\IpAddress;
 
-use Hostbase\Host\CbEsHostRepository as Host;
-use Hostbase\IpAddress\CbEsIpAddressRepository as IpAddress;
+use Hostbase\ResourceRepository;
 
+
+/**
+ * Class IpAddressUtils
+ * @package Hostbase\IpAddress
+ * @todo - work in progress
+ */
 class IpAddressUtils
 {
 
     public static function updateIpAddressesFromHosts(array $ipFields)
     {
-        $hostMan = new Host();
-        $ipAddressMan = new IpAddress();
+        $hostRepository = \App::make('HostRepository');
+        $ipAddressRespository = \App::make('IpAddressRepository');
 
-        $hosts = $hostMan->show();
+        $hosts = $hostRepository instanceof ResourceRepository ? $hostRepository->show() : null;
+
+        if (!$hosts) {
+            throw new \Exception('Unable to retrieve any hosts');
+        }
 
         foreach ($hosts as $host) {
 
-            $data = $hostMan->show($host);
+            $data = $hostRepository->show($host);
 
             foreach ($ipFields as $field) {
                 if (isset($data[$field])) {
-                    echo json_encode($ipAddressMan->update($data[$field], ['host' => $data['fqdn']])) . PHP_EOL;
+                    echo json_encode($ipAddressRespository->update($data[$field], ['host' => $data['fqdn']])) . PHP_EOL;
                 }
             }
         }

@@ -5,7 +5,9 @@ use Basement\data\DocumentCollection;
 use Cb;
 use Es;
 use Hostbase\Exceptions\NoSearchResultsException;
+use Hostbase\Exceptions\ResourceAlreadyExistsException;
 use Hostbase\Exceptions\ResourceNotFoundException;
+use Hostbase\Exceptions\ResourceUpdateFailedException;
 
 
 abstract class CbEsRepository implements ResourceRepository
@@ -51,7 +53,7 @@ abstract class CbEsRepository implements ResourceRepository
      * @param int    $limit
      * @param bool   $showData
      *
-     * @throws \Exception
+     * @throws NoSearchResultsException
      * @return array
      */
     public function search($query, $limit = 10000, $showData = false)
@@ -78,6 +80,8 @@ abstract class CbEsRepository implements ResourceRepository
         }
 
         if ($showData === false) {
+
+            // set resources to an array of document IDs without the resource name prefixed
             $resources = array_map(
                 function ($resource) {
                     return str_replace(static::$resourceName . '_', '', $resource);
@@ -85,18 +89,7 @@ abstract class CbEsRepository implements ResourceRepository
                 $docIds
             );
         } else {
-            $resources = [];
-
-            /** @noinspection PhpVoidFunctionResultUsedInspection */
-            $docCollection = Cb::findByKey($docIds);
-
-            if ($docCollection instanceof DocumentCollection) {
-                foreach ($docCollection as $doc) {
-                    if ($doc instanceof Document) {
-                        $resources[] = $doc->doc();
-                    }
-                }
-            }
+            $resources = $this->getCbDocCollection($docIds);
         }
 
         return $resources;
@@ -106,7 +99,6 @@ abstract class CbEsRepository implements ResourceRepository
     /**
      * @param string|null $id
      *
-     * @throws \Exception
      * @return array|null
      */
     public function show($id = null)
@@ -114,17 +106,9 @@ abstract class CbEsRepository implements ResourceRepository
         // list all resources by default
         if ($id == null) {
             return $this->search('_exists_:' . static::$keySuffixField);
-        } else {
-            /** @noinspection PhpVoidFunctionResultUsedInspection */
-            $result = Cb::findByKey(static::$resourceName . "_$id", ['first' => true]);
-            //Log::debug(print_r($result, true));
-
-            if (!($result instanceof Document)) {
-                throw new ResourceNotFoundException('No ' . static::$resourceName . " named '$id'");
-            }
-
-            return $result->doc();
         }
+
+        return $this->getCbDocument($id)->doc();
     }
 
 
@@ -133,26 +117,25 @@ abstract class CbEsRepository implements ResourceRepository
      *
      * @param null|string  $id
      *
-     * @throws \Exception
+     * @throws ResourceAlreadyExistsException
      * @return mixed
      */
     public function store(array $data, $id = null)
     {
-
         // set document type and creation time
         $data['docType'] = static::$resourceName;
         $data['createdDateTime'] = date('c');
 
-        $key = $id ?: $data[static::$keySuffixField];
+        $idForKey = $id ?: $data[static::$keySuffixField];
 
         $doc = [
-            'key' => static::$resourceName . "_$key",
+            'key' => $this->generateKey($idForKey),
             'doc' => $data
         ];
 
         /** @noinspection PhpVoidFunctionResultUsedInspection */
         if (!Cb::save($doc, ['override' => false])) {
-            throw new \Exception("'$key' already exists");
+            throw new ResourceAlreadyExistsException("'$idForKey' already exists");
         }
 
         return $data;
@@ -163,20 +146,12 @@ abstract class CbEsRepository implements ResourceRepository
      * @param string $id
      * @param array  $data
      *
-     * @throws \Exception
+     * @throws ResourceUpdateFailedException
      * @return mixed
      */
     public function update($id, array $data)
     {
-        $key = static::$resourceName . "_$id";
-
-        /** @noinspection PhpVoidFunctionResultUsedInspection */
-        $result = Cb::findByKey($key, ['first' => true]);
-        //Log::debug(print_r($result, true));
-
-        if (!($result instanceof Document)) {
-            throw new ResourceNotFoundException('No ' . static::$resourceName . " named '$id'");
-        }
+        $result = $this->getCbDocument($id);
 
         // convert Document to array
         $updateData = (array) unserialize($result->serialize());
@@ -193,7 +168,7 @@ abstract class CbEsRepository implements ResourceRepository
         $updateData['updatedDateTime'] = date('c');
 
         $doc = [
-            'key' => $key,
+            'key' => $this->generateKey($id),
             'doc' => $updateData
         ];
 
@@ -201,7 +176,7 @@ abstract class CbEsRepository implements ResourceRepository
 
         /** @noinspection PhpVoidFunctionResultUsedInspection */
         if (!Cb::save($doc, ['replace' => true])) {
-            throw new \Exception("Unable to update '$id'");
+            throw new ResourceUpdateFailedException("Unable to update '$id'");
         }
 
         return $updateData;
@@ -211,19 +186,73 @@ abstract class CbEsRepository implements ResourceRepository
     /**
      * @param string $id
      *
+     * @return void
      * @throws \Exception
-     * @return mixed
      */
     public function destroy($id)
     {
+        // verify the resource exists by attempting to show it; an exception will be thrown if it does not exist
         $this->show($id);
 
+        /** @noinspection PhpVoidFunctionResultUsedInspection */
+        // connect to Couchbase server
         $cbConnection = Cb::connection();
 
-        if ($cbConnection instanceof \Couchbase) {
-            $cbConnection->delete(static::$resourceName . "_$id");
-        } else {
+        if (!$cbConnection) {
             throw new \Exception("No Couchbase connection");
         }
+
+        $cbConnection->delete(static::$resourceName . "_$id");
+    }
+
+
+    /**
+     * @param array $docIds
+     * @return array
+     */
+    protected function getCbDocCollection(array $docIds)
+    {
+        $resources = [];
+
+        /** @noinspection PhpVoidFunctionResultUsedInspection */
+        $docCollection = Cb::findByKey($docIds);
+
+        if ($docCollection instanceof DocumentCollection) {
+            foreach ($docCollection as $doc) {
+                if ($doc instanceof Document) {
+                    $resources[] = $doc->doc();
+                }
+            }
+        }
+
+        return $resources;
+    }
+
+
+    /**
+     * @param string $id
+     * @return Document
+     * @throws ResourceNotFoundException
+     */
+    protected function getCbDocument($id)
+    {
+        /** @noinspection PhpVoidFunctionResultUsedInspection */
+        $result = Cb::findByKey($this->generateKey($id), ['first' => true]);
+
+        if (!($result instanceof Document)) {
+            throw new ResourceNotFoundException('No ' . static::$resourceName . " named '$id'");
+        }
+
+        return $result;
+    }
+
+
+    /**
+     * @param string $id
+     * @return string
+     */
+    protected function generateKey($id)
+    {
+        return static::$resourceName . "_$id";
     }
 }

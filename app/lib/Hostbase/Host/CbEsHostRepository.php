@@ -67,13 +67,13 @@ class CbEsHostRepository extends CbEsRepository implements HostRepository
      *
      * @param null  $fqdn
      *
-     * @throws \Exception
+     * @throws HostMissingFqdnException
      * @return mixed
      */
     public function store(array $data, $fqdn = null)
     {
         if (!isset($data['fqdn'])) {
-            throw new \Exception("Host must have a value for 'fqdn'");
+            throw new HostMissingFqdnException("Host must have a value for 'fqdn'");
         }
 
         // generate hostname and domain if they don't already exist

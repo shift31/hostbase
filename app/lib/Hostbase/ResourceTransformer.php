@@ -41,7 +41,7 @@ class ResourceTransformer extends TransformerAbstract
      * @param array $excludes
      * @return $this
      */
-    public function setExcludes($excludes)
+    public function setExcludes(array $excludes)
     {
         $this->excludes = $excludes;
 
@@ -65,25 +65,41 @@ class ResourceTransformer extends TransformerAbstract
     public function transform($resource)
     {
         if (count($this->includes) > 0) {
+            return $this->filterResourceForIncludes($resource);
+        }
 
-            $filteredResource = [];
-
-            foreach ($this->includes as $include) {
-                $filteredResource[$include] = $resource[$include];
-            }
-
-            return $filteredResource;
-
-        } else {
-
-            if (count($this->excludes) > 0) {
-
-                foreach ($this->excludes as $exclude) {
-                    unset($resource[$exclude]);
-                }
-            }
-
+        if (count($this->excludes) > 0) {
+            $this->filterResourceForExcludes($resource);
             return $resource;
+        }
+
+        return $resource;
+    }
+
+
+    /**
+     * @param $resource
+     * @return array
+     */
+    protected function filterResourceForIncludes($resource)
+    {
+        $filteredResource = [];
+
+        foreach ($this->includes as $include) {
+            $filteredResource[$include] = $resource[$include];
+        }
+
+        return $filteredResource;
+    }
+
+
+    /**
+     * @param $resource
+     */
+    protected function filterResourceForExcludes(&$resource)
+    {
+        foreach ($this->excludes as $exclude) {
+            unset($resource[$exclude]);
         }
     }
 } 

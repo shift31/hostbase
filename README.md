@@ -208,7 +208,7 @@ Basic authentication will be implemented soon, but until then it is recommended 
 
 ## To-do
 
-- Tests (unit, integration, etc.)
+- Tests (unit, integration, etc.) - **IN PROGRESS**
 - Implement HTTP Basic Authentication with users stored in Hostbase and/or LDAP
 - More documentation; video demo
 - Puppet Module and Chef Cookbook to help automate installation

@@ -11,8 +11,20 @@
          syntaxCheck="false"
 >
     <testsuites>
-        <testsuite name="Application Test Suite">
+        <!-- <testsuite name="Application Test Suite">
             <directory>./app/tests/</directory>
+        </testsuite> -->
+        <testsuite name="Hostbase Test Suite">
+            <directory>./app/tests/Hostbase</directory>
         </testsuite>
     </testsuites>
+    <listeners>
+        <listener class="\Mockery\Adapter\Phpunit\TestListener"></listener>
+    </listeners>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./app/controllers</directory>
+            <directory suffix=".php">./app/lib/Hostbase</directory>
+        </whitelist>
+    </filter>
 </phpunit>
