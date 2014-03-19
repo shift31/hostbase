@@ -1,16 +1,11 @@
 language: php
 php:
-  #- 5.5
+  - 5.5
   - 5.4
 services:
   - elasticsearch
 before_install:
-  - sudo uname -a
-  - sudo hostname -f
-  - sudo ifconfig
-  - sudo netstat -an | grep LISTEN
   - sudo apt-get update
-  - sudo apt-get purge memcached couchdb redis-server riak*
   - sudo apt-get install apache2 libapache2-mod-fastcgi
   # enable php-fpm
   - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
@@ -26,31 +21,18 @@ before_install:
   #- echo "zend_extension = xdebug.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   # install and configure couchbase and elasticsearch plugin
   # Couchbase Server
-  - sudo wget http://packages.couchbase.com/releases/2.2.0/couchbase-server-community_2.2.0_x86_64.deb
-  - sudo dpkg -i couchbase-server-community_2.2.0_x86_64.deb
+#  - sudo wget http://packages.couchbase.com/releases/2.2.0/couchbase-server-community_2.2.0_x86_64.deb
+#  - sudo dpkg -i couchbase-server-community_2.2.0_x86_64.deb
   # LibCouchbase
-  - sudo wget -O/etc/apt/sources.list.d/couchbase.list http://packages.couchbase.com/ubuntu/couchbase-ubuntu1204.list
-  - sudo wget -O- http://packages.couchbase.com/ubuntu/couchbase.key | sudo apt-key add -
-  - sudo apt-get update
-  - sudo apt-get -y install libcouchbase2-libevent libcouchbase-dev
-  - sudo pecl install couchbase
-  - sudo echo "extension=couchbase.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - sudo service php5-fpm restart
-  - cbes-config.sh
+#  - sudo wget -O/etc/apt/sources.list.d/couchbase.list http://packages.couchbase.com/ubuntu/couchbase-ubuntu1204.list
+#  - sudo wget -O- http://packages.couchbase.com/ubuntu/couchbase.key | sudo apt-key add -
+#  - sudo apt-get update
+#  - sudo apt-get -y install libcouchbase2-libevent libcouchbase-dev
+#  - sudo pecl install couchbase
+#  - sudo echo "extension=couchbase.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+#  - sudo service php5-fpm restart
+#  - cbes-config.sh
 install:
   - composer install --prefer-source --no-interaction --dev
 script:
-  - vendor/bin/phpunit
-after_failure:
-  - echo -e "--------------------------------------------------------------------------------"
-  - echo -e "--------------------------------COUCHBASE LOGS----------------------------------"
-  - echo -e "--------------------------------------------------------------------------------"
-  - echo -e "/opt/couchbase/var/lib/couchbase/logs/error.1:"
-  - sudo cat /opt/couchbase/var/lib/couchbase/logs/error.1
-  - echo -e "--------------------------------------------------------------------------------"
-  - echo -e "/opt/couchbase/var/lib/couchbase/logs/start.log:"
-  - sudo cat /opt/couchbase/var/lib/couchbase/logs/start.log
-  - echo -e "--------------------------------------------------------------------------------"
-  - echo -e "------------------------------------SYSLOG--------------------------------------"
-  - echo -e "--------------------------------------------------------------------------------"
-  - sudo cat /var/log/syslog
+  - vendor/bin/phpunit --testsuite "Hostbase Unit Tests"
