@@ -5,6 +5,7 @@ php:
 services:
   - elasticsearch
 before_install:
+  - sudo sysctl vm.swappiness=0
   - sudo apt-get update
   - sudo apt-get purge memcached couchdb redis-server riak*
   - sudo apt-get install apache2 libapache2-mod-fastcgi
@@ -37,3 +38,19 @@ install:
   - composer install --prefer-source --no-interaction --dev
 script:
   - vendor/bin/phpunit
+after_failure:
+  - sudo hostname -f
+  - sudo ifconfig
+  - sudo netstat -an | grep LISTEN
+  - echo -e "--------------------------------------------------------------------------------"
+  - echo -e "--------------------------------COUCHBASE LOGS----------------------------------"
+  - echo -e "--------------------------------------------------------------------------------"
+  - echo -e "/opt/couchbase/var/lib/couchbase/logs/error.1:"
+  - sudo cat /opt/couchbase/var/lib/couchbase/logs/error.1
+  - echo -e "--------------------------------------------------------------------------------"
+  - echo -e "/opt/couchbase/var/lib/couchbase/logs/start.log:"
+  - sudo cat /opt/couchbase/var/lib/couchbase/logs/start.log
+  - echo -e "--------------------------------------------------------------------------------"
+  - echo -e "------------------------------------SYSLOG--------------------------------------"
+  - echo -e "--------------------------------------------------------------------------------"
+  - sudo cat /var/log/syslog
