@@ -29,8 +29,8 @@ before_install:
   - sudo wget -O- http://packages.couchbase.com/ubuntu/couchbase.key | sudo apt-key add -
   - sudo apt-get update
   - sudo apt-get -y install libcouchbase2-libevent libcouchbase-dev
-  - sudo pecl install couchbase
-  - sudo echo "extension=couchbase.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - pecl install couchbase
+  - echo "extension=couchbase.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - sudo service apache2 restart
 #  - cbes-config.sh
 install:
