@@ -6,7 +6,7 @@ services:
   - elasticsearch
 before_install:
   - sudo apt-get update
-  - sudo apt-get purge memcached couchdb redis riak
+  - sudo apt-get purge memcached couchdb redis-server riak*
   - sudo apt-get install apache2 libapache2-mod-fastcgi
   # enable php-fpm
   - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
