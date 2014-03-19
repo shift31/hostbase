@@ -20,7 +20,17 @@ before_install:
   #- echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   #- echo "zend_extension = xdebug.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   # install and configure couchbase and elasticsearch plugin
-  - curl -L https://raw.github.com/shift31/Vaprobash/hostbase/scripts/couchbase.sh | sh
+  # Couchbase Server
+  - sudo wget http://packages.couchbase.com/releases/2.2.0/couchbase-server-community_2.2.0_x86_64.deb
+  - sudo dpkg -i couchbase-server-community_2.2.0_x86_64.deb
+  # LibCouchbase
+  - sudo wget -O/etc/apt/sources.list.d/couchbase.list http://packages.couchbase.com/ubuntu/couchbase-ubuntu1204.list
+  - sudo wget -O- http://packages.couchbase.com/ubuntu/couchbase.key | sudo apt-key add -
+  - sudo apt-get update
+  - sudo apt-get -y install libcouchbase2-libevent libcouchbase-dev
+  - sudo pecl install couchbase
+  - sudo echo "extension=couchbase.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - sudo service php5-fpm restart
   - cbes-config.sh
 install:
   - composer install --prefer-source --no-interaction --dev
