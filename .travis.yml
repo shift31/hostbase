@@ -15,7 +15,7 @@ before_install:
   - sudo apt-get update
   - sudo apt-get -y install libcouchbase2-libevent libcouchbase-dev
   - pecl install couchbase
-  - echo "extension=couchbase.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - phpenv config-add build/couchbase.ini
 #  - cbes-config.sh
 install:
   - composer install --prefer-source --no-interaction --dev
