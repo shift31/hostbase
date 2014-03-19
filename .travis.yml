@@ -6,6 +6,7 @@ services:
   - elasticsearch
 before_install:
   - sudo apt-get update
+  - sudo apt-get -y install php-pear php5-dev
   - sudo apt-get install apache2 libapache2-mod-fastcgi
   # enable php-fpm
   - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
