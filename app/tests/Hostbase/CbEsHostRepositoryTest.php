@@ -59,6 +59,7 @@ class CbEsHostRepositoryTest extends TestCase {
         $this->repo->store($data);
     }
 
+
     /** @test */
     public function it_can_search_for_and_find_an_existing_host()
     {
@@ -69,6 +70,7 @@ class CbEsHostRepositoryTest extends TestCase {
 
         $this->assertContains(self::TEST_FQDN, $hosts);
     }
+
 
     /** @test */
     public function it_can_search_for_and_find_an_existing_host_and_show_its_data()
