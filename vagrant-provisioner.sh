@@ -8,6 +8,10 @@ sudo apt-get -y install htop
 cd /vagrant && chmod +x cbes-config.sh && ./cbes-config.sh
 
 
+# set permissions on storage
+cd /vagrant && chmod -R +w app/storage
+
+
 # run composer
 cd /vagrant && composer install
 

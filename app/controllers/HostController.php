@@ -1,7 +1,7 @@
 <?php
 
 use Hostbase\Host\HostRepository;
-use Hostbase\ResourceTransformer;
+use Hostbase\Entity\EntityTransformer;
 use League\Fractal\Manager;
 
 
@@ -11,11 +11,11 @@ class HostController extends ResourceController
     /**
      * @param HostRepository $hosts
      * @param Manager $fractal
-     * @param Hostbase\ResourceTransformer $transformer
+     * @param Hostbase\Entity\EntityTransformer $transformer
      */
-    public function __construct(HostRepository $hosts, Manager $fractal, ResourceTransformer $transformer)
+    public function __construct(HostRepository $hosts, Manager $fractal, EntityTransformer $transformer)
     {
-        $this->resources = $hosts;
+        $this->repository = $hosts;
         $this->fractal = $fractal;
         $this->transformer = $transformer;
     }

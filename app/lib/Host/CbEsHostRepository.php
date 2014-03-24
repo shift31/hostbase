@@ -1,7 +1,9 @@
 <?php namespace Hostbase\Host;
 
 use Crypt;
+use Hostbase\Entity\Exceptions\InvalidEntity;
 use Log;
+use Hostbase\Entity\Entity;
 use Hostbase\CbEsRepository;
 
 
@@ -11,12 +13,12 @@ class CbEsHostRepository extends CbEsRepository implements HostRepository
     /**
      * @var string $resourceName
      */
-    static protected $resourceName = 'host';
+    static protected $entityName = 'host';
 
     /**
      * @var string $keySuffixField
      */
-    static protected $keySuffixField = 'fqdn';
+    static protected $idField = 'fqdn';
 
     /**
      * @var string $defaultSearchField
@@ -38,7 +40,14 @@ class CbEsHostRepository extends CbEsRepository implements HostRepository
 
         if ($showData === true) {
             foreach ($hosts as &$host) {
-                $this->decryptAdminPassword($host);
+
+                if ($host instanceof Host) {
+                    $data = $host->getData();
+
+                    $this->decryptAdminPassword($data);
+
+                    $host->setData($data);
+                }
             }
         }
 
@@ -50,31 +59,41 @@ class CbEsHostRepository extends CbEsRepository implements HostRepository
      * @param string|null $id
      *
      * @throws \Exception
-     * @return array|null
+     * @return Host|null
      */
     public function show($id = null)
     {
-        $data = parent::show($id);
+        $host = parent::show($id);
 
-        if ($id != null) $this->decryptAdminPassword($data);
+        $data = $host->getData();
 
-        return $data;
+        $this->decryptAdminPassword($data);
+
+        $host->setData($data);
+
+        return $host;
     }
 
 
     /**
-     * @param array $data
-     *
-     * @param null  $fqdn
-     *
+     * @param Entity $host
+     * @return Host
+     * @throws InvalidEntity
      * @throws HostMissingFqdnException
-     * @return mixed
      */
-    public function store(array $data, $fqdn = null)
+    public function store(Entity $host)
     {
-        if (!isset($data['fqdn'])) {
+        if (! $host instanceof Host) {
+            throw new InvalidEntity('Expected $host to be an instance of Host');
+        }
+
+        $fqdn = $host->getFqdn();
+
+        if ($fqdn === null) {
             throw new HostMissingFqdnException("Host must have a value for 'fqdn'");
         }
+
+        $data = $host->getData();
 
         // generate hostname and domain if they don't already exist
         if (!isset($data['hostname']) && !isset($data['domain'])) {
@@ -87,23 +106,37 @@ class CbEsHostRepository extends CbEsRepository implements HostRepository
         // encrypt admin password
         $this->encryptAdminPassword($data);
 
-        return parent::store($data);
+        $host->setData($data);
+
+        return parent::store($host);
     }
 
 
     /**
-     * @param string $fqdn
-     * @param array  $data
-     *
-     * @throws \Exception
-     * @return mixed
+     * @param Entity $host
+     * @return Host
      */
-    public function update($fqdn, array $data)
+    public function update(Entity $host)
     {
+        $data = $host->getData();
+
         // encrypt admin password
         $this->encryptAdminPassword($data);
 
-        return parent::update($fqdn, $data);
+        $host->setData($data);
+
+        return parent::update($host);
+    }
+
+
+    /**
+     * @param string|null $fqdn
+     * @param array $data
+     * @return Host
+     */
+    public function makeNewEntity($fqdn = null, array $data = [])
+    {
+        return new Host($fqdn, $data);
     }
 
 

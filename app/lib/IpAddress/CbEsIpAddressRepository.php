@@ -9,12 +9,12 @@ class CbEsIpAddressRepository extends CbEsRepository implements IpAddressReposit
     /**
      * @var string $resourceName
      */
-    static protected $resourceName = 'ipAddress';
+    static protected $entityName = 'ipAddress';
 
     /**
      * @var string $keySuffixField
      */
-    static protected $keySuffixField = 'ipAddress';
+    static protected $idField = 'ipAddress';
 
     /**
      * @var string $defaultSearchField

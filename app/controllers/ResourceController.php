@@ -1,9 +1,9 @@
 <?php
 
-use Hostbase\Exceptions\NoSearchResultsException;
-use Hostbase\Exceptions\ResourceNotFoundException;
-use Hostbase\ResourceTransformer;
-use Hostbase\ResourceRepository;
+use Hostbase\Exceptions\NoSearchResults;
+use Hostbase\Entity\Exceptions\EntityNotFound;
+use Hostbase\Entity\EntityTransformer;
+use Hostbase\Entity\EntityRepository;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
@@ -21,9 +21,9 @@ use Illuminate\Http\Response as HttpResponse;
 abstract class ResourceController extends Controller
 {
     /**
-     * @var Hostbase\ResourceRepository
+     * @var EntityRepository
      */
-    protected $resources;
+    protected $repository;
 
     /**
      * @var League\Fractal\Manager
@@ -49,13 +49,13 @@ abstract class ResourceController extends Controller
 
 
     /**
-     * @param ResourceRepository $resources
+     * @param EntityRepository $repository
      * @param Manager $fractal
-     * @param ResourceTransformer $transformer
+     * @param EntityTransformer $transformer
      */
-    public function __construct(ResourceRepository $resources, Manager $fractal, ResourceTransformer $transformer)
+    public function __construct(EntityRepository $repository, Manager $fractal, EntityTransformer $transformer)
     {
-        $this->resources = $resources;
+        $this->repository = $repository;
         $this->fractal = $fractal;
         $this->transformer = $transformer;
     }
@@ -78,19 +78,19 @@ abstract class ResourceController extends Controller
             }
 
             try {
-                $resources = $this->resources->search(
+                $resources = $this->repository->search(
                     Input::get('q'),
                     Input::has('size') ? Input::get('size') : 10000,
                     $showData
                 );
                 return $this->respondWithCollection($resources, $this->transformer);
-            } catch (NoSearchResultsException $e) {
+            } catch (NoSearchResults $e) {
                 return $this->errorNotFound($e->getMessage());
             } catch (Exception $e) {
                 return $this->errorInternalError($e->getMessage());
             }
         } else {
-            return $this->respondWithCollection($this->resources->show(), $this->transformer);
+            return $this->respondWithCollection($this->repository->show(), $this->transformer);
         }
     }
 
@@ -115,7 +115,9 @@ abstract class ResourceController extends Controller
         }
 
         try {
-            $resource = $this->resources->store($data);
+            $entity = $this->repository->makeNewEntity();
+            $entity->setData($data);
+            $resource = $this->repository->store($entity);
 
             return $this->setStatusCode(HttpResponse::HTTP_CREATED)->respondWithItem($resource, $this->transformer);
         } catch (Exception $e) {
@@ -136,8 +138,8 @@ abstract class ResourceController extends Controller
         $this->setTransformerFilters();
 
         try {
-            return $this->respondWithItem($this->resources->show($id), $this->transformer);
-        } catch (ResourceNotFoundException $e) {
+            return $this->respondWithItem($this->repository->show($id), $this->transformer);
+        } catch (EntityNotFound $e) {
             return $this->errorNotFound($e->getMessage());
         } catch (Exception $e) {
             return $this->errorInternalError($e->getMessage());
@@ -167,10 +169,12 @@ abstract class ResourceController extends Controller
         }
 
         try {
-            $updatedData = $this->resources->update($id, $data);
+
+
+            $updatedData = $this->repository->update($id, $data);
 
             return $this->respondWithItem($updatedData, $this->transformer);
-        } catch (ResourceNotFoundException $e) {
+        } catch (EntityNotFound $e) {
             return $this->errorNotFound($e->getMessage());
         } catch (Exception $e) {
             return $this->errorInternalError($e->getMessage());
@@ -188,7 +192,7 @@ abstract class ResourceController extends Controller
     public function destroy($id)
     {
         try {
-            $this->resources->destroy($id);
+            $this->repository->destroy($id);
 
             return Response::json("Deleted $id");
         } catch (Exception $e) {

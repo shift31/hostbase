@@ -1,9 +1,9 @@
-<?php namespace Hostbase;
+<?php namespace Hostbase\Entity;
 
 use League\Fractal\TransformerAbstract;
 
 
-class ResourceTransformer extends TransformerAbstract
+class EntityTransformer extends TransformerAbstract
 {
     /**
      * @var array
@@ -59,47 +59,51 @@ class ResourceTransformer extends TransformerAbstract
 
 
     /**
-     * @param $resource
+     * @param Entity $entity
      * @return array
      */
-    public function transform($resource)
+    public function transform(Entity $entity)
     {
         if (count($this->includes) > 0) {
-            return $this->filterResourceForIncludes($resource);
+            $this->filterResourceForIncludes($entity);
         }
 
         if (count($this->excludes) > 0) {
-            $this->filterResourceForExcludes($resource);
-            return $resource;
+            $this->filterResourceForExcludes($entity);
         }
 
-        return $resource;
+        return $entity->getData();
     }
 
 
     /**
-     * @param $resource
-     * @return array
+     * @param Entity $entity
      */
-    protected function filterResourceForIncludes($resource)
+    protected function filterResourceForIncludes(Entity $entity)
     {
-        $filteredResource = [];
+        $data = $entity->getData();
+
+        $filteredData = [];
 
         foreach ($this->includes as $include) {
-            $filteredResource[$include] = $resource[$include];
+            $filteredData[$include] = $data[$include];
         }
 
-        return $filteredResource;
+        $entity->setData($filteredData);
     }
 
 
     /**
-     * @param $resource
+     * @param Entity $entity
      */
-    protected function filterResourceForExcludes(&$resource)
+    protected function filterResourceForExcludes(Entity $entity)
     {
+        $data = $entity->getData();
+
         foreach ($this->excludes as $exclude) {
-            unset($resource[$exclude]);
+            unset($data[$exclude]);
         }
+
+        $entity->setData($data);
     }
 } 

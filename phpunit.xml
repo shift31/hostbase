@@ -21,13 +21,16 @@
             <directory>./app/tests/integration</directory>
         </testsuite>
     </testsuites>
+    <logging>
+        <log type="coverage-html" target="./app/storage/coverage"/>
+    </logging>
     <listeners>
         <listener class="\Mockery\Adapter\Phpunit\TestListener"></listener>
     </listeners>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./app/controllers</directory>
-            <directory suffix=".php">./app/lib/Hostbase</directory>
+            <directory suffix=".php">./app/lib</directory>
         </whitelist>
     </filter>
 </phpunit>

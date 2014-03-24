@@ -1,7 +1,7 @@
 <?php
 
 use Hostbase\IpAddress\IpAddressRepository;
-use Hostbase\ResourceTransformer;
+use Hostbase\EntityTransformer;
 use League\Fractal\Manager;
 
 
@@ -11,11 +11,11 @@ class IpAddressController extends ResourceController
     /**
      * @param IpAddressRepository $ipAddresses
      * @param Manager $fractal
-     * @param ResourceTransformer $transformer
+     * @param EntityTransformer $transformer
      */
-    public function __construct(IpAddressRepository $ipAddresses, Manager $fractal, ResourceTransformer $transformer)
+    public function __construct(IpAddressRepository $ipAddresses, Manager $fractal, EntityTransformer $transformer)
     {
-        $this->resources = $ipAddresses;
+        $this->repository = $ipAddresses;
         $this->fractal = $fractal;
         $this->transformer = $transformer;
     }

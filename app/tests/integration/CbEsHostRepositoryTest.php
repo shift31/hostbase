@@ -6,6 +6,7 @@ use Hostbase\Host\CbEsHostRepository;
 class CbEsHostRepositoryTest extends TestCase {
 
     const TEST_FQDN = 'test.example.com';
+    const TEST_FQDN_2 = 'test2.example.com';
 
     /**
      * @var CbEsHostRepository
@@ -18,27 +19,44 @@ class CbEsHostRepositoryTest extends TestCase {
         parent::setUp();
 
         $this->repo = new CbEsHostRepository();
+
+        $host = $this->repo->makeNewEntity();
+        $host->setFqdn(self::TEST_FQDN);
+
+        $this->repo->store($host);
+
+        // give elasticsearch a second to index
+        sleep(1);
+    }
+
+
+    public function tearDown()
+    {
+        $this->repo->destroy(self::TEST_FQDN);
     }
 
 
     /** @test */
     public function it_can_store_a_host()
     {
-        $this->destroyTestHost();
+        $host = $this->repo->makeNewEntity();
 
-        $data = ['fqdn' => self::TEST_FQDN];
+        $host->setFqdn(self::TEST_FQDN_2);
 
-        $host = $this->repo->store($data);
+        $hostFromRepo = $this->repo->store($host);
 
-        foreach ($data as $key => $value) {
-            $this->assertEquals($value, $host[$key]);
-        }
+        $data = $hostFromRepo->getData();
+
+        $this->assertArrayHasKey('hostname', $data);
+        $this->assertArrayHasKey('domain', $data);
+        $this->assertArrayHasKey('docType', $data);
+        $this->assertArrayHasKey('createdDateTime', $data);
     }
 
 
     /**
      * @test
-     * @expectedException Hostbase\Exceptions\ResourceAlreadyExistsException
+     * @expectedException Hostbase\Entity\Exceptions\EntityAlreadyExists
      */
     public function it_throws_an_exception_if_host_already_exists()
     {
@@ -63,9 +81,6 @@ class CbEsHostRepositoryTest extends TestCase {
     /** @test */
     public function it_can_search_for_and_find_an_existing_host()
     {
-        // give elasticsearch a second to index
-        sleep(1);
-
         $hosts = $this->repo->search(self::TEST_FQDN);
 
         $this->assertContains(self::TEST_FQDN, $hosts);
@@ -84,7 +99,7 @@ class CbEsHostRepositoryTest extends TestCase {
 
     /**
      * @test
-     * @expectedException \Hostbase\Exceptions\NoSearchResultsException
+     * @expectedException \Hostbase\Exceptions\NoSearchResults
      */
     public function it_throws_an_exception_if_there_are_no_search_results()
     {
@@ -157,26 +172,13 @@ class CbEsHostRepositoryTest extends TestCase {
 
     /**
      * @test
-     * @expectedException \Hostbase\Exceptions\ResourceNotFoundException
+     * @expectedException \Hostbase\Exceptions\EntityNotFoundException
      */
     public function it_can_destroy_a_host()
     {
-        $this->repo->destroy(self::TEST_FQDN);
+        $this->repo->destroy(self::TEST_FQDN_2);
 
-        $this->repo->show(self::TEST_FQDN);
-    }
-
-
-    protected function destroyTestHost()
-    {
-        /** @noinspection PhpVoidFunctionResultUsedInspection */
-        $cbConnection = Cb::connection();
-
-        if (!$cbConnection) {
-            throw new \Exception("No Couchbase connection");
-        }
-
-        $cbConnection->delete('host_' . self::TEST_FQDN);
+        $this->repo->show(self::TEST_FQDN_2);
     }
 }
  

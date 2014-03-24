@@ -1,6 +1,6 @@
 <?php namespace Hostbase\IpAddress;
 
-use Hostbase\ResourceRepository;
+use Hostbase\EntityRepository;
 
 
 /**
@@ -16,7 +16,7 @@ class IpAddressUtils
         $hostRepository = \App::make('HostRepository');
         $ipAddressRespository = \App::make('IpAddressRepository');
 
-        $hosts = $hostRepository instanceof ResourceRepository ? $hostRepository->show() : null;
+        $hosts = $hostRepository instanceof EntityRepository ? $hostRepository->show() : null;
 
         if (!$hosts) {
             throw new \Exception('Unable to retrieve any hosts');
