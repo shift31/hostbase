@@ -63,15 +63,17 @@ class CbEsHostRepository extends CbEsRepository implements HostRepository
      */
     public function show($id = null)
     {
-        $host = parent::show($id);
+        $hostOrList = parent::show($id);
 
-        $data = $host->getData();
+        if ($id !== null) {
+            $data = $hostOrList->getData();
 
-        $this->decryptAdminPassword($data);
+            $this->decryptAdminPassword($data);
 
-        $host->setData($data);
+            $hostOrList->setData($data);
+        }
 
-        return $host;
+        return $hostOrList;
     }
 
 
@@ -79,7 +81,7 @@ class CbEsHostRepository extends CbEsRepository implements HostRepository
      * @param Entity $host
      * @return Host
      * @throws InvalidEntity
-     * @throws HostMissingFqdnException
+     * @throws HostMissingFqdn
      */
     public function store(Entity $host)
     {
@@ -90,7 +92,7 @@ class CbEsHostRepository extends CbEsRepository implements HostRepository
         $fqdn = $host->getFqdn();
 
         if ($fqdn === null) {
-            throw new HostMissingFqdnException("Host must have a value for 'fqdn'");
+            throw new HostMissingFqdn("Host must have a value for 'fqdn'");
         }
 
         $data = $host->getData();

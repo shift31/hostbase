@@ -155,12 +155,12 @@ abstract class CbEsRepository implements EntityRepository
         $data = $entity->getData();
         $id = $data[static::$idField];
 
-        $result = $this->getCbDocument($id);
-        $key = $result->key();
+        $doc = $this->getCbDocument($id);
+        $key = $doc->key();
         $entity->setId($key);
 
         // convert Document to array
-        $updateData = (array) unserialize($result->serialize());
+        $updateData = (array) unserialize($doc->serialize());
 
         foreach ($data as $field => $value) {
             if ($value === null) {

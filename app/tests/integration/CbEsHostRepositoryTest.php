@@ -60,21 +60,23 @@ class CbEsHostRepositoryTest extends TestCase {
      */
     public function it_throws_an_exception_if_host_already_exists()
     {
-        $data = ['fqdn' => self::TEST_FQDN];
+        $host = $this->repo->makeNewEntity();
+        $host->setFqdn(self::TEST_FQDN);
 
-        $this->repo->store($data);
+        $this->repo->store($host);
     }
 
 
     /**
      * @test
-     * @expectedException Hostbase\Host\HostMissingFqdnException
+     * @expectedException Hostbase\Host\HostMissingFqdn
      */
     public function it_throws_an_exception_if_host_is_missing_fqdn()
     {
-        $data = ['foo' => 'bar'];
+        $host = $this->repo->makeNewEntity();
+        $host->setData(['foo' => 'bar']);
 
-        $this->repo->store($data);
+        $this->repo->store($host);
     }
 
 
@@ -92,8 +94,10 @@ class CbEsHostRepositoryTest extends TestCase {
     {
         $hosts = $this->repo->search(self::TEST_FQDN, 10000, true);
 
-        $this->assertEquals('test', $hosts[0]['hostname']);
-        $this->assertEquals('example.com', $hosts[0]['domain']);
+        $firstHostData = $hosts[0]->getData();
+
+        $this->assertEquals('test', $firstHostData['hostname']);
+        $this->assertEquals('example.com', $firstHostData['domain']);
     }
 
 
@@ -111,10 +115,11 @@ class CbEsHostRepositoryTest extends TestCase {
     public function it_can_show_a_host()
     {
         $host = $this->repo->show(self::TEST_FQDN);
+        $data = $host->getData();
 
-        $this->assertEquals(self::TEST_FQDN, $host['fqdn']);
-        $this->assertEquals('test', $host['hostname']);
-        $this->assertEquals('example.com', $host['domain']);
+        $this->assertEquals(self::TEST_FQDN, $data['fqdn']);
+        $this->assertEquals('test', $data['hostname']);
+        $this->assertEquals('example.com', $data['domain']);
     }
 
 
@@ -130,9 +135,13 @@ class CbEsHostRepositoryTest extends TestCase {
     /** @test */
     public function it_can_update_a_host()
     {
-        $host = $this->repo->update(self::TEST_FQDN, ['foo' => 'bar']);
+        $host = $this->repo->makeNewEntity();
+        $host->setFqdn(self::TEST_FQDN);
+        $host->setData(['foo' => 'bar']);
 
-        $this->assertEquals('bar', $host['foo']);
+        $updatedHost = $this->repo->update($host);
+
+        $this->assertEquals('bar', $updatedHost->getData()['foo']);
     }
 
 
@@ -172,7 +181,7 @@ class CbEsHostRepositoryTest extends TestCase {
 
     /**
      * @test
-     * @expectedException \Hostbase\Exceptions\EntityNotFoundException
+     * @expectedException \Hostbase\Entity\Exceptions\EntityNotFound
      */
     public function it_can_destroy_a_host()
     {

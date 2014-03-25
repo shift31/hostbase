@@ -36,7 +36,9 @@ class Host extends BaseEntity implements Entity
         parent::setData($data);
 
         if (isset($data['fqdn'])) {
-            $this->setFqdn($data['fqdn']);
+            $this->fqdn = $data['fqdn'];
+        } else {
+            $this->data['fqdn'] = $this->fqdn;
         }
     }
 
