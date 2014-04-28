@@ -3,20 +3,20 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "64e89bda5ff6e9c5d9fed3fdfcd2b96e",
+    "hash": "c0456914eb9be0788d8df3587ab38f45",
     "packages": [
         {
             "name": "barryvdh/laravel-ide-helper",
-            "version": "v1.8.1",
+            "version": "v1.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryvdh/laravel-ide-helper.git",
-                "reference": "874cd4c1a2544e93c96f73c8ce9b63dd9c4ddaea"
+                "reference": "16f77638f159c75a93da97dd48904707618483a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-ide-helper/zipball/874cd4c1a2544e93c96f73c8ce9b63dd9c4ddaea",
-                "reference": "874cd4c1a2544e93c96f73c8ce9b63dd9c4ddaea",
+                "url": "https://api.github.com/repos/barryvdh/laravel-ide-helper/zipball/16f77638f159c75a93da97dd48904707618483a3",
+                "reference": "16f77638f159c75a93da97dd48904707618483a3",
                 "shasum": ""
             },
             "require": {
@@ -54,7 +54,7 @@
                 "phpstorm",
                 "sublime"
             ],
-            "time": "2014-01-29 15:24:09"
+            "time": "2014-03-20 15:20:31"
         },
         {
             "name": "basement/basement",
@@ -106,24 +106,24 @@
         },
         {
             "name": "classpreloader/classpreloader",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mtdowling/ClassPreloader.git",
-                "reference": "1a50f7945b725ff2c60f234e51407d1d6e7c77c5"
+                "reference": "2c9f3bcbab329570c57339895bd11b5dd3b00877"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mtdowling/ClassPreloader/zipball/1a50f7945b725ff2c60f234e51407d1d6e7c77c5",
-                "reference": "1a50f7945b725ff2c60f234e51407d1d6e7c77c5",
+                "url": "https://api.github.com/repos/mtdowling/ClassPreloader/zipball/2c9f3bcbab329570c57339895bd11b5dd3b00877",
+                "reference": "2c9f3bcbab329570c57339895bd11b5dd3b00877",
                 "shasum": ""
             },
             "require": {
-                "nikic/php-parser": "*",
+                "nikic/php-parser": "~0.9",
                 "php": ">=5.3.3",
-                "symfony/console": ">2.0",
-                "symfony/filesystem": ">2.0",
-                "symfony/finder": ">2.0"
+                "symfony/console": "~2.1",
+                "symfony/filesystem": "~2.1",
+                "symfony/finder": "~2.1"
             },
             "bin": [
                 "classpreloader.php"
@@ -131,7 +131,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.0-dev"
+                    "dev-master": "1.0-dev"
                 }
             },
             "autoload": {
@@ -149,7 +149,7 @@
                 "class",
                 "preload"
             ],
-            "time": "2013-06-24 22:58:34"
+            "time": "2014-03-12 00:05:31"
         },
         {
             "name": "d11wtq/boris",
@@ -1168,16 +1168,16 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "1.7.0",
+            "version": "1.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "6225b22de9dcf36546be3a0b2fa8e3d986153f57"
+                "reference": "392ef35fd470638e08d0160d6b1cbab63cb23174"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/6225b22de9dcf36546be3a0b2fa8e3d986153f57",
-                "reference": "6225b22de9dcf36546be3a0b2fa8e3d986153f57",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/392ef35fd470638e08d0160d6b1cbab63cb23174",
+                "reference": "392ef35fd470638e08d0160d6b1cbab63cb23174",
                 "shasum": ""
             },
             "require": {
@@ -1185,11 +1185,11 @@
                 "psr/log": "~1.0"
             },
             "require-dev": {
-                "aws/aws-sdk-php": "~2.4.8",
-                "doctrine/couchdb": "dev-master",
-                "mlehner/gelf-php": "1.0.*",
+                "aws/aws-sdk-php": "~2.4, >2.4.8",
+                "doctrine/couchdb": "~1.0@dev",
+                "graylog2/gelf-php": "~1.0",
                 "phpunit/phpunit": "~3.7.0",
-                "raven/raven": "0.5.*",
+                "raven/raven": "~0.5",
                 "ruflin/elastica": "0.90.*"
             },
             "suggest": {
@@ -1197,19 +1197,20 @@
                 "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
                 "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
                 "ext-mongo": "Allow sending log messages to a MongoDB server",
-                "mlehner/gelf-php": "Allow sending log messages to a GrayLog2 server",
+                "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
                 "raven/raven": "Allow sending log messages to a Sentry server",
+                "rollbar/rollbar": "Allow sending log messages to Rollbar",
                 "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.7.x-dev"
+                    "dev-master": "1.8.x-dev"
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Monolog": "src/"
+                "psr-4": {
+                    "Monolog\\": "src/Monolog"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1231,7 +1232,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2013-11-14 19:48:31"
+            "time": "2014-03-23 19:50:26"
         },
         {
             "name": "nesbot/carbon",
@@ -1325,16 +1326,16 @@
         },
         {
             "name": "patchwork/utf8",
-            "version": "v1.1.20",
+            "version": "v1.1.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nicolas-grekas/Patchwork-UTF8.git",
-                "reference": "aea0de833cba7cf2c25239be71f2787edaee36d5"
+                "reference": "f45ba8bc7962b7356847724989a6949b68d975a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nicolas-grekas/Patchwork-UTF8/zipball/aea0de833cba7cf2c25239be71f2787edaee36d5",
-                "reference": "aea0de833cba7cf2c25239be71f2787edaee36d5",
+                "url": "https://api.github.com/repos/nicolas-grekas/Patchwork-UTF8/zipball/f45ba8bc7962b7356847724989a6949b68d975a2",
+                "reference": "f45ba8bc7962b7356847724989a6949b68d975a2",
                 "shasum": ""
             },
             "require": {
@@ -1372,7 +1373,7 @@
                 "utf-8",
                 "utf8"
             ],
-            "time": "2014-03-01 20:01:07"
+            "time": "2014-03-26 10:52:02"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -2657,201 +2658,6 @@
     ],
     "packages-dev": [
         {
-            "name": "andrewsville/php-token-reflection",
-            "version": "1.3.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Andrewsville/PHP-Token-Reflection.git",
-                "reference": "3e3a36de17f32889fd2d4b8108af16d3033ce9bf"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Andrewsville/PHP-Token-Reflection/zipball/3e3a36de17f32889fd2d4b8108af16d3033ce9bf",
-                "reference": "3e3a36de17f32889fd2d4b8108af16d3033ce9bf",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "TokenReflection": "./"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3"
-            ],
-            "authors": [
-                {
-                    "name": "Ondřej Nešpor",
-                    "homepage": "https://github.com/Andrewsville"
-                },
-                {
-                    "name": "Jaroslav Hanslík",
-                    "homepage": "https://github.com/kukulich"
-                }
-            ],
-            "description": "Library emulating the PHP internal reflection using just the tokenized source code.",
-            "homepage": "http://andrewsville.github.com/PHP-Token-Reflection/",
-            "keywords": [
-                "library",
-                "reflection",
-                "tokenizer"
-            ],
-            "time": "2012-08-25 21:26:44"
-        },
-        {
-            "name": "codeception/aspect-mock",
-            "version": "0.4.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Codeception/AspectMock.git",
-                "reference": "9a8c38d155c02a1cb5cee0b28cbc99ea0545ba80"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/AspectMock/zipball/9a8c38d155c02a1cb5cee0b28cbc99ea0545ba80",
-                "reference": "9a8c38d155c02a1cb5cee0b28cbc99ea0545ba80",
-                "shasum": ""
-            },
-            "require": {
-                "lisachenko/go-aop-php": "~0.4"
-            },
-            "require-dev": {
-                "codeception/codeception": "@stable",
-                "codeception/specify": "*",
-                "codeception/verify": "*",
-                "codegyre/robo": "*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "AspectMock": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "authors": [
-                {
-                    "name": "Michael Bodnarchuk",
-                    "email": "davert.php@mailican.com",
-                    "homepage": "http://codeception.com"
-                }
-            ],
-            "description": "Experimental Mocking Framework powered by Aspects",
-            "time": "2014-02-25 02:40:09"
-        },
-        {
-            "name": "jakubledl/dissect",
-            "version": "v1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jakubledl/dissect.git",
-                "reference": "d3a391de31e45a247e95cef6cf58a91c05af67c4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jakubledl/dissect/zipball/d3a391de31e45a247e95cef6cf58a91c05af67c4",
-                "reference": "d3a391de31e45a247e95cef6cf58a91c05af67c4",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "require-dev": {
-                "symfony/console": "~2.1"
-            },
-            "suggest": {
-                "symfony/console": "for the command-line tool"
-            },
-            "bin": [
-                "bin/dissect.php",
-                "bin/dissect"
-            ],
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Dissect": [
-                        "src/"
-                    ]
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "unlicense"
-            ],
-            "authors": [
-                {
-                    "name": "Jakub Lédl",
-                    "email": "jakubledl@gmail.com"
-                }
-            ],
-            "description": "Lexing and parsing in pure PHP",
-            "homepage": "https://github.com/jakubledl/dissect",
-            "keywords": [
-                "ast",
-                "lexing",
-                "parser",
-                "parsing"
-            ],
-            "time": "2013-01-29 21:29:14"
-        },
-        {
-            "name": "lisachenko/go-aop-php",
-            "version": "0.4.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/lisachenko/go-aop-php.git",
-                "reference": "cfa8237aed54cb7a77bfefbedc8ab365f9360b90"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/lisachenko/go-aop-php/zipball/cfa8237aed54cb7a77bfefbedc8ab365f9360b90",
-                "reference": "cfa8237aed54cb7a77bfefbedc8ab365f9360b90",
-                "shasum": ""
-            },
-            "require": {
-                "andrewsville/php-token-reflection": "~1.3",
-                "doctrine/annotations": "~1.0",
-                "jakubledl/dissect": "~1.0",
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "0.4-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Go": "src/"
-                },
-                "files": [
-                    "src/Go/Instrument/ClassLoading/AopComposerLoader.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Lissachenko Alexander",
-                    "homepage": "https://github.com/lisachenko"
-                }
-            ],
-            "description": "Library for aspect-oriented programming in PHP.",
-            "homepage": "http://go.aopphp.com/",
-            "keywords": [
-                "aop",
-                "aspect",
-                "library",
-                "php"
-            ],
-            "time": "2013-11-03 10:00:46"
-        },
-        {
             "name": "mockery/mockery",
             "version": "0.9.0",
             "source": {
@@ -2917,24 +2723,185 @@
             "time": "2014-02-05 21:30:08"
         },
         {
-            "name": "phpunit/php-code-coverage",
-            "version": "2.0.2",
+            "name": "phpspec/php-diff",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "2c20ba4872d09d1d3d7ceda5a0c5f82d9a8ff31f"
+                "url": "https://github.com/phpspec/php-diff.git",
+                "reference": "30e103d19519fe678ae64a60d77884ef3d71b28a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/2c20ba4872d09d1d3d7ceda5a0c5f82d9a8ff31f",
-                "reference": "2c20ba4872d09d1d3d7ceda5a0c5f82d9a8ff31f",
+                "url": "https://api.github.com/repos/phpspec/php-diff/zipball/30e103d19519fe678ae64a60d77884ef3d71b28a",
+                "reference": "30e103d19519fe678ae64a60d77884ef3d71b28a",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Diff": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Boulton",
+                    "homepage": "http://github.com/chrisboulton"
+                }
+            ],
+            "description": "A comprehensive library for generating differences between two hashable objects (strings or arrays).",
+            "time": "2013-11-01 13:02:21"
+        },
+        {
+            "name": "phpspec/phpspec",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpspec/phpspec.git",
+                "reference": "1aade5766ddf4f28fdcf0a34d6ed642393d6c43d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpspec/phpspec/zipball/1aade5766ddf4f28fdcf0a34d6ed642393d6c43d",
+                "reference": "1aade5766ddf4f28fdcf0a34d6ed642393d6c43d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "phpspec/php-diff": "~1.0.0",
+                "phpspec/prophecy": "~1.1",
+                "symfony/console": "~2.1",
+                "symfony/event-dispatcher": "~2.1",
+                "symfony/finder": "~2.1",
+                "symfony/yaml": "~2.1"
+            },
+            "require-dev": {
+                "behat/behat": "~2.5",
+                "bossa/phpspec2-expect": "dev-master",
+                "symfony/filesystem": "~2.1"
+            },
+            "suggest": {
+                "phpspec/nyan-formatters": "~1.0 – Adds Nyan formatters"
+            },
+            "bin": [
+                "bin/phpspec"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "PhpSpec": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Konstantin Kudryashov",
+                    "email": "ever.zet@gmail.com",
+                    "homepage": "http://everzet.com"
+                },
+                {
+                    "name": "Marcello Duarte",
+                    "homepage": "http://marcelloduarte.net/"
+                }
+            ],
+            "description": "Specification-oriented BDD framework for PHP 5.3+",
+            "homepage": "http://phpspec.net/",
+            "keywords": [
+                "BDD",
+                "SpecBDD",
+                "TDD",
+                "spec",
+                "specification",
+                "testing",
+                "tests"
+            ],
+            "time": "2014-03-19 14:23:43"
+        },
+        {
+            "name": "phpspec/prophecy",
+            "version": "1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpspec/prophecy.git",
+                "reference": "976a65af02a2a0e17ce6c949f7b43437205628bb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/976a65af02a2a0e17ce6c949f7b43437205628bb",
+                "reference": "976a65af02a2a0e17ce6c949f7b43437205628bb",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpspec/phpspec": "2.0.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Prophecy\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Konstantin Kudryashov",
+                    "email": "ever.zet@gmail.com",
+                    "homepage": "http://everzet.com"
+                },
+                {
+                    "name": "Marcello Duarte",
+                    "email": "marcello.duarte@gmail.com"
+                }
+            ],
+            "description": "Highly opinionated mocking framework for PHP 5.3+",
+            "homepage": "http://phpspec.org",
+            "keywords": [
+                "Double",
+                "Dummy",
+                "fake",
+                "mock",
+                "spy",
+                "stub"
+            ],
+            "time": "2014-01-24 11:03:43"
+        },
+        {
+            "name": "phpunit/php-code-coverage",
+            "version": "2.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
+                "reference": "3dcca2120451b98a98fe60221ca279a184ee64db"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/3dcca2120451b98a98fe60221ca279a184ee64db",
+                "reference": "3dcca2120451b98a98fe60221ca279a184ee64db",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3",
                 "phpunit/php-file-iterator": "~1.3.1",
                 "phpunit/php-text-template": "~1.2",
-                "phpunit/php-token-stream": "~1.1.3",
+                "phpunit/php-token-stream": "~1.2.2",
                 "sebastian/environment": "~1.0",
                 "sebastian/version": "~1.0.3"
             },
@@ -2978,7 +2945,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-03-17 10:25:49"
+            "time": "2014-03-28 10:54:55"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -3115,16 +3082,16 @@
         },
         {
             "name": "phpunit/php-token-stream",
-            "version": "1.1.8",
+            "version": "1.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-token-stream.git",
-                "reference": "66a29f0c5bdf85e70112f25ec9072efec5e2d426"
+                "reference": "ad4e1e23ae01b483c16f600ff1bebec184588e32"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/66a29f0c5bdf85e70112f25ec9072efec5e2d426",
-                "reference": "66a29f0c5bdf85e70112f25ec9072efec5e2d426",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/ad4e1e23ae01b483c16f600ff1bebec184588e32",
+                "reference": "ad4e1e23ae01b483c16f600ff1bebec184588e32",
                 "shasum": ""
             },
             "require": {
@@ -3132,6 +3099,11 @@
                 "php": ">=5.3.3"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.2-dev"
+                }
+            },
             "autoload": {
                 "classmap": [
                     "PHP/"
@@ -3156,20 +3128,20 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2013-08-02 19:10:55"
+            "time": "2014-03-03 05:10:30"
         },
         {
             "name": "phpunit/phpunit",
-            "version": "4.0.9",
+            "version": "4.0.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "c7e9e4b1253142acda4cb86a7686db412684fe04"
+                "reference": "a80b77d92a6c7723d77c6728b4ae37e92a65ac1d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c7e9e4b1253142acda4cb86a7686db412684fe04",
-                "reference": "c7e9e4b1253142acda4cb86a7686db412684fe04",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a80b77d92a6c7723d77c6728b4ae37e92a65ac1d",
+                "reference": "a80b77d92a6c7723d77c6728b4ae37e92a65ac1d",
                 "shasum": ""
             },
             "require": {
@@ -3231,20 +3203,20 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2014-03-17 15:17:30"
+            "time": "2014-03-28 11:10:03"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
-            "version": "2.0.3",
+            "version": "2.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
-                "reference": "5888b2501d41c34f9132c959b073b23de83235aa"
+                "reference": "c5e6274b8f2bf983cf883bb375cf44f99aff200e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/5888b2501d41c34f9132c959b073b23de83235aa",
-                "reference": "5888b2501d41c34f9132c959b073b23de83235aa",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/c5e6274b8f2bf983cf883bb375cf44f99aff200e",
+                "reference": "c5e6274b8f2bf983cf883bb375cf44f99aff200e",
                 "shasum": ""
             },
             "require": {
@@ -3288,7 +3260,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2014-03-11 09:46:18"
+            "time": "2014-03-18 08:56:48"
         },
         {
             "name": "sebastian/diff",
@@ -3501,7 +3473,8 @@
         "shift31/laravel-basement": 20,
         "shift31/laravel-elasticsearch": 20,
         "symfony/yaml": 20,
-        "mockery/mockery": 0
+        "mockery/mockery": 20,
+        "phpspec/phpspec": 20
     },
     "platform": {
         "php": ">=5.4"

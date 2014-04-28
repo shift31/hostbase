@@ -13,8 +13,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "4.0.*",
-        "mockery/mockery": "@stable",
-        "codeception/aspect-mock": "*"
+        "mockery/mockery": "0.9.*@dev",
+        "phpspec/phpspec": "2.0.*@dev"
     },
     "autoload": {
         "classmap": [

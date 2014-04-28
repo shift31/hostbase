@@ -10,3 +10,4 @@ test.json
 /workbench
 /workbench.php
 .vagrant
+atlassian-ide-plugin.xml

@@ -18,7 +18,11 @@ class CbEsHostRepositoryTest extends TestCase {
     {
         parent::setUp();
 
-        $this->repo = new CbEsHostRepository();
+        $cb = App::make('basement');
+
+        $es = App::make('elasticsearch');
+
+        $this->repo = new CbEsHostRepository($cb, $es);
 
         $host = $this->repo->makeNewEntity();
         $host->setFqdn(self::TEST_FQDN);

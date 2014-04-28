@@ -52,4 +52,15 @@ class CbEsSubnetRepository extends CbEsRepository implements SubnetRepository
 
         return parent::store($data, $subnet);
     }
+
+
+    /**
+     * @param null $id
+     * @param array $data
+     * @return \Hostbase\Entity\Entity|Subnet
+     */
+    public function makeNewEntity($id = null, array $data = [])
+    {
+        return new Subnet($id, $data);
+    }
 }
