@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 sudo service elasticsearch stop
 
 # install and configure couchbase plugin for elasticsearch
-sudo /usr/share/elasticsearch/bin/plugin -install transport-couchbase -url http://packages.couchbase.com.s3.amazonaws.com/releases/elastic-search-adapter/1.2.0/elasticsearch-transport-couchbase-1.2.0.zip
+sudo /usr/share/elasticsearch/bin/plugin -install transport-couchbase -url http://packages.couchbase.com.s3.amazonaws.com/releases/elastic-search-adapter/1.3.0/elasticsearch-transport-couchbase-1.3.0.zip
 echo "couchbase.username: Administrator"  | sudo tee -a /etc/elasticsearch/elasticsearch.yml
 echo "couchbase.password: password"  | sudo tee -a /etc/elasticsearch/elasticsearch.yml
 

@@ -16,6 +16,6 @@ Route::get('/', function()
 	return View::make('home');
 });
 
-Route::resource('hosts', 'HostController');
-Route::resource('subnets', 'SubnetController');
-Route::resource('ipaddresses', 'IpAddressController');
+Route::resource('hosts', 'Hostbase\Host\HostController');
+Route::resource('subnets', 'Hostbase\Subnet\SubnetController');
+Route::resource('ipaddresses', 'Hostbase\IpAddress\IpAddressController');

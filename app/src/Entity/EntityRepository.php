@@ -3,24 +3,20 @@
 
 interface EntityRepository
 {
-
-    /**
-     * @param string $query
-     * @param int    $limit
-     * @param bool   $showData
-     *
-     * @return array
-     */
-    public function search($query, $limit = 10000, $showData = false);
-
-
     /**
      * @param string|null $id
      *
      * @throws \Exception
      * @return Entity
      */
-    public function show($id = null);
+    public function getOne($id);
+
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getMany(array $ids);
 
 
     /**
@@ -48,12 +44,4 @@ interface EntityRepository
      * @return bool
      */
     public function destroy($id);
-
-
-    /**
-     * @param mixed|null $id
-     * @param array $data
-     * @return Entity
-     */
-    public function makeNewEntity($id = null, array $data = []);
 }

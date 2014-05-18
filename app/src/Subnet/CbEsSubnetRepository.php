@@ -1,10 +1,10 @@
 <?php namespace Hostbase\Subnet;
 
-use Hostbase\CbEsRepository;
+use Hostbase\CouchbaseRepository;
 use Validator;
 
 
-class CbEsSubnetRepository extends CbEsRepository implements SubnetRepository
+class CouchbaseSubnetRepository extends CouchbaseRepository implements SubnetRepository
 {
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-use Hostbase\Host\CbEsHostRepository;
+use Hostbase\Host\CouchbaseHostRepository;
 
 
 class CbEsHostRepositoryTest extends TestCase {
@@ -9,7 +9,7 @@ class CbEsHostRepositoryTest extends TestCase {
     const TEST_FQDN_2 = 'test2.example.com';
 
     /**
-     * @var CbEsHostRepository
+     * @var CouchbaseHostRepository
      */
     protected $repo;
 
@@ -22,7 +22,7 @@ class CbEsHostRepositoryTest extends TestCase {
 
         $es = App::make('elasticsearch');
 
-        $this->repo = new CbEsHostRepository($cb, $es);
+        $this->repo = new CouchbaseHostRepository($cb, $es);
 
         $host = $this->repo->makeNewEntity();
         $host->setFqdn(self::TEST_FQDN);

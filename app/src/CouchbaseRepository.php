@@ -3,23 +3,16 @@
 use Basement\Client as BasementClient;
 use Basement\data\Document;
 use Basement\data\DocumentCollection;
-use Elasticsearch\Client as ElasticsearchClient;
 use Hostbase\Entity\Entity;
 use Hostbase\Entity\EntityRepository;
 use Hostbase\Entity\Exceptions\EntityAlreadyExists;
 use Hostbase\Entity\Exceptions\EntityNotFound;
 use Hostbase\Entity\Exceptions\EntityUpdateFailed;
-use Hostbase\Exceptions\NoSearchResults;
+use Hostbase\Entity\MakesEntities;
 
 
-abstract class CbEsRepository implements EntityRepository
+abstract class CouchbaseRepository implements EntityRepository, MakesEntities
 {
-    /**
-     * @todo add elasticsearch index to app config
-     */
-    const ELASTICSEARCH_INDEX = 'hostbase';
-
-
     /**
      * The entity name/document type.  Used as the key prefix.
      *
@@ -34,98 +27,24 @@ abstract class CbEsRepository implements EntityRepository
      */
     static protected $idField = null;
 
-    /**
-     * The default elasticsearch field.
-     *
-     * @var string $defaultSearchField
-     */
-    static protected $defaultSearchField = null;
 
     /**
      * @var \Basement\Client
      */
     protected $cb;
 
-    /**
-     * @var \Elasticsearch\Client
-     */
-    protected $es;
-
 
     /**
-     * @param BasementClient $cb
-     * @param ElasticsearchClient $es
+     * @param BasementClient $cb\
      * @throws \Exception
      */
-    public function __construct(BasementClient $cb, ElasticsearchClient $es)
+    public function __construct(BasementClient $cb)
     {
         $this->cb = $cb;
-        $this->es = $es;
 
-        if (is_null(static::$entityName) || is_null(static::$idField) || is_null(static::$defaultSearchField)) {
+        if (is_null(static::$entityName) || is_null(static::$idField)) {
             throw new \Exception("'entityName', 'idField', and 'defaultSearchField' fields must not be null");
         }
-    }
-
-
-    /**
-     * @param string $query
-     * @param int    $limit
-     * @param bool   $showData
-     *
-     * @throws NoSearchResults
-     * @return array
-     */
-    public function search($query, $limit = 10000, $showData = false)
-    {
-        $searchParams['index'] = self::ELASTICSEARCH_INDEX;
-        $searchParams['size'] = $limit;
-        $searchParams['body']['query']['query_string'] = [
-            'default_field' => static::$defaultSearchField,
-            'query'         => 'docType:"' . static::$entityName . '" AND ' . str_replace('/', '\\/', $query)
-        ];
-
-        $result = $this->es->search($searchParams);
-
-        $docIds = [];
-
-        if (is_array($result)) {
-            foreach ($result['hits']['hits'] as $hit) {
-                $docIds[] = $hit['_id'];
-            }
-        }
-
-        if (count($docIds) === 0) {
-            throw new NoSearchResults('No ' . static::$entityName . "s matching '$query' were found");
-        }
-
-        if ($showData === false) {
-
-            // set entities to an array of document IDs without the entity name prefixed
-            $entities = array_map(
-                function ($entity) {
-                    return str_replace(static::$entityName . '_', '', $entity);
-                },
-                $docIds
-            );
-        } else {
-            $entities = [];
-
-            $docCollection = $this->cb->findByKey($docIds);
-
-            if ($docCollection instanceof DocumentCollection) {
-                foreach ($docCollection as $doc) {
-                    if ($doc instanceof Document) {
-
-                        $entity = $this->makeNewEntity($this->makeIdFromKey($doc->key()), $doc->doc());
-
-                        $entities[] = $entity;
-                    }
-                }
-            }
-        }
-
-        return $entities;
     }
 
 
@@ -134,16 +53,36 @@ abstract class CbEsRepository implements EntityRepository
      *
      * @return Entity
      */
-    public function show($id = null)
+    public function getOne($id)
     {
-        // list all entities by default
-        if ($id === null) {
-            return $this->search('_exists_:' . static::$idField);
-        }
-
         $doc = $this->getCbDocument($id);
 
         return $this->makeNewEntity($doc->key(), $doc->doc());
+    }
+
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getMany(array $ids)
+    {
+        $entities = [];
+
+        $docCollection = $this->cb->findByKey($ids);
+
+        if ($docCollection instanceof DocumentCollection) {
+            foreach ($docCollection as $doc) {
+                if ($doc instanceof Document) {
+
+                    $entity = $this->makeNewEntity($this->makeIdFromKey($doc->key()), $doc->doc());
+
+                    $entities[] = $entity;
+                }
+            }
+        }
+
+        return $entities;
     }
 
 
@@ -224,7 +163,7 @@ abstract class CbEsRepository implements EntityRepository
     public function destroy($id)
     {
         // verify the entity exists by attempting to show it; an exception will be thrown if it does not exist
-        $this->show($id);
+        $this->getOne($id);
 
         /** @noinspection PhpVoidFunctionResultUsedInspection */
         // connect to Couchbase server

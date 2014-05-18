@@ -29,8 +29,7 @@
     </listeners>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./app/controllers</directory>
-            <directory suffix=".php">./app/lib</directory>
+            <directory suffix=".php">./app/src</directory>
         </whitelist>
     </filter>
 </phpunit>

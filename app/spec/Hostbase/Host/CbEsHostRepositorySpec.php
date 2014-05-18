@@ -5,7 +5,7 @@ use Basement\data\Document;
 use Basement\data\DocumentCollection;
 use Elasticsearch\Client as ElasticsearchClient;
 use Hostbase\Exceptions\NoSearchResults;
-use Hostbase\Host\CbEsHostRepository;
+use Hostbase\Host\CouchbaseHostRepository;
 use Hostbase\Host\Host;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;

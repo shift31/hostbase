@@ -1,9 +1,13 @@
-<?php
+<?php namespace Hostbase;
 
+use \Illuminate\Routing\Controller;
+use Input;
+use Request;
+use Response;
 use Hostbase\Exceptions\NoSearchResults;
 use Hostbase\Entity\Exceptions\EntityNotFound;
 use Hostbase\Entity\EntityTransformer;
-use Hostbase\Entity\EntityRepository;
+use Hostbase\Entity\EntityService;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
@@ -15,23 +19,21 @@ use Illuminate\Http\Response as HttpResponse;
  * Class ResourceController
  *
  * Abstract class for handling API routes
- *
- * @todo use transformer to dynamically filter data
  */
 abstract class ResourceController extends Controller
 {
     /**
-     * @var EntityRepository
+     * @var EntityService
      */
-    protected $repository;
+    protected $service;
 
     /**
-     * @var League\Fractal\Manager
+     * @var \League\Fractal\Manager
      */
     protected $fractal;
 
     /**
-     * @var League\Fractal\TransformerAbstract
+     * @var \League\Fractal\TransformerAbstract
      */
     protected $transformer;
 
@@ -49,13 +51,13 @@ abstract class ResourceController extends Controller
 
 
     /**
-     * @param EntityRepository $repository
+     * @param EntityService $service
      * @param Manager $fractal
      * @param EntityTransformer $transformer
      */
-    public function __construct(EntityRepository $repository, Manager $fractal, EntityTransformer $transformer)
+    public function __construct(EntityService $service, Manager $fractal, EntityTransformer $transformer)
     {
-        $this->repository = $repository;
+        $this->service = $service;
         $this->fractal = $fractal;
         $this->transformer = $transformer;
     }
@@ -78,7 +80,7 @@ abstract class ResourceController extends Controller
             }
 
             try {
-                $resources = $this->repository->search(
+                $resources = $this->service->search(
                     Input::get('q'),
                     Input::has('size') ? Input::get('size') : 10000,
                     $showData
@@ -86,11 +88,11 @@ abstract class ResourceController extends Controller
                 return $this->respondWithCollection($resources, $this->transformer);
             } catch (NoSearchResults $e) {
                 return $this->errorNotFound($e->getMessage());
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 return $this->errorInternalError($e->getMessage());
             }
         } else {
-            return $this->respondWithCollection($this->repository->show(), $this->transformer);
+            return $this->respondWithCollection($this->service->showList(), $this->transformer);
         }
     }
 
@@ -115,12 +117,12 @@ abstract class ResourceController extends Controller
         }
 
         try {
-            $entity = $this->repository->makeNewEntity();
+            $entity = $this->service->makeNewEntity();
             $entity->setData($data);
-            $resource = $this->repository->store($entity);
+            $resource = $this->service->store($entity);
 
             return $this->setStatusCode(HttpResponse::HTTP_CREATED)->respondWithItem($resource, $this->transformer);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->errorInternalError($e->getMessage());
         }
     }
@@ -138,10 +140,10 @@ abstract class ResourceController extends Controller
         $this->setTransformerFilters();
 
         try {
-            return $this->respondWithItem($this->repository->show($id), $this->transformer);
+            return $this->respondWithItem($this->service->show($id), $this->transformer);
         } catch (EntityNotFound $e) {
             return $this->errorNotFound($e->getMessage());
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->errorInternalError($e->getMessage());
         }
     }
@@ -169,14 +171,15 @@ abstract class ResourceController extends Controller
         }
 
         try {
+            $entity = $this->service->makeNewEntity();
+            $entity->setData($data);
 
+            $updatedResource = $this->service->update($entity);
 
-            $updatedData = $this->repository->update($id, $data);
-
-            return $this->respondWithItem($updatedData, $this->transformer);
+            return $this->respondWithItem($updatedResource, $this->transformer);
         } catch (EntityNotFound $e) {
             return $this->errorNotFound($e->getMessage());
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->errorInternalError($e->getMessage());
         }
     }
@@ -192,10 +195,10 @@ abstract class ResourceController extends Controller
     public function destroy($id)
     {
         try {
-            $this->repository->destroy($id);
+            $this->service->destroy($id);
 
             return Response::json("Deleted $id");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->errorInternalError($e->getMessage());
         }
 

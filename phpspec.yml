@@ -1,6 +1,6 @@
 suites:
  hostbase_suite:
   namespace: Hostbase
-  src_path: app/lib
+  src_path: app/src
   spec_path: app
   spec_prefix: spec

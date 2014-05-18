@@ -1,10 +1,10 @@
 <?php namespace Hostbase\IpAddress;
 
-use Hostbase\CbEsRepository;
+use Hostbase\CouchbaseRepository;
 use Validator;
 
 
-class CbEsIpAddressRepository extends CbEsRepository implements IpAddressRepository
+class CouchbaseIpAddressRepository extends CouchbaseRepository implements IpAddressRepository
 {
     /**
      * @var string $resourceName
