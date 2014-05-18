@@ -73,7 +73,7 @@ abstract class ResourceController extends Controller
         // handle search
         if (Input::has('q')) {
 
-            $showData = Input::has('showData') ? (bool) Input::get('showData') : true;
+            $showData = Input::has('showData') ? (bool) Input::get('showData') : false;
 
             if ($showData === true) {
                 $this->setTransformerFilters();
@@ -85,14 +85,14 @@ abstract class ResourceController extends Controller
                     Input::has('size') ? Input::get('size') : 10000,
                     $showData
                 );
-                return $this->respondWithCollection($resources, $this->transformer);
+                return $this->respondWithCollection($resources, $showData === true ? $this->transformer: new ListTransformer());
             } catch (NoSearchResults $e) {
                 return $this->errorNotFound($e->getMessage());
             } catch (\Exception $e) {
                 return $this->errorInternalError($e->getMessage());
             }
         } else {
-            return $this->respondWithCollection($this->service->showList(), $this->transformer);
+            return $this->respondWithCollection($this->service->showList(), new ListTransformer());
         }
     }
 
@@ -140,7 +140,7 @@ abstract class ResourceController extends Controller
         $this->setTransformerFilters();
 
         try {
-            return $this->respondWithItem($this->service->show($id), $this->transformer);
+            return $this->respondWithItem($this->service->showOne($id), $this->transformer);
         } catch (EntityNotFound $e) {
             return $this->errorNotFound($e->getMessage());
         } catch (\Exception $e) {

@@ -1,6 +1,6 @@
 <?php namespace Hostbase;
 
-use Basement\Client as BasementClient;
+use Basement\Client;
 use Basement\data\Document;
 use Basement\data\DocumentCollection;
 use Hostbase\Entity\Entity;
@@ -29,21 +29,20 @@ abstract class CouchbaseRepository implements EntityRepository, MakesEntities
 
 
     /**
-     * @var \Basement\Client
+     * @var Client
      */
     protected $cb;
 
 
     /**
-     * @param BasementClient $cb\
      * @throws \Exception
      */
-    public function __construct(BasementClient $cb)
+    public function __construct()
     {
-        $this->cb = $cb;
+        $this->cb = \App::make('basement');
 
         if (is_null(static::$entityName) || is_null(static::$idField)) {
-            throw new \Exception("'entityName', 'idField', and 'defaultSearchField' fields must not be null");
+            throw new \Exception("'entityName' and 'idField' fields must not be null");
         }
     }
 
