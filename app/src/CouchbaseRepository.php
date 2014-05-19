@@ -39,7 +39,13 @@ abstract class CouchbaseRepository implements EntityRepository, MakesEntities
      */
     public function __construct()
     {
-        $this->cb = \App::make('basement'); // todo - figure out how to inject this into the constructor
+        /*
+         * todo - figure out how to inject this into the constructor
+         *
+         * For some reason when Basement\Client is injected, the IoC container
+         * doesn't properly resolve the singleton instance bound as 'basement'
+         */
+        $this->cb = \App::make('basement');
 
         if (is_null(static::$entityName) || is_null(static::$idField)) {
             throw new \Exception("'entityName' and 'idField' fields must not be null");

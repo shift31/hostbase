@@ -1,6 +1,6 @@
 <?php namespace Hostbase;
 
-use \Illuminate\Routing\Controller;
+use Illuminate\Routing\Controller;
 use Input;
 use Request;
 use Response;
