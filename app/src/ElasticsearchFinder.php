@@ -5,7 +5,7 @@ use Hostbase\Entity\EntityFinder;
 use Hostbase\Exceptions\NoSearchResults;
 
 
-class ElasticsearchFinder implements EntityFinder {
+abstract class ElasticsearchFinder implements EntityFinder {
 
     /**
      * @todo add elasticsearch index to app config
