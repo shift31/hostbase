@@ -72,7 +72,13 @@ class EntityTransformer extends TransformerAbstract
             $this->filterResourceForExcludes($entity);
         }
 
-        return $entity->getData();
+        $data = $entity->getData();
+
+        // remove docType and _timestamp keys, as they're only used internally
+        unset($data['docType']);
+        unset($data['_timestamp']);
+
+        return $data;
     }
 
 

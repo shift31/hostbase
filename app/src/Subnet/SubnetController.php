@@ -1,7 +1,7 @@
 <?php namespace Hostbase\Subnet;
 
 use Hostbase\ResourceController;
-use \Hostbase\Entity\EntityTransformer;
+use Hostbase\Entity\EntityTransformer;
 use League\Fractal\Manager;
 
 
@@ -9,13 +9,13 @@ class SubnetController extends ResourceController
 {
 
     /**
-     * @param SubnetRepository $subnets
+     * @param SubnetService $service
      * @param Manager $fractal
      * @param EntityTransformer $transformer
      */
-    public function __construct(SubnetRepository $subnets, Manager $fractal, EntityTransformer $transformer)
+    public function __construct(SubnetService $service, Manager $fractal, EntityTransformer $transformer)
     {
-        $this->service = $subnets;
+        $this->service = $service;
         $this->fractal = $fractal;
         $this->transformer = $transformer;
     }

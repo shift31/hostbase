@@ -9,13 +9,13 @@ class HostController extends ResourceController
 {
 
     /**
-     * @param HostService $hosts
+     * @param HostService $service
      * @param Manager $fractal
      * @param EntityTransformer $transformer
      */
-    public function __construct(HostService $hosts, Manager $fractal, EntityTransformer $transformer)
+    public function __construct(HostService $service, Manager $fractal, EntityTransformer $transformer)
     {
-        $this->service = $hosts;
+        $this->service = $service;
         $this->fractal = $fractal;
         $this->transformer = $transformer;
     }

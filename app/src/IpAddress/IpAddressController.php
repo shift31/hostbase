@@ -9,13 +9,13 @@ class IpAddressController extends ResourceController
 {
 
     /**
-     * @param IpAddressRepository $ipAddresses
+     * @param IpAddressService $service
      * @param Manager $fractal
      * @param EntityTransformer $transformer
      */
-    public function __construct(IpAddressRepository $ipAddresses, Manager $fractal, EntityTransformer $transformer)
+    public function __construct(IpAddressService $service, Manager $fractal, EntityTransformer $transformer)
     {
-        $this->service = $ipAddresses;
+        $this->service = $service;
         $this->fractal = $fractal;
         $this->transformer = $transformer;
     }

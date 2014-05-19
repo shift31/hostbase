@@ -1,16 +1,25 @@
 <?php namespace Hostbase\Host;
 
+use Hostbase\Entity\BaseEntityService;
 use Hostbase\Entity\Entity;
-use Hostbase\Entity\EntityService;
 use Hostbase\Entity\Exceptions\InvalidEntity;
-use Hostbase\Entity\MakesEntities;
 use Crypt;
 use Log;
 
 
-class HostService implements EntityService, MakesEntities {
+class HostService extends BaseEntityService {
 
     use HostMaker;
+
+    /**
+     * @var string $entityName
+     */
+    static protected $entityName = 'host';
+
+    /**
+     * @var string $idField
+     */
+    static protected $idField = 'fqdn';
 
     /**
      * @var \Hostbase\Entity\EntityRepository
@@ -72,43 +81,6 @@ class HostService implements EntityService, MakesEntities {
 
 
     /**
-     * @return array
-     */
-    public function showList()
-    {
-        return $this->search('_exists_:fqdn');
-    }
-
-
-    /**
-     * @param $query
-     * @param int $limit
-     * @param bool $showData
-     * @return array
-     * @throws \Hostbase\Exceptions\NoSearchResults
-     */
-    public function search($query, $limit = 10000, $showData = false)
-    {
-        $docIds = $this->finder->search($query, $limit);
-
-        if ($showData === false) {
-
-            // set entities to an array of document IDs without the entity name prefixed
-            $entities = array_map(
-                function ($entity) {
-                    return str_replace('host' . '_', '', $entity);
-                },
-                $docIds
-            );
-        } else {
-            $entities = $this->repository->getMany($docIds);
-        }
-
-        return $entities;
-    }
-
-
-    /**
      * @param Entity $host
      * @return Host
      * @throws InvalidEntity
@@ -147,10 +119,15 @@ class HostService implements EntityService, MakesEntities {
 
     /**
      * @param Entity $host
+     * @throws InvalidEntity
      * @return Host
      */
     public function update(Entity $host)
     {
+        if (! $host instanceof Host) {
+            throw new InvalidEntity('Expected $host to be an instance of Host');
+        }
+
         $data = $host->getData();
 
         // encrypt admin password
@@ -162,16 +139,6 @@ class HostService implements EntityService, MakesEntities {
     }
 
 
-    /**
-     * @param string $id
-     *
-     * @throws \Exception
-     * @return bool
-     */
-    public function destroy($id)
-    {
-        return $this->repository->destroy($id);
-    }
 
 
     /**

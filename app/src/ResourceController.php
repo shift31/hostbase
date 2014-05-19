@@ -7,7 +7,7 @@ use Response;
 use Hostbase\Exceptions\NoSearchResults;
 use Hostbase\Entity\Exceptions\EntityNotFound;
 use Hostbase\Entity\EntityTransformer;
-use Hostbase\Entity\EntityService;
+use Hostbase\Entity\BaseEntityService;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
@@ -23,7 +23,7 @@ use Illuminate\Http\Response as HttpResponse;
 abstract class ResourceController extends Controller
 {
     /**
-     * @var EntityService
+     * @var BaseEntityService
      */
     protected $service;
 
@@ -33,7 +33,7 @@ abstract class ResourceController extends Controller
     protected $fractal;
 
     /**
-     * @var \League\Fractal\TransformerAbstract
+     * @var EntityTransformer
      */
     protected $transformer;
 
@@ -51,11 +51,11 @@ abstract class ResourceController extends Controller
 
 
     /**
-     * @param EntityService $service
+     * @param BaseEntityService $service
      * @param Manager $fractal
      * @param EntityTransformer $transformer
      */
-    public function __construct(EntityService $service, Manager $fractal, EntityTransformer $transformer)
+    public function __construct(BaseEntityService $service, Manager $fractal, EntityTransformer $transformer)
     {
         $this->service = $service;
         $this->fractal = $fractal;
@@ -85,7 +85,7 @@ abstract class ResourceController extends Controller
                     Input::has('size') ? Input::get('size') : 10000,
                     $showData
                 );
-                return $this->respondWithCollection($resources, $showData === true ? $this->transformer: new ListTransformer());
+                return $this->respondWithCollection($resources, $showData === true ? $this->transformer : new ListTransformer());
             } catch (NoSearchResults $e) {
                 return $this->errorNotFound($e->getMessage());
             } catch (\Exception $e) {
@@ -172,6 +172,7 @@ abstract class ResourceController extends Controller
 
         try {
             $entity = $this->service->makeNewEntity();
+            $entity->setId($id);
             $entity->setData($data);
 
             $updatedResource = $this->service->update($entity);

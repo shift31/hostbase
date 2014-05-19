@@ -23,7 +23,7 @@ abstract class CouchbaseRepository implements EntityRepository, MakesEntities
     /**
      * The data field to use for generating a new id (key suffix).
      *
-     * @var string $keySuffixField
+     * @var string $idField
      */
     static protected $idField = null;
 
@@ -39,7 +39,7 @@ abstract class CouchbaseRepository implements EntityRepository, MakesEntities
      */
     public function __construct()
     {
-        $this->cb = \App::make('basement');
+        $this->cb = \App::make('basement'); // todo - figure out how to inject this into the constructor
 
         if (is_null(static::$entityName) || is_null(static::$idField)) {
             throw new \Exception("'entityName' and 'idField' fields must not be null");

@@ -9,6 +9,7 @@ class SubnetServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->app->bind('Hostbase\Subnet\SubnetRepository', 'Hostbase\Subnet\CbEsSubnetRepository');
+        $this->app->bind('Hostbase\Subnet\SubnetRepository', 'Hostbase\Subnet\CouchbaseSubnetRepository');
+        $this->app->bind('Hostbase\Subnet\SubnetFinder', 'Hostbase\Subnet\ElasticsearchSubnetFinder');
     }
 }
