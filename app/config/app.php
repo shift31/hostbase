@@ -66,6 +66,7 @@ return array(
     */
 
     'key' => 'm2yJQhC8zaURasvazN8tv7YvzbFv1Zu9',
+    'cipher' => MCRYPT_RIJNDAEL_256,
 
     /*
     |--------------------------------------------------------------------------
@@ -181,5 +182,4 @@ return array(
         'Validator' => 'Illuminate\Support\Facades\Validator',
         'View' => 'Illuminate\Support\Facades\View',
     ),
-
 );

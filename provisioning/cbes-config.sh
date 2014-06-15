@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo ">>> Configuring Couchbase Plug-in for Elasticsearch"
+
 sudo service elasticsearch stop
 
 # install and configure couchbase plugin for elasticsearch

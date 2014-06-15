@@ -3,41 +3,47 @@
 
 # Config Github Settings
 github_username = "fideloper"
-github_repo     = "Vaprobash"
-github_branch   = "master"
+github_repo = "vaprobash12"
+github_branch = "master"
 
 # Server Configuration
 
-hostname        = "hostbase.dev"
-
-# Server Configuration
-server_ip             = "192.168.33.10"
-server_memory         = "1536" # MB
+# Set a local private network IP address.
+# See http://en.wikipedia.org/wiki/Private_network for explanation
+# You can use the following IP ranges:
+# 10.0.0.1 - 10.255.255.254
+# 172.16.0.1 - 172.31.255.254
+# 192.168.0.1 - 192.168.255.254
+server_ip = "192.168.33.10"
+server_memory = "1536" # MB
+server_timezone = "UTC"
 
 # Languages and Packages
 ruby_version          = "latest" # Choose what ruby version should be installed (will also be the default version)
 ruby_gems             = [        # List any Ruby Gems that you want to install
 ]
-composer_packages     = [        # List any global Composer packages that you want to install
+
+# PHP Options
+php_version = "latest" # Options: latest|previous|distributed For 12.04. latest=5.5, previous=5.4, distributed=5.3
+composer_packages = [ # List any global Composer packages that you want to install
   #"phpunit/phpunit:4.0.*",
   #"codeception/codeception=*",
   #"phpspec/phpspec:2.0.*@dev",
   #"squizlabs/php_codesniffer:1.5.*",
 ]
-
 public_folder         = "/vagrant/public"
 
 Vagrant.configure("2") do |config|
 
   # Set server to Ubuntu 12.04
-  config.vm.box = "ubuntu/precise64"
+  config.vm.box = "precise64"
 
   config.vm.box_url = "http://files.vagrantup.com/precise64.box"
   # If using VMWare Fusion Provider:
   # config.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
 
   # Create a hostname, don't forget to put it to the `hosts` file
-  config.vm.hostname = hostname
+  config.vm.hostname = "hostbase.dev"
 
   # Create a static IP
   #config.vm.network :private_network, ip: server_ip
@@ -96,33 +102,54 @@ Vagrant.configure("2") do |config|
   ##########
 
   # Base Packages
-  config.vm.provision "shell", path: "provisioning/base.sh"
+  #config.vm.provision "shell", path: "provisioning/base.sh"
 
   # PHP
-  config.vm.provision "shell", path: "provisioning/php.sh"
+  #config.vm.provision "shell", path: "provisioning/php.sh"
+
+  # Provision Base Packages
+  config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/base.sh"
+
+  # Provision PHP
+  config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/php.sh", args: [php_version, server_timezone]
+
+
 
   # Apache Base
-  config.vm.provision "shell", path: "provisioning/apache.sh", args: [server_ip, public_folder, hostname]
+  #config.vm.provision "shell", path: "provisioning/apache.sh", args: [server_ip, public_folder, hostname]
+  config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/apache.sh", args: [server_ip, public_folder]
+
+
 
   # Nginx Base
   # config.vm.provision "shell", path: "provisioning/nginx.sh", args: [server_ip, public_folder, hostname]
+  # config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/nginx.sh", args: [server_ip, public_folder]
+
 
   # Couchbase
   config.vm.provision "shell", path: "provisioning/couchbase.sh"
+  #config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/couchbase.sh"
+
+
 
   # Elasticsearch
   config.vm.provision "shell", path: "provisioning/elasticsearch.sh"
+  #config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/elasticsearch.sh"
+
 
   # ElasticHQ
   # Admin for: Elasticsearch
   # Works on: Apache2, Nginx
-  config.vm.provision "shell", path: "provisioning/elastichq.sh"
+  # config.vm.provision "shell", path: "provisioning/elastichq.sh"
+  config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/elastichq.sh"
+
+
 
   # Couchbase Elasticsearch Connector
   config.vm.provision "shell", path: "provisioning/cbes-config.sh"
 
   # Composer
-  config.vm.provision "shell", path: "https://raw.githubusercontent.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/composer.sh", privileged: false, args: composer_packages.join(" ")
+  config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/composer.sh", privileged: false, args: composer_packages.join(" ")
 
   # WRAP-UP
   config.vm.provision "shell", path: "provisioning/wrap-up.sh"
