@@ -3,8 +3,11 @@
 
 # Config Github Settings
 github_username = "fideloper"
-github_repo = "vaprobash12"
+github_repo = "vaprobash"
 github_branch = "master"
+github_url = "https://raw.githubusercontent.com/#{github_username}/#{github_repo}/#{github_branch}"
+
+hostname = "hostbase.dev"
 
 # Server Configuration
 
@@ -16,6 +19,7 @@ github_branch = "master"
 # 192.168.0.1 - 192.168.255.254
 server_ip = "192.168.33.10"
 server_memory = "1536" # MB
+server_swap           = "3072" # Options: false | int (MB) - Guideline: Between one or two times the server_memory
 server_timezone = "UTC"
 
 # Languages and Packages
@@ -23,8 +27,10 @@ ruby_version          = "latest" # Choose what ruby version should be installed 
 ruby_gems             = [        # List any Ruby Gems that you want to install
 ]
 
+# To install HHVM instead of PHP, set this to "true"
+hhvm                  = "false"
+
 # PHP Options
-php_version = "latest" # Options: latest|previous|distributed For 12.04. latest=5.5, previous=5.4, distributed=5.3
 composer_packages = [ # List any global Composer packages that you want to install
   #"phpunit/phpunit:4.0.*",
   #"codeception/codeception=*",
@@ -35,19 +41,14 @@ public_folder         = "/vagrant/public"
 
 Vagrant.configure("2") do |config|
 
-  # Set server to Ubuntu 12.04
-  config.vm.box = "precise64"
-
-  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
-  # If using VMWare Fusion Provider:
-  # config.vm.box_url = "http://files.vagrantup.com/precise64_vmware.box"
+  # Set server to Ubuntu 14.04
+  config.vm.box = "ubuntu/trusty64"
 
   # Create a hostname, don't forget to put it to the `hosts` file
-  config.vm.hostname = "hostbase.dev"
+  config.vm.hostname = hostname
 
   # Create a static IP
-  #config.vm.network :private_network, ip: server_ip
-
+  config.vm.network :private_network, ip: server_ip
 
   if Vagrant::Util::Platform.windows?
     config.vm.synced_folder ".", "/vagrant", type: "smb"
@@ -74,7 +75,7 @@ Vagrant.configure("2") do |config|
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
 
-    override.vm.network :private_network, ip: server_ip
+    #override.vm.network :private_network, ip: server_ip
   end
   
   # If using VMWare Fusion
@@ -96,6 +97,18 @@ Vagrant.configure("2") do |config|
      override.vm.network :private_network, ip: '192.168.206.10'
   end
 
+  # If using Vagrant-Cachier
+  # http://fgrehm.viewdocs.io/vagrant-cachier
+  if Vagrant.has_plugin?("vagrant-cachier")
+    # Configure cached packages to be shared between instances of the same base box.
+    # Usage docs: http://fgrehm.viewdocs.io/vagrant-cachier/usage
+    config.cache.scope = :box
+
+    config.cache.synced_folder_opts = {
+        type: :nfs,
+        mount_options: ['rw', 'vers=3', 'tcp', 'nolock']
+    }
+  end
 
   ####
   # Provisioning
@@ -108,42 +121,39 @@ Vagrant.configure("2") do |config|
   #config.vm.provision "shell", path: "provisioning/php.sh"
 
   # Provision Base Packages
-  config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/base.sh"
+  config.vm.provision "shell", path: "#{github_url}/scripts/base.sh", args: [github_url, server_swap]
 
   # Provision PHP
-  config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/php.sh", args: [php_version, server_timezone]
-
+  config.vm.provision "shell", path: "#{github_url}/scripts/php.sh", args: [server_timezone, hhvm]
 
 
   # Apache Base
-  #config.vm.provision "shell", path: "provisioning/apache.sh", args: [server_ip, public_folder, hostname]
-  config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/apache.sh", args: [server_ip, public_folder]
-
-
+  # config.vm.provision "shell", path: "provisioning/apache.sh", args: [server_ip, public_folder, hostname]
 
   # Nginx Base
   # config.vm.provision "shell", path: "provisioning/nginx.sh", args: [server_ip, public_folder, hostname]
-  # config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/nginx.sh", args: [server_ip, public_folder]
+
+  # Provision Apache Base
+  config.vm.provision "shell", path: "#{github_url}/scripts/apache.sh", args: [server_ip, public_folder, hostname, github_url]
+
+  # Provision Nginx Base
+  # config.vm.provision "shell", path: "#{github_url}/scripts/nginx.sh", args: [server_ip, public_folder, hostname, github_url]
 
 
   # Couchbase
   config.vm.provision "shell", path: "provisioning/couchbase.sh"
   #config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/couchbase.sh"
 
-
-
   # Elasticsearch
   config.vm.provision "shell", path: "provisioning/elasticsearch.sh"
   #config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/elasticsearch.sh"
-
 
   # ElasticHQ
   # Admin for: Elasticsearch
   # Works on: Apache2, Nginx
   # config.vm.provision "shell", path: "provisioning/elastichq.sh"
-  config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/elastichq.sh"
-
-
+  #config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/elastichq.sh"
+  config.vm.provision "shell", path: "#{github_url}/scripts/elastichq.sh"
 
   # Couchbase Elasticsearch Connector
   config.vm.provision "shell", path: "provisioning/cbes-config.sh"
