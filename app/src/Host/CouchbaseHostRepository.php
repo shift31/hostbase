@@ -1,6 +1,6 @@
 <?php namespace Hostbase\Host;
 
-use Hostbase\CouchbaseRepository;
+use Hostbase\Repository\CouchbaseRepository;
 
 
 class CouchbaseHostRepository extends CouchbaseRepository implements HostRepository

@@ -27,22 +27,22 @@ class EntityTransformerTest extends PHPUnit_Framework_TestCase {
     /** @test */
     public function it_returns_all_data_if_there_are_no_includes_or_excludes()
     {
-        $resourceTransformer = new EntityTransformer();
+        $entityTransformer = new EntityTransformer();
 
         $this->entity->shouldReceive('getData')->once()->andReturn($this->dummyData);
 
-        $transformedResource = $resourceTransformer->transform($this->entity);
+        $transformedEntity = $entityTransformer->transform($this->entity);
 
-        $this->assertEquals($this->dummyData, $transformedResource);
+        $this->assertEquals($this->dummyData, $transformedEntity);
     }
 
 
     /** @test */
     public function it_can_filter_resource_data_using_includes()
     {
-        $resourceTransformer = new EntityTransformer();
+        $entityTransformer = new EntityTransformer();
 
-        $resourceTransformer->setIncludes(['two']);
+        $entityTransformer->setFieldIncludes(['two']);
 
         $transformedDummy = ['two' => 2];
 
@@ -50,20 +50,20 @@ class EntityTransformerTest extends PHPUnit_Framework_TestCase {
         $this->entity->shouldReceive('setData')->once()->with($transformedDummy);
         $this->entity->shouldReceive('getData')->once()->andReturn($transformedDummy);
 
-        $transformedResource = $resourceTransformer->transform($this->entity);
+        $transformedEntity = $entityTransformer->transform($this->entity);
 
-        $this->assertArrayNotHasKey('one', $transformedResource);
+        $this->assertArrayNotHasKey('one', $transformedEntity);
 
-        $this->assertArrayNotHasKey('three', $transformedResource);
+        $this->assertArrayNotHasKey('three', $transformedEntity);
     }
 
 
     /** @test */
     public function it_can_filter_resource_data_using_excludes()
     {
-        $resourceTransformer = new EntityTransformer();
+        $entityTransformer = new EntityTransformer();
 
-        $resourceTransformer->setExcludes(['two']);
+        $entityTransformer->setFieldExcludes(['two']);
 
         $transformedDummy = ['one' => 1, 'three' => 3];
 
@@ -71,8 +71,8 @@ class EntityTransformerTest extends PHPUnit_Framework_TestCase {
         $this->entity->shouldReceive('setData')->once()->with($transformedDummy);
         $this->entity->shouldReceive('getData')->once()->andReturn($transformedDummy);
 
-        $transformedResource = $resourceTransformer->transform($this->entity);
+        $transformedEntity = $entityTransformer->transform($this->entity);
 
-        $this->assertArrayNotHasKey('two', $transformedResource);
+        $this->assertArrayNotHasKey('two', $transformedEntity);
     }
 } 

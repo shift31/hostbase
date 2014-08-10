@@ -1,12 +1,12 @@
 <?php namespace Hostbase\Subnet;
 
-use Hostbase\Entity\BaseEntityService;
 use Hostbase\Entity\Entity;
 use Hostbase\Entity\Exceptions\InvalidEntity;
+use Hostbase\Resource\BaseResourceService;
 use Validator;
 
 
-class SubnetService extends BaseEntityService {
+class SubnetService extends BaseResourceService {
 
     use SubnetMaker;
 

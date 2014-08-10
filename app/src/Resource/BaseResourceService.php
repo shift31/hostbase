@@ -1,7 +1,12 @@
-<?php namespace Hostbase\Entity;
+<?php namespace Hostbase\Resource;
+
+use Hostbase\Entity\Entity;
+use Hostbase\Entity\MakesEntities;
+use Hostbase\Finder\Finder;
+use Hostbase\Repository\Repository;
 
 
-abstract class BaseEntityService implements EntityService, MakesEntities
+abstract class BaseResourceService implements ResourceService, MakesEntities
 {
     /**
      * The entity name/document type.  Used as the key prefix.
@@ -18,17 +23,17 @@ abstract class BaseEntityService implements EntityService, MakesEntities
     static protected $idField = null;
 
     /**
-     * @var EntityRepository
+     * @var Repository
      */
     protected $repository;
 
     /**
-     * @var EntityFinder
+     * @var Finder
      */
     protected $finder;
 
 
-    public function __construct(EntityRepository $repository, EntityFinder $finder)
+    public function __construct(Repository $repository, Finder $finder)
     {
         $this->repository = $repository;
         $this->finder = $finder;

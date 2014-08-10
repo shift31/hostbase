@@ -1,13 +1,13 @@
 <?php namespace Hostbase\Host;
 
-use Hostbase\Entity\BaseEntityService;
+use Crypt;
 use Hostbase\Entity\Entity;
 use Hostbase\Entity\Exceptions\InvalidEntity;
-use Crypt;
+use Hostbase\Resource\BaseResourceService;
 use Log;
 
 
-class HostService extends BaseEntityService {
+class HostService extends BaseResourceService {
 
     use HostMaker;
 
@@ -22,7 +22,7 @@ class HostService extends BaseEntityService {
     static protected $idField = 'fqdn';
 
     /**
-     * @var \Hostbase\Entity\EntityRepository
+     * @var \Hostbase\Host\HostRepository
      */
     protected $repository;
 
@@ -139,7 +139,7 @@ class HostService extends BaseEntityService {
     }
 
 
-
+    // todo - move to Host entity
 
     /**
      * @param array $data

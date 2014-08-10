@@ -1,10 +1,9 @@
 <?php namespace Hostbase\Host;
 
 use Hostbase\Entity\BaseEntity;
-use Hostbase\Entity\Entity;
 
 
-class Host extends BaseEntity implements Entity
+class Host extends BaseEntity
 {
     /**
      * @var string

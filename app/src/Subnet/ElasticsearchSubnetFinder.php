@@ -1,6 +1,6 @@
 <?php namespace Hostbase\Subnet;
 
-use Hostbase\ElasticsearchFinder;
+use Hostbase\Finder\ElasticsearchFinder;
 
 
 class ElasticsearchSubnetFinder extends ElasticsearchFinder implements SubnetFinder {

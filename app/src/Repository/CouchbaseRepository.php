@@ -1,17 +1,16 @@
-<?php namespace Hostbase;
+<?php namespace Hostbase\Repository;
 
 use Basement\Client;
 use Basement\data\Document;
 use Basement\data\DocumentCollection;
 use Hostbase\Entity\Entity;
-use Hostbase\Entity\EntityRepository;
 use Hostbase\Entity\Exceptions\EntityAlreadyExists;
 use Hostbase\Entity\Exceptions\EntityNotFound;
 use Hostbase\Entity\Exceptions\EntityUpdateFailed;
 use Hostbase\Entity\MakesEntities;
 
 
-abstract class CouchbaseRepository implements EntityRepository, MakesEntities
+abstract class CouchbaseRepository implements Repository, MakesEntities
 {
     /**
      * The entity name/document type.  Used as the key prefix.
@@ -40,10 +39,9 @@ abstract class CouchbaseRepository implements EntityRepository, MakesEntities
     public function __construct()
     {
         /*
-         * todo - figure out how to inject this into the constructor
+         * todo - inject this into the constructor
          *
-         * For some reason when Basement\Client is injected, the IoC container
-         * doesn't properly resolve the singleton instance bound as 'basement'
+         * The laravel-basement service provider needs to bind Basement\Client instead of just 'basement'!
          */
         $this->cb = \App::make('basement');
 

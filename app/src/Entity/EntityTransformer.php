@@ -8,21 +8,21 @@ class EntityTransformer extends TransformerAbstract
     /**
      * @var array
      */
-    protected $includes = [];
+    protected $fieldIncludes = [];
 
     /**
      * @var array
      */
-    protected $excludes = [];
+    protected $fieldExcludes = [];
 
 
     /**
      * @param array $includes
      * @return $this
      */
-    public function setIncludes(array $includes)
+    public function setFieldIncludes(array $includes)
     {
-        $this->includes = $includes;
+        $this->fieldIncludes = $includes;
 
         return $this;
     }
@@ -31,9 +31,9 @@ class EntityTransformer extends TransformerAbstract
     /**
      * @return mixed
      */
-    public function getIncludes()
+    public function getFieldIncludes()
     {
-        return $this->includes;
+        return $this->fieldIncludes;
     }
 
 
@@ -41,9 +41,9 @@ class EntityTransformer extends TransformerAbstract
      * @param array $excludes
      * @return $this
      */
-    public function setExcludes(array $excludes)
+    public function setFieldExcludes(array $excludes)
     {
-        $this->excludes = $excludes;
+        $this->fieldExcludes = $excludes;
 
         return $this;
     }
@@ -52,9 +52,9 @@ class EntityTransformer extends TransformerAbstract
     /**
      * @return array
      */
-    public function getExcludes()
+    public function getFieldExcludes()
     {
-        return $this->excludes;
+        return $this->fieldExcludes;
     }
 
 
@@ -64,11 +64,11 @@ class EntityTransformer extends TransformerAbstract
      */
     public function transform(Entity $entity)
     {
-        if (count($this->includes) > 0) {
+        if (count($this->fieldIncludes) > 0) {
             $this->filterResourceForIncludes($entity);
         }
 
-        if (count($this->excludes) > 0) {
+        if (count($this->fieldExcludes) > 0) {
             $this->filterResourceForExcludes($entity);
         }
 
@@ -91,7 +91,7 @@ class EntityTransformer extends TransformerAbstract
 
         $filteredData = [];
 
-        foreach ($this->includes as $include) {
+        foreach ($this->fieldIncludes as $include) {
             $filteredData[$include] = $data[$include];
         }
 
@@ -106,7 +106,7 @@ class EntityTransformer extends TransformerAbstract
     {
         $data = $entity->getData();
 
-        foreach ($this->excludes as $exclude) {
+        foreach ($this->fieldExcludes as $exclude) {
             unset($data[$exclude]);
         }
 

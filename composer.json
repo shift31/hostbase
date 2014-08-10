@@ -9,7 +9,7 @@
         "shift31/laravel-basement": "dev-master",
         "shift31/laravel-elasticsearch": "1.0.*@dev",
         "symfony/yaml": "2.3.x-dev",
-        "league/fractal": "0.8.*"
+        "league/fractal": "0.9.*"
     },
     "require-dev": {
         "phpunit/phpunit": "4.0.*",
@@ -40,10 +40,5 @@
         "post-create-project-cmd": [
             "php artisan key:generate"
         ]
-    },
-    "config": {
-        "preferred-install": "dist"
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }

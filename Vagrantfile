@@ -4,12 +4,12 @@
 # Config Github Settings
 github_username = "fideloper"
 github_repo = "vaprobash"
-github_branch = "master"
-github_url = "https://raw.githubusercontent.com/#{github_username}/#{github_repo}/#{github_branch}"
-
-hostname = "hostbase.dev"
+github_branch   = "1.0.1"
+github_url      = "https://raw.githubusercontent.com/#{github_username}/#{github_repo}/#{github_branch}"
 
 # Server Configuration
+
+hostname = "hostbase.dev"
 
 # Set a local private network IP address.
 # See http://en.wikipedia.org/wiki/Private_network for explanation
@@ -20,9 +20,15 @@ hostname = "hostbase.dev"
 server_ip = "192.168.33.10"
 server_memory = "1536" # MB
 server_swap           = "3072" # Options: false | int (MB) - Guideline: Between one or two times the server_memory
-server_timezone = "UTC"
+
+# UTC        for Universal Coordinated Time
+# EST        for Eastern Standard Time
+# US/Central for American Central
+# US/Eastern for American Eastern
+server_timezone  = "UTC"
 
 # Languages and Packages
+php_timezone          = "UTC"    # http://php.net/manual/en/timezones.php
 ruby_version          = "latest" # Choose what ruby version should be installed (will also be the default version)
 ruby_gems             = [        # List any Ruby Gems that you want to install
 ]
@@ -43,6 +49,10 @@ Vagrant.configure("2") do |config|
 
   # Set server to Ubuntu 14.04
   config.vm.box = "ubuntu/trusty64"
+
+ # Set the server timezone
+  config.vm.provision "shell",
+    inline: "echo setting timezone to #{server_timezone}; ln -sf /usr/share/zoneinfo/#{server_timezone} /etc/localtime"
 
   # Create a hostname, don't forget to put it to the `hosts` file
   config.vm.hostname = hostname
@@ -110,28 +120,37 @@ Vagrant.configure("2") do |config|
     }
   end
 
+  # Adding vagrant-digitalocean provider - https://github.com/smdahlen/vagrant-digitalocean
+  # Needs to ensure that the vagrant plugin is installed
+  config.vm.provider :digital_ocean do |provider, override|
+    override.ssh.private_key_path = '~/.ssh/id_rsa'
+    override.vm.box = 'digital_ocean'
+    override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
+
+    provider.token = 'YOUR TOKEN'
+    provider.image = 'Ubuntu 14.04 x64'
+    provider.region = 'nyc2'
+    provider.size = '512mb'
+  end
+
+
   ####
-  # Provisioning
+  # Base Items
   ##########
-
-  # Base Packages
-  #config.vm.provision "shell", path: "provisioning/base.sh"
-
-  # PHP
-  #config.vm.provision "shell", path: "provisioning/php.sh"
 
   # Provision Base Packages
   config.vm.provision "shell", path: "#{github_url}/scripts/base.sh", args: [github_url, server_swap]
 
   # Provision PHP
-  config.vm.provision "shell", path: "#{github_url}/scripts/php.sh", args: [server_timezone, hhvm]
+  config.vm.provision "shell", path: "#{github_url}/scripts/php.sh", args: [php_timezone, hhvm]
+
+  # Provision Vim
+  # config.vm.provision "shell", path: "#{github_url}/scripts/vim.sh", args: github_url
 
 
-  # Apache Base
-  # config.vm.provision "shell", path: "provisioning/apache.sh", args: [server_ip, public_folder, hostname]
-
-  # Nginx Base
-  # config.vm.provision "shell", path: "provisioning/nginx.sh", args: [server_ip, public_folder, hostname]
+  ####
+  # Web Servers
+  ##########
 
   # Provision Apache Base
   config.vm.provision "shell", path: "#{github_url}/scripts/apache.sh", args: [server_ip, public_folder, hostname, github_url]
@@ -140,26 +159,55 @@ Vagrant.configure("2") do |config|
   # config.vm.provision "shell", path: "#{github_url}/scripts/nginx.sh", args: [server_ip, public_folder, hostname, github_url]
 
 
-  # Couchbase
-  config.vm.provision "shell", path: "provisioning/couchbase.sh"
-  #config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/couchbase.sh"
+  ####
+  # Databases
+  ##########
 
-  # Elasticsearch
+  # Provision MySQL
+  # config.vm.provision "shell", path: "#{github_url}/scripts/mysql.sh", args: [mysql_root_password, mysql_version, mysql_enable_remote]
+
+  # Provision SQLite
+  # config.vm.provision "shell", path: "#{github_url}/scripts/sqlite.sh"
+
+  # Provision Couchbase
+  config.vm.provision "shell", path: "#{github_url}/scripts/couchbase.sh"
+
+
+  ####
+  # Search Servers
+  ##########
+
+  # Install Elasticsearch
+  # config.vm.provision "shell", path: "#{github_url}/scripts/elasticsearch.sh"
   config.vm.provision "shell", path: "provisioning/elasticsearch.sh"
-  #config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/elasticsearch.sh"
 
-  # ElasticHQ
+
+  ####
+  # Search Server Administration (web-based)
+  ##########
+
+  # Install ElasticHQ
   # Admin for: Elasticsearch
   # Works on: Apache2, Nginx
-  # config.vm.provision "shell", path: "provisioning/elastichq.sh"
-  #config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/elastichq.sh"
   config.vm.provision "shell", path: "#{github_url}/scripts/elastichq.sh"
+
 
   # Couchbase Elasticsearch Connector
   config.vm.provision "shell", path: "provisioning/cbes-config.sh"
 
-  # Composer
-  config.vm.provision "shell", path: "https://raw.github.com/#{github_username}/#{github_repo}/#{github_branch}/scripts/composer.sh", privileged: false, args: composer_packages.join(" ")
+
+  ####
+  # Frameworks and Tooling
+  ##########
+
+  # Provision Composer
+  config.vm.provision "shell", path: "#{github_url}/scripts/composer.sh", privileged: false, args: composer_packages.join(" ")
+
+  # Install Screen
+  # config.vm.provision "shell", path: "#{github_url}/scripts/screen.sh"
+
+  # Install git-ftp
+  # config.vm.provision "shell", path: "#{github_url}/scripts/git-ftp.sh", privileged: false
 
   # WRAP-UP
   config.vm.provision "shell", path: "provisioning/wrap-up.sh"

@@ -1,11 +1,10 @@
-<?php namespace Hostbase;
+<?php namespace Hostbase\Finder;
 
 use Elasticsearch\Client as ElasticsearchClient;
-use Hostbase\Entity\EntityFinder;
 use Hostbase\Exceptions\NoSearchResults;
 
 
-abstract class ElasticsearchFinder implements EntityFinder {
+abstract class ElasticsearchFinder implements Finder {
 
     /**
      * @todo add elasticsearch index to app config

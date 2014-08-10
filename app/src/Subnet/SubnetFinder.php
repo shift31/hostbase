@@ -1,7 +1,9 @@
 <?php namespace Hostbase\Subnet;
 
+use Hostbase\Finder\Finder;
 
-interface SubnetFinder
+
+interface SubnetFinder extends Finder
 {
-    public function search($query, $limit);
+
 }

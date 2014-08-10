@@ -1,7 +1,9 @@
 <?php namespace Hostbase\Host;
 
+use Hostbase\Finder\Finder;
 
-interface HostFinder
+
+interface HostFinder extends Finder
 {
-    public function search($query, $limit);
+
 }

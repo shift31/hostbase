@@ -1,7 +1,9 @@
 <?php namespace Hostbase\Host;
 
+use Hostbase\Repository\Repository;
 
-interface HostRepository
+
+interface HostRepository extends Repository
 {
 
 }

@@ -1,6 +1,6 @@
 <?php namespace Hostbase\IpAddress;
 
-use Hostbase\CouchbaseRepository;
+use Hostbase\Repository\CouchbaseRepository;
 
 
 class CouchbaseIpAddressRepository extends CouchbaseRepository implements IpAddressRepository

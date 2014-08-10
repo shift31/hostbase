@@ -1,6 +1,6 @@
 <?php namespace Hostbase\IpAddress;
 
-use Hostbase\ElasticsearchFinder;
+use Hostbase\Finder\ElasticsearchFinder;
 
 
 class ElasticsearchIpAddressFinder extends ElasticsearchFinder implements IpAddressFinder {

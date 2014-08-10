@@ -1,6 +1,6 @@
 <?php namespace Hostbase\Host;
 
-use Hostbase\ElasticsearchFinder;
+use Hostbase\Finder\ElasticsearchFinder;
 
 
 class ElasticsearchHostFinder extends ElasticsearchFinder implements HostFinder {

@@ -1,7 +1,9 @@
 <?php namespace Hostbase\Subnet;
 
+use Hostbase\Repository\Repository;
 
-interface SubnetRepository
+
+interface SubnetRepository extends Repository
 {
 
 }

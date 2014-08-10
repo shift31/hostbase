@@ -1,6 +1,6 @@
 <?php namespace Hostbase\Host;
 
-use Hostbase\ResourceController;
+use Hostbase\Resource\ResourceController;
 use Hostbase\Entity\EntityTransformer;
 use League\Fractal\Manager;
 

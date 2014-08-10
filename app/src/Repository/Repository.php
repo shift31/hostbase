@@ -1,7 +1,9 @@
-<?php namespace Hostbase\Entity;
+<?php namespace Hostbase\Repository;
+
+use Hostbase\Entity\Entity;
 
 
-interface EntityService
+interface Repository
 {
     /**
      * @param string|null $id
@@ -9,34 +11,20 @@ interface EntityService
      * @throws \Exception
      * @return Entity
      */
-    public function showOne($id);
+    public function getOne($id);
 
 
     /**
      * @param array $ids
      * @return array
      */
-    public function showMany(array $ids);
-
-
-    /**
-     * @return array
-     */
-    public function showList();
-
-
-    /**
-     * @param $query
-     * @param int $limit
-     * @param bool $showData
-     * @return array
-     */
-    public function search($query, $limit = 10000, $showData = false);
+    public function getMany(array $ids);
 
 
     /**
      * @param Entity $entity
      *
+     * @throws \Hostbase\Entity\Exceptions\EntityAlreadyExists
      * @return Entity
      */
     public function store(Entity $entity);
@@ -45,6 +33,7 @@ interface EntityService
     /**
      * @param Entity $entity
      *
+     * @throws \Hostbase\Entity\Exceptions\EntityUpdateFailed
      * @return Entity
      */
     public function update(Entity $entity);

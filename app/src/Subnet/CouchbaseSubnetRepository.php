@@ -1,7 +1,7 @@
 <?php namespace Hostbase\Subnet;
 
 use Hostbase\Entity\Entity;
-use Hostbase\CouchbaseRepository;
+use Hostbase\Repository\CouchbaseRepository;
 use Hostbase\Entity\Exceptions\EntityAlreadyExists;
 
 

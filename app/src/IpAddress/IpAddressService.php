@@ -1,12 +1,12 @@
 <?php namespace Hostbase\IpAddress;
 
-use Hostbase\Entity\BaseEntityService;
 use Hostbase\Entity\Entity;
 use Hostbase\Entity\Exceptions\InvalidEntity;
+use Hostbase\Resource\BaseResourceService;
 use Validator;
 
 
-class IpAddressService extends BaseEntityService {
+class IpAddressService extends BaseResourceService {
 
     use IpAddressMaker;
 

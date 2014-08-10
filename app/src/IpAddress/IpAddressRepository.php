@@ -1,7 +1,9 @@
 <?php namespace Hostbase\IpAddress;
 
+use Hostbase\Repository\Repository;
 
-interface IpAddressRepository
+
+interface IpAddressRepository extends Repository
 {
 
 }

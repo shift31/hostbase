@@ -1,18 +1,18 @@
-<?php namespace Hostbase;
+<?php namespace Hostbase\Resource;
 
+use Hostbase\Entity\EntityTransformer;
+use Hostbase\Entity\Exceptions\EntityNotFound;
+use Hostbase\Exceptions\NoSearchResults;
+use Hostbase\ListTransformer;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Routing\Controller;
 use Input;
-use Request;
-use Response;
-use Hostbase\Exceptions\NoSearchResults;
-use Hostbase\Entity\Exceptions\EntityNotFound;
-use Hostbase\Entity\EntityTransformer;
-use Hostbase\Entity\BaseEntityService;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
+use Request;
+use Response;
 use Symfony\Component\Yaml\Yaml;
-use Illuminate\Http\Response as HttpResponse;
 
 
 /**
@@ -23,7 +23,7 @@ use Illuminate\Http\Response as HttpResponse;
 abstract class ResourceController extends Controller
 {
     /**
-     * @var BaseEntityService
+     * @var BaseResourceService
      */
     protected $service;
 
@@ -51,11 +51,11 @@ abstract class ResourceController extends Controller
 
 
     /**
-     * @param BaseEntityService $service
+     * @param BaseResourceService $service
      * @param Manager $fractal
      * @param EntityTransformer $transformer
      */
-    public function __construct(BaseEntityService $service, Manager $fractal, EntityTransformer $transformer)
+    public function __construct(BaseResourceService $service, Manager $fractal, EntityTransformer $transformer)
     {
         $this->service = $service;
         $this->fractal = $fractal;
@@ -213,9 +213,9 @@ abstract class ResourceController extends Controller
     protected function setTransformerFilters()
     {
         if (Input::has('include')) {
-            $this->transformer->setIncludes(explode(',', Input::get('include')));
+            $this->transformer->setFieldIncludes(explode(',', Input::get('include')));
         } elseif (Input::has('exclude')) {
-            $this->transformer->setExcludes(explode(',', Input::get('exclude')));
+            $this->transformer->setFieldExcludes(explode(',', Input::get('exclude')));
         }
     }
 
