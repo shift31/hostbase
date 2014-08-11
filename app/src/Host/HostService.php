@@ -139,7 +139,7 @@ class HostService extends BaseResourceService {
     }
 
 
-    // todo - move to Host entity
+
 
     /**
      * @param array $data
@@ -164,4 +164,4 @@ class HostService extends BaseResourceService {
             unset($data['adminCredentials']['encryptedPassword']);
         }
     }
-} 
+}

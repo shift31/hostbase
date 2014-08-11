@@ -18,11 +18,11 @@ class HostServiceTest extends TestCase {
     {
         parent::setUp();
 
-        $cb = App::make('basement');
+        $repo = App::make('Hostbase\Host\HostRepository');
 
-        $es = App::make('elasticsearch');
+        $finder = App::make('Hostbase\Host\HostFinder');
 
-        $this->service = new HostService($cb, $es);
+        $this->service = new HostService($repo, $finder);
 
         $host = $this->service->makeNewEntity();
         $host->setFqdn(self::TEST_FQDN);
