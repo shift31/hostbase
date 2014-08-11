@@ -22,7 +22,7 @@ class IpAddressService extends BaseResourceService {
     static protected $idField = 'ipAddress';
 
     /**
-     * @var \Hostbase\Entity\EntityRepository
+     * @var IpAddressRepository
      */
     protected $repository;
 
@@ -71,20 +71,4 @@ class IpAddressService extends BaseResourceService {
 
         return $this->repository->store($ipAddress);
     }
-
-
-    /**
-     * @param Entity $ipAddress
-     * @throws InvalidEntity
-     * @return IpAddress
-     */
-    public function update(Entity $ipAddress)
-    {
-        if (! $ipAddress instanceof IpAddress) {
-            throw new InvalidEntity('Expected $ipAddress to be an instance of IpAddress');
-        }
-
-        return $this->repository->update($ipAddress);
-    }
-
 } 

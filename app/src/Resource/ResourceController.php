@@ -171,11 +171,7 @@ abstract class ResourceController extends Controller
         }
 
         try {
-            $entity = $this->service->makeNewEntity();
-            $entity->setId($id);
-            $entity->setData($data);
-
-            $updatedResource = $this->service->update($entity);
+            $updatedResource = $this->service->update($id, $data);
 
             return $this->respondWithItem($updatedResource, $this->transformer);
         } catch (EntityNotFound $e) {

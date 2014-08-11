@@ -46,11 +46,12 @@ interface ResourceService
 
 
     /**
-     * @param Entity $entity
+     * @param string $id
+     * @param array $data
      *
      * @return Entity
      */
-    public function update(Entity $entity);
+    public function update($id, array $data);
 
 
     /**

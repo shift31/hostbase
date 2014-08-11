@@ -1,5 +1,6 @@
 <?php namespace Hostbase\Repository;
 
+use Log;
 use Basement\Client;
 use Basement\data\Document;
 use Basement\data\DocumentCollection;
@@ -60,7 +61,7 @@ abstract class CouchbaseRepository implements Repository, MakesEntities
     {
         $doc = $this->getCbDocument($id);
 
-        return $this->makeNewEntity($doc->key(), $doc->doc());
+        return $this->makeNewEntity($this->makeIdFromKey($doc->key()), $doc->doc());
     }
 
 
@@ -106,7 +107,6 @@ abstract class CouchbaseRepository implements Repository, MakesEntities
         $data['docType'] = static::$entityName;
         $data['createdDateTime'] = date('c');
 
-        /** @noinspection PhpVoidFunctionResultUsedInspection */
         if (! $this->cb->save($this->makeCbDocument($key, $data), ['override' => false])) {
             throw new EntityAlreadyExists("'$id' already exists");
         }
@@ -125,33 +125,13 @@ abstract class CouchbaseRepository implements Repository, MakesEntities
      */
     public function update(Entity $entity)
     {
+        $id = $entity->getId();
+
         $data = $entity->getData();
-        $id = $data[static::$idField];
 
-        $doc = $this->getCbDocument($id);
-        $key = $doc->key();
-        $entity->setId($key);
-
-        // convert Document to array
-        $updateData = (array) unserialize($doc->serialize());
-
-        foreach ($data as $field => $value) {
-            if ($value === null) {
-                // keys should be removed when nullified
-                unset($updateData[$field]);
-            } else {
-                $updateData[$field] = $value;
-            }
-        }
-
-        $updateData['updatedDateTime'] = date('c');
-
-        /** @noinspection PhpVoidFunctionResultUsedInspection */
-        if (! $this->cb->save($this->makeCbDocument($key, $updateData), ['replace' => true])) {
+        if ( ! $this->cb->save($this->makeCbDocument($this->makeKey($id), $data), ['replace' => true])) {
             throw new EntityUpdateFailed("Unable to update '$id'");
         }
-
-        $entity->setData($updateData);
 
         return $entity;
     }
@@ -168,7 +148,6 @@ abstract class CouchbaseRepository implements Repository, MakesEntities
         // verify the entity exists by attempting to show it; an exception will be thrown if it does not exist
         $this->getOne($id);
 
-        /** @noinspection PhpVoidFunctionResultUsedInspection */
         // connect to Couchbase server
         $cbConnection = $this->cb->connection();
 
@@ -211,7 +190,6 @@ abstract class CouchbaseRepository implements Repository, MakesEntities
      */
     protected function getCbDocument($id)
     {
-        /** @noinspection PhpVoidFunctionResultUsedInspection */
         $result = $this->cb->findByKey($this->makeKey($id), ['first' => true]);
 
         if (!($result instanceof Document)) {

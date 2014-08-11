@@ -12,6 +12,16 @@ class Host extends BaseEntity
 
 
     /**
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        parent::setId($id);
+        $this->setFqdn($id);
+    }
+
+
+    /**
      * @param string $fqdn
      */
     public function setFqdn($fqdn)
@@ -32,13 +42,13 @@ class Host extends BaseEntity
 
     public function setData(array $data)
     {
-        parent::setData($data);
-
         if (isset($data['fqdn'])) {
             $this->fqdn = $data['fqdn'];
         } else {
             $this->data['fqdn'] = $this->fqdn;
         }
+
+        parent::setData($data);
     }
 
 } 

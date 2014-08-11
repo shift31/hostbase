@@ -22,7 +22,7 @@ class SubnetService extends BaseResourceService {
     static protected $idField = 'network';
 
     /**
-     * @var \Hostbase\Entity\EntityRepository
+     * @var SubnetRepository
      */
     protected $repository;
 
@@ -73,20 +73,4 @@ class SubnetService extends BaseResourceService {
 
         return $this->repository->store($subnet);
     }
-
-
-    /**
-     * @param Entity $subnet
-     * @throws InvalidEntity
-     * @return Subnet
-     */
-    public function update(Entity $subnet)
-    {
-        if (! $subnet instanceof Subnet) {
-            throw new InvalidEntity('Expected $subnet to be an instance of Subnet');
-        }
-
-        return $this->repository->update($subnet);
-    }
-
 } 

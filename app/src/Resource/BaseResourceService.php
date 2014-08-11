@@ -114,11 +114,32 @@ abstract class BaseResourceService implements ResourceService, MakesEntities
 
 
     /**
-     * @param Entity $entity
+     * @param string $id
+     * @param array  $data
      *
      * @return Entity
      */
-    abstract public function update(Entity $entity);
+    public function update($id, array $data)
+    {
+        $entity = $this->repository->getOne($id);
+
+        $existingData = $entity->getData();
+
+        foreach ($data as $field => $value) {
+            if ($value === '') {
+                // keys should be removed when nullified
+                unset($existingData[$field]);
+            } else {
+                $existingData[$field] = $value;
+            }
+        }
+
+        $existingData['updatedDateTime'] = date('c');
+
+        $entity->setData($existingData);
+
+        return $this->repository->update($entity);
+    }
 
 
     /**

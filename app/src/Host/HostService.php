@@ -118,24 +118,16 @@ class HostService extends BaseResourceService {
 
 
     /**
-     * @param Entity $host
-     * @throws InvalidEntity
+     * @param string $id
+     * @param array $data
      * @return Host
      */
-    public function update(Entity $host)
+    public function update($id, array $data)
     {
-        if (! $host instanceof Host) {
-            throw new InvalidEntity('Expected $host to be an instance of Host');
-        }
-
-        $data = $host->getData();
-
         // encrypt admin password
         $this->encryptAdminPassword($data);
 
-        $host->setData($data);
-
-        return $this->repository->update($host);
+        return parent::update($id, $data);
     }
 
 
