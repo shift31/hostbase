@@ -3,7 +3,7 @@
     "description": "A highly scalable host and network database with full-text search and a RESTful API",
     "license": "MIT",
     "require": {
-        "php": ">=5.4",
+        "php": ">=5.5",
         "laravel/framework": "4.2.*",
         "barryvdh/laravel-ide-helper": "1.*",
         "shift31/laravel-basement": "dev-master",

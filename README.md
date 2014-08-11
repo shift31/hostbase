@@ -14,6 +14,8 @@
 - [Security](#security)
 - [To-do](#to-do)
 
+_**Hostbase is currently under development, however it is quite usable.**_  I created this project to help teach myself the Laravel framework, and study REST API development and enterprise architecture patterns.  ~@bgetsug
+
 ## Overview
 
 Hostbase is a systems and network administration tool for cataloging hosts, subnets, and IP addresses.  It is designed to support private or public cloud operations of any size.  Whether you have a few dozen or a few thousand hosts across multiple environments and data centers, Hostbase can provide the foundation of a service-oriented architecture for tracking the lifecycle of hosts and networks.  Instead of storing duplicate host information across your continuous integration server, deployment tools, provisioning system, or CMDB, Hostbase can provide a single, centralized interface for storing and retrieving this information dynamically.  This is especially useful in environments where scaling horizontally is commonplace.
@@ -22,9 +24,7 @@ Hostbase is a systems and network administration tool for cataloging hosts, subn
 
 Hostbase uses Couchbase Server to easily store data with whatever schema you choose, so you're not locked in to any particular data models other than the primary concepts of hosts, subnets, and IPs.  These objects are stored as JSON documents in a single Couchbase bucket.  Using the Couchbase plug-in for Elasticsearch, data is streamed in real-time from Couchbase to Elasticsearch.  This allows for full-text search using [Elasticsearch/Lucene query string syntax](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html). For example, let's assume you "tag" your hosts by role, environment, and data center.  To retrieve a list of all hosts of the 'web_server' role, in the 'QA' environment, in the 'dallas01' data center, the search query might be as simple as: `env:qa AND role:web_server AND datacenter:dallas01`.
 
-In addition to Couchbase and Elasticsearch, Hostbase requires a web server with PHP 5.4 or greater.  All search and CRUD operations are exposed through a RESTful web service.
-
-_**Hostbase is currently under heavy development, however it is quite usable.  Developers familiar with PHP and the Laravel framework are welcome to contribute by creating Pull Requests.**_
+In addition to Couchbase and Elasticsearch, Hostbase requires a web server with PHP 5.5 or greater.  All search and CRUD operations are exposed through a RESTful web service.
 
 ## Installation
 
@@ -34,11 +34,11 @@ _A rough overview (everything on a single machine)..._
 2. On your Couchbase server:
     - Create (or keep) the 'default' bucket.  This will be used for sessions / cache.
     - Create a bucket called 'hostbase' (you can call it whatever you want, but the default config supports this naming convention)
-3. Download and install [Elasticsearch 0.90.5](http://www.elasticsearch.org/downloads/page/2/).  (Yes, ES 1.0 is out, but the Couchbase Plug-in hasn't been updated yet.)
+3. Download and install [Elasticsearch 1.0.1](http://www.elasticsearch.org/downloads/page/2/).
 4. On your Elasticsearch server, create an index called 'hostbase' with at least 1 shard...replicas are optional but recommended. The data can always be re-indexed by replicating from Couchbase again.
 5. Install the [Couchbase Plug-in for Elasticsearch](http://www.couchbase.com/couchbase-server/connectors/elasticsearch)
 6. Configure Couchbase XDCR to replicate the 'hostbase' bucket to the Elasticsearch cluster
-7. Install PHP 5.4 and the web server of your choice (tested with Apache)
+7. Install PHP 5.5 and the web server of your choice (tested with Apache)
 8. Install the [Couchbase PHP Client Library](http://www.couchbase.com/communities/php/getting-started)
 9. Download/clone this whole repository to the directory of your choice, and configure your web server to serve it as you would any other Laravel-based project.  See http://laravel.com/docs/installation for more info.  You can also download it with [Composer](http://getcomposer.org) by running `composer create-project shift31/hostbase -s dev`.
 10. From the project root, run: `composer install`
@@ -47,7 +47,7 @@ Optional, but recommended, download the [CLI](https://github.com/shift31/hostbas
 
 ### Development Server (Vagrant)
 
-**For development or trial purposes, save yourself some installation time and use [Vagrant](http://vagrantup.com).  _You'll need 1 GB free RAM._**
+**For development or trial purposes, save yourself some installation time and use [Vagrant](http://vagrantup.com).  _You'll need 1.5 GB free RAM._**
 
 ```bash
 git clone https://github.com/shift31/hostbase.git
@@ -206,11 +206,10 @@ _**If your host and network data is sensitive, it is up to you to provide the fi
 
 Basic authentication will be implemented soon, but until then it is recommended (at the very least) to only operate Hostbase server/client on a private network.
 
-## To-do
+## To-do / ?
 
 - Tests (unit, integration, etc.) - **IN PROGRESS**
 - Implement HTTP Basic Authentication with users stored in Hostbase and/or LDAP
-- More documentation; video demo
 - Puppet Module and Chef Cookbook to help automate installation
 - CMDB integration
     - Script to periodically update Hostbase from Puppet Facts...likely using Facter output, run via Cron
