@@ -139,11 +139,10 @@ class HostServiceTest extends TestCase {
     /** @test */
     public function it_can_update_a_host()
     {
-        $host = $this->service->makeNewEntity();
-        $host->setFqdn(self::TEST_FQDN);
-        $host->setData(['foo' => 'bar']);
+        $fqdn = self::TEST_FQDN;
+        $data = ['foo' => 'bar'];
 
-        $updatedHost = $this->service->update($host);
+        $updatedHost = $this->service->update($fqdn, $data);
 
         $this->assertEquals('bar', $updatedHost->getData()['foo']);
     }
