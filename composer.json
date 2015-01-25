@@ -2,14 +2,20 @@
     "name": "shift31/hostbase",
     "description": "A highly scalable host and network database with full-text search and a RESTful API",
     "license": "MIT",
+    "repositories": [
+      {
+        "type": "vcs",
+        "url": "https://github.com/shift31/KeyValueStore.git"
+      }
+    ],
     "require": {
         "php": ">=5.5",
         "laravel/framework": "4.2.*",
         "barryvdh/laravel-ide-helper": "1.*",
-        "shift31/laravel-basement": "dev-master",
-        "shift31/laravel-elasticsearch": "1.0.*@dev",
-        "symfony/yaml": "2.3.x-dev",
-        "league/fractal": "0.9.*"
+        "shift31/laravel-elasticsearch": "1.3.*@dev",
+        "symfony/yaml": "~2.6",
+        "league/fractal": "@stable",
+        "doctrine/key-value-store": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "4.0.*",

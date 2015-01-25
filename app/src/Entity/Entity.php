@@ -1,13 +1,17 @@
 <?php namespace Hostbase\Entity;
 
 
+/**
+ * Interface Entity
+ * @package Hostbase\Entity
+ */
 interface Entity
 {
     /**
      * @param mixed $id
      * @param array $data
      */
-    public function __construct($id = null, array $data = []);
+    public function __construct($id = null, array $data);
 
 
     /**
@@ -25,11 +29,5 @@ interface Entity
     /**
      * @return array
      */
-    public function getData();
-
-
-    /**
-     * @param array $data
-     */
-    public function setData(array $data);
+    public function toArray();
 } 

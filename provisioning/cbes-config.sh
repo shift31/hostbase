@@ -5,7 +5,7 @@ echo ">>> Configuring Couchbase Plug-in for Elasticsearch"
 sudo service elasticsearch stop
 
 # install and configure couchbase plugin for elasticsearch
-sudo /usr/share/elasticsearch/bin/plugin -install transport-couchbase -url http://packages.couchbase.com.s3.amazonaws.com/releases/elastic-search-adapter/1.3.0/elasticsearch-transport-couchbase-1.3.0.zip
+sudo /usr/share/elasticsearch/bin/plugin -install transport-couchbase -url http://packages.couchbase.com.s3.amazonaws.com/releases/elastic-search-adapter/2.0.0/elasticsearch-transport-couchbase-2.0.0.zip
 echo "couchbase.username: Administrator"  | sudo tee -a /etc/elasticsearch/elasticsearch.yml
 echo "couchbase.password: password"  | sudo tee -a /etc/elasticsearch/elasticsearch.yml
 
@@ -28,11 +28,11 @@ sleep 20
 
 
 # configure couchbase
-/opt/couchbase/bin/couchbase-cli cluster-init -c localhost:8091 \
-       --cluster-init-username=Administrator \
-       --cluster-init-password=password \
-       --cluster-init-port=8091 \
-       --cluster-init-ramsize=256
+/opt/couchbase/bin/couchbase-cli cluster-init -c localhost:8091 -u Administrator -p password \
+       --cluster-username=Administrator \
+       --cluster-password=password \
+       --cluster-port=8091 \
+       --cluster-ramsize=256
 
 /opt/couchbase/bin/couchbase-cli bucket-create -c localhost:8091 -u Administrator -p password \
        --bucket=default \

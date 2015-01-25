@@ -1,29 +1,33 @@
 <?php namespace Hostbase\Entity;
 
 
+/**
+ * Class BaseEntity
+ * @package Hostbase\Entity
+ */
 abstract class BaseEntity implements Entity
 {
-
     /**
      * @var mixed
      */
-    protected $id;
+    public $id;
 
     /**
-     * @var array
+     * @var string
      */
-    protected $data;
+    public $docType;
 
 
     /**
      * @param mixed|null $id
      * @param array $data
      */
-    public function __construct($id = null, array $data = [])
+    public function __construct($id = null, array $data)
     {
-        if (isset($id) && count($data) !== 0) {
-            $this->setId($id);
-            $this->setData($data);
+        $this->setId($id);
+
+        foreach ($data as $key => $value) {
+            $this->$key = $value;
         }
     }
 
@@ -49,17 +53,8 @@ abstract class BaseEntity implements Entity
     /**
      * @return array
      */
-    public function getData()
+    public function toArray()
     {
-        return $this->data;
-    }
-
-
-    /**
-     * @param array $data
-     */
-    public function setData(array $data)
-    {
-        $this->data = $data;
+        return get_object_vars($this);
     }
 }

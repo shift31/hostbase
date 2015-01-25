@@ -1,5 +1,13 @@
 <?php
 
+use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
+use Hostbase\CouchbaseServiceProvider;
+use Hostbase\DoctrineKeyValueStoreServiceProvider;
+use Hostbase\Hosts\HostsServiceProvider;
+use Hostbase\IpAddresses\IpAddressesServiceProvider;
+use Hostbase\Subnets\SubnetsServiceProvider;
+use Shift31\LaravelElasticsearch\LaravelElasticsearchServiceProvider;
+
 return array(
 
     /*
@@ -108,14 +116,16 @@ return array(
         'Illuminate\View\ViewServiceProvider',
         'Illuminate\Workbench\WorkbenchServiceProvider',
 
-        'Shift31\LaravelBasement\LaravelBasementServiceProvider',
-        'Shift31\LaravelElasticsearch\LaravelElasticsearchServiceProvider',
+        IdeHelperServiceProvider::class,
 
-        'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
+        LaravelElasticsearchServiceProvider::class,
 
-        'Hostbase\Host\HostServiceProvider',
-        'Hostbase\Subnet\SubnetServiceProvider',
-        'Hostbase\IpAddress\IpAddressServiceProvider'
+        CouchbaseServiceProvider::class,
+        DoctrineKeyValueStoreServiceProvider::class,
+
+        HostsServiceProvider::class,
+        SubnetsServiceProvider::class,
+        IpAddressesServiceProvider::class,
     ),
 
     /*

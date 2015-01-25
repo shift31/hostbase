@@ -1,6 +1,6 @@
 <?php
 
-use Hostbase\Host\HostService;
+use Hostbase\Hosts\HostsService;
 
 
 class HostServiceTest extends TestCase {
@@ -9,7 +9,7 @@ class HostServiceTest extends TestCase {
     const TEST_FQDN_2 = 'test2.example.com';
 
     /**
-     * @var HostService
+     * @var HostsService
      */
     protected $service;
 
@@ -22,7 +22,7 @@ class HostServiceTest extends TestCase {
 
         $finder = App::make('Hostbase\Host\HostFinder');
 
-        $this->service = new HostService($repo, $finder);
+        $this->service = new HostsService($repo, $finder);
 
         $host = $this->service->makeNewEntity();
         $host->setFqdn(self::TEST_FQDN);
@@ -73,7 +73,7 @@ class HostServiceTest extends TestCase {
 
     /**
      * @test
-     * @expectedException Hostbase\Host\HostMissingFqdn
+     * @expectedException Hostbase\Hosts\HostMissingFqdn
      */
     public function it_throws_an_exception_if_host_is_missing_fqdn()
     {

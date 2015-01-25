@@ -1,9 +1,5 @@
 <?php namespace Hostbase\Repository;
 
-use Log;
-use Basement\Client;
-use Basement\data\Document;
-use Basement\data\DocumentCollection;
 use Hostbase\Entity\Entity;
 use Hostbase\Entity\Exceptions\EntityAlreadyExists;
 use Hostbase\Entity\Exceptions\EntityNotFound;
@@ -11,6 +7,10 @@ use Hostbase\Entity\Exceptions\EntityUpdateFailed;
 use Hostbase\Entity\MakesEntities;
 
 
+/**
+ * Class CouchbaseRepository
+ * @package Hostbase\Repository
+ */
 abstract class CouchbaseRepository implements Repository, MakesEntities
 {
     /**
@@ -29,23 +29,17 @@ abstract class CouchbaseRepository implements Repository, MakesEntities
 
 
     /**
-     * @var Client
+     * @var \CouchbaseBucket
      */
-    protected $cb;
+    protected $bucket;
 
 
     /**
+     * @param \CouchbaseBucket $bucket
      * @throws \Exception
      */
-    public function __construct()
+    public function __construct(\CouchbaseBucket $bucket)
     {
-        /*
-         * todo - inject this into the constructor
-         *
-         * The laravel-basement service provider needs to bind Basement\Client instead of just 'basement'!
-         */
-        $this->cb = \App::make('basement');
-
         if (is_null(static::$entityName) || is_null(static::$idField)) {
             throw new \Exception("'entityName' and 'idField' fields must not be null");
         }
@@ -53,37 +47,35 @@ abstract class CouchbaseRepository implements Repository, MakesEntities
 
 
     /**
-     * @param string|null $id
-     *
-     * @return Entity
+     * @inheritdoc
      */
     public function getOne($id)
     {
-        $doc = $this->getCbDocument($id);
+        $key = $this->makeKey($id);
 
-        return $this->makeNewEntity($this->makeIdFromKey($doc->key()), $doc->doc());
+        $metaDoc = $this->bucket->get($key);
+
+        if ($metaDoc === null) {
+            throw new EntityNotFound('No ' . static::$entityName . " named '$id'");
+        }
+
+        return $this->makeNewEntity($this->makeIdFromKey($key), $metaDoc->value);
     }
 
 
     /**
-     * @param array $ids
-     * @return array
+     * @inheritdoc
      */
     public function getMany(array $ids)
     {
         $entities = [];
 
-        $docCollection = $this->cb->findByKey($ids);
+        $metaDocs = $this->bucket->get($ids);
 
-        if ($docCollection instanceof DocumentCollection) {
-            foreach ($docCollection as $doc) {
-                if ($doc instanceof Document) {
+        foreach ($metaDocs as $key => $metaDoc) {
+            $entity = $this->makeNewEntity($this->makeIdFromKey($key), $metaDoc->value);
 
-                    $entity = $this->makeNewEntity($this->makeIdFromKey($doc->key()), $doc->doc());
-
-                    $entities[] = $entity;
-                }
-            }
+            $entities[] = $entity;
         }
 
         return $entities;
@@ -91,112 +83,43 @@ abstract class CouchbaseRepository implements Repository, MakesEntities
 
 
     /**
-     * @param Entity $entity
-     *
-     * @throws EntityAlreadyExists
-     * @return Entity
+     * @inheritdoc
      */
     public function store(Entity $entity)
     {
-        $data = $entity->getData();
-        $id = $data[static::$idField];
+        $id = $entity->{static::$idField};
         $key = $this->makeKey($id);
         $entity->setId($key);
 
         // set document type and creation time
-        $data['docType'] = static::$entityName;
-        $data['createdDateTime'] = date('c');
+        $entity->docType = static::$entityName;
+        $entity->createdDateTime = date('c');
 
-        if (! $this->cb->save($this->makeCbDocument($key, $data), ['override' => false])) {
-            throw new EntityAlreadyExists("'$id' already exists");
-        }
-
-        $entity->setData($data);
+        $this->bucket->insert($key, $entity);
 
         return $entity;
     }
 
 
     /**
-     * @param Entity $entity
-     *
-     * @throws EntityUpdateFailed
-     * @return Entity
+     * @inheritdoc
      */
     public function update(Entity $entity)
     {
         $id = $entity->getId();
 
-        $data = $entity->getData();
-
-        if ( ! $this->cb->save($this->makeCbDocument($this->makeKey($id), $data), ['replace' => true])) {
-            throw new EntityUpdateFailed("Unable to update '$id'");
-        }
+        $this->bucket->replace($this->makeKey($id), $entity);
 
         return $entity;
     }
 
 
     /**
-     * @param string $id
-     *
-     * @return bool
-     * @throws \Exception
+     * @inheritdoc
      */
     public function destroy($id)
     {
-        // verify the entity exists by attempting to show it; an exception will be thrown if it does not exist
-        $this->getOne($id);
-
-        // connect to Couchbase server
-        $cbConnection = $this->cb->connection();
-
-        if (!$cbConnection) {
-            throw new \Exception("No Couchbase connection");
-        }
-
-        $cbConnection->delete($this->makeKey($id));
-
-        return true;
-    }
-
-
-    /**
-     * @param mixed|null $id
-     * @param array $data
-     * @return Entity
-     */
-    abstract public function makeNewEntity($id = null, array $data = []);
-
-
-    /**
-     * @param string $key
-     * @param array $doc
-     * @return array
-     */
-    protected function makeCbDocument($key, $doc)
-    {
-        return [
-            'key' => $key,
-            'doc' => $doc
-        ];
-    }
-
-
-    /**
-     * @param string $id
-     * @return Document
-     * @throws EntityNotFound
-     */
-    protected function getCbDocument($id)
-    {
-        $result = $this->cb->findByKey($this->makeKey($id), ['first' => true]);
-
-        if (!($result instanceof Document)) {
-            throw new EntityNotFound('No ' . static::$entityName . " named '$id'");
-        }
-
-        return $result;
+        $this->bucket->remove($this->makeKey($id));
     }
 
 
