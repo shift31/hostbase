@@ -1,9 +1,22 @@
 <?php namespace Hostbase\IpAddresses;
 
-use Hostbase\Entity\BaseEntity;
+use Hostbase\Entity\DefaultEntity;
 
 
-class IpAddress extends BaseEntity
+/**
+ * Class IpAddress
+ *
+ * @package Hostbase\IpAddresses
+ */
+class IpAddress extends DefaultEntity
 {
+    /**
+     * @var string
+     */
+    protected static $idField = 'ipAddress';
 
+    /**
+     * @var string
+     */
+    protected static $docType = 'ipAddress';
 } 

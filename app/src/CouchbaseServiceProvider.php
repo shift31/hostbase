@@ -1,6 +1,8 @@
 <?php namespace Hostbase;
 
+use CouchbaseCluster;
 use Illuminate\Support\ServiceProvider;
+
 
 /**
  * Class CouchbaseServiceProvider
@@ -9,16 +11,26 @@ use Illuminate\Support\ServiceProvider;
 class CouchbaseServiceProvider extends ServiceProvider
 {
     /**
-     * Register the service provider.
-     *
-     * @return void
+     * @inheritdoc
+     */
+    public function boot()
+    {
+        $app = $this->app;
+
+        $this->app->singleton('CouchbaseBucket', function() use ($app) {
+            /** @var CouchbaseCluster $couchbaseCluster */
+            $couchbaseCluster = $app->make('CouchbaseCluster');
+            return $couchbaseCluster->openBucket('hostbase');
+        });
+    }
+
+
+    /**
+     * @inheritdoc
+     * @todo support cluster config
      */
     public function register()
     {
-        $couchbaseCluster = new \CouchbaseCluster();
-        $couchbaseBucket = $couchbaseCluster->openBucket('hostbase');
-
-        $this->app->instance(\CouchbaseCluster::class, $couchbaseCluster);
-        $this->app->instance(\CouchbaseBucket::class, $couchbaseBucket);
+        $this->app->instance('CouchbaseCluster', new CouchbaseCluster);
     }
 }

@@ -1,9 +1,12 @@
 <?php namespace Hostbase\Services;
 
-
 use Hostbase\Entity\Entity;
 
 
+/**
+ * Interface ResourceService
+ * @package Hostbase\Services
+ */
 interface ResourceService
 {
     /**
@@ -23,9 +26,11 @@ interface ResourceService
 
 
     /**
+     * @param int $limit
+     * @param bool $showData
      * @return array
      */
-    public function showList();
+    public function showList($limit = 10000, $showData = false);
 
 
     /**
@@ -38,11 +43,11 @@ interface ResourceService
 
 
     /**
-     * @param Entity $entity
+     * @param array $data
      *
      * @return Entity
      */
-    public function store(Entity $entity);
+    public function store(array $data);
 
 
     /**

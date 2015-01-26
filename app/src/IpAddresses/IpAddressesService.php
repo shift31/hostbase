@@ -1,27 +1,19 @@
 <?php namespace Hostbase\IpAddresses;
 
-use Hostbase\Entity\Entity;
-use Hostbase\Entity\Exceptions\InvalidEntity;
 use Hostbase\IpAddresses\Finder\IpAddressesFinder;
 use Hostbase\IpAddresses\Repository\IpAddressRepository;
-use Hostbase\Services\BaseResourceService;
-use Validator;
+use Hostbase\Services\DefaultResourceService;
 
 
-class IpAddressesService extends BaseResourceService {
+/**
+ * Class IpAddressesService
+ *
+ * @package Hostbase\IpAddresses
+ */
+class IpAddressesService extends DefaultResourceService
+{
+    use IpAddressHelper;
 
-    use IpAddressMaker;
-
-
-    /**
-     * @var string $entityName
-     */
-    static protected $entityName = 'ipAddress';
-
-    /**
-     * @var string $idField
-     */
-    static protected $idField = 'ipAddress';
 
     /**
      * @var IpAddressRepository
@@ -42,35 +34,5 @@ class IpAddressesService extends BaseResourceService {
     {
         $this->repository = $repository;
         $this->finder = $finder;
-    }
-
-
-    /**
-     * @param Entity $ipAddress
-     * @throws \Exception
-     * @throws InvalidEntity
-     * @return IpAddress
-     */
-    public function store(Entity $ipAddress)
-    {
-        if (! $ipAddress instanceof IpAddress) {
-            throw new InvalidEntity('Expected $ipAddress to be an instance of IpAddress');
-        }
-
-        $data = $ipAddress->getData();
-
-        $validator = Validator::make(
-            $data,
-            [
-                'subnet'    => 'required',
-                'ipAddress' => 'required'
-            ]
-        );
-
-        if ($validator->fails()) {
-            throw new \Exception(join('; ', $validator->messages()->all()));
-        }
-
-        return $this->repository->store($ipAddress);
     }
 } 

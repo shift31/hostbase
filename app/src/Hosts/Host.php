@@ -1,10 +1,24 @@
 <?php namespace Hostbase\Hosts;
 
-use Hostbase\Entity\BaseEntity;
+use Hostbase\Entity\DefaultEntity;
 
 
-class Host extends BaseEntity
+/**
+ * Class Host
+ * @package Hostbase\Hosts
+ */
+class Host extends DefaultEntity
 {
+    /**
+     * @var string
+     */
+    protected static $idField = 'fqdn';
+
+    /**
+     * @var string
+     */
+    protected static $docType = 'host';
+
     /**
      * @var string
      */
@@ -16,30 +30,21 @@ class Host extends BaseEntity
     public $adminCredentials;
 
 
+    /**
+     * @param null $fqdn
+     * @param array $data
+     * @throws \Exception
+     */
     public function __construct($fqdn = null, array $data)
     {
         parent::__construct($fqdn, $data);
 
-        $this->setFqdn($data['fqdn']);
-    }
-
-
-    /**
-     * @param string $id
-     */
-    public function setId($id)
-    {
-        parent::setId($id);
-        $this->setFqdn($id);
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->getFqdn();
+        // generate hostname and domain if they don't already exist
+        if ( ! isset($this->hostname) && ! isset($this->domain)) {
+            $fqdnParts = explode('.', $this->fqdn, 2);
+            $this->hostname = $fqdnParts[0];
+            $this->domain = $fqdnParts[1];
+        }
     }
 
 
@@ -49,7 +54,6 @@ class Host extends BaseEntity
     public function setFqdn($fqdn)
     {
         $this->fqdn = $fqdn;
-        parent::setId($fqdn);
     }
 
 

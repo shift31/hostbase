@@ -28,7 +28,7 @@ class IpAddressesServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(IpAddressRepository::class, CouchbaseIpAddressRepository::class);
-        $this->app->bind(IpAddressesFinder::class, ElasticsearchIpAddressesFinder::class);
+        $this->app->singleton(IpAddressRepository::class, CouchbaseIpAddressRepository::class);
+        $this->app->singleton(IpAddressesFinder::class, ElasticsearchIpAddressesFinder::class);
     }
 }

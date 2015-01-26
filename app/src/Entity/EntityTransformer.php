@@ -3,6 +3,11 @@
 use League\Fractal\TransformerAbstract;
 
 
+/**
+ * Class EntityTransformer
+ *
+ * @package Hostbase\Entity
+ */
 class EntityTransformer extends TransformerAbstract
 {
     /**
@@ -74,9 +79,8 @@ class EntityTransformer extends TransformerAbstract
             $this->filterEntityForExcludes($data);
         }
 
-        // remove docType and _timestamp keys, as they're only used internally
+        // remove docType key as it's only used internally
         unset($data['docType']);
-        unset($data['_timestamp']);
 
         return $data;
     }

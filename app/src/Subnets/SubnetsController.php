@@ -5,9 +5,13 @@ use Hostbase\Http\ResourceController;
 use League\Fractal\Manager;
 
 
+/**
+ * Class SubnetsController
+ *
+ * @package Hostbase\Subnets
+ */
 class SubnetsController extends ResourceController
 {
-
     /**
      * @param SubnetsService $service
      * @param Manager $fractal

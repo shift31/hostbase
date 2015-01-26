@@ -1,27 +1,17 @@
 <?php namespace Hostbase\Services;
 
 use Hostbase\Entity\Entity;
-use Hostbase\Entity\MakesEntities;
+use Hostbase\Entity\HandlesEntities;
 use Hostbase\Finder\Finder;
 use Hostbase\Repository\Repository;
 
 
-abstract class BaseResourceService implements ResourceService, MakesEntities
+/**
+ * Class DefaultResourceService
+ * @package Hostbase\Services
+ */
+abstract class DefaultResourceService implements ResourceService, HandlesEntities
 {
-    /**
-     * The entity name/document type.  Used as the key prefix.
-     *
-     * @var string $entityName
-     */
-    static protected $entityName = null;
-
-    /**
-     * The data field to use for generating a new id (key suffix).
-     *
-     * @var string $idField
-     */
-    static protected $idField = null;
-
     /**
      * @var Repository
      */
@@ -37,11 +27,8 @@ abstract class BaseResourceService implements ResourceService, MakesEntities
     {
         $this->repository = $repository;
         $this->finder = $finder;
-
-        if (is_null(static::$entityName) || is_null(static::$idField)) {
-            throw new \Exception("'entityName' and 'idField' fields must not be null");
-        }
     }
+
 
     /**
      * @param string|null $id
@@ -70,11 +57,13 @@ abstract class BaseResourceService implements ResourceService, MakesEntities
 
 
     /**
+     * @param int $limit
+     * @param bool $showData
      * @return array
      */
-    public function showList()
+    public function showList($limit = 10000, $showData = false)
     {
-        return $this->search('_exists_:' . static::$idField);
+        return $this->search("_exists_:{$this->getEntityIdField()}", $limit, $showData);
     }
 
 
@@ -93,7 +82,7 @@ abstract class BaseResourceService implements ResourceService, MakesEntities
             // set entities to an array of document IDs without the entity name prefixed
             $entities = array_map(
                 function ($entity) {
-                    return str_replace(static::$entityName . '_', '', $entity);
+                    return str_replace($this->getEntityDocType() . '_', '', $entity);
                 },
                 $docIds
             );
@@ -106,11 +95,17 @@ abstract class BaseResourceService implements ResourceService, MakesEntities
 
 
     /**
-     * @param Entity $entity
-     *
+     * @param array $data
      * @return Entity
      */
-    abstract public function store(Entity $entity);
+    public function store(array $data)
+    {
+        $entity = $this->makeEntity($data);
+
+        $entity->createdDateTime = date('c');
+
+        return $this->repository->store($entity);
+    }
 
 
     /**
@@ -123,20 +118,16 @@ abstract class BaseResourceService implements ResourceService, MakesEntities
     {
         $entity = $this->repository->getOne($id);
 
-        $existingData = $entity->getData();
-
-        foreach ($data as $field => $value) {
+        foreach ($data as $key => $value) {
             if ($value === '') {
                 // keys should be removed when nullified
-                unset($existingData[$field]);
+                unset($entity->$key);
             } else {
-                $existingData[$field] = $value;
+                $entity->$key = $value;
             }
         }
 
-        $existingData['updatedDateTime'] = date('c');
-
-        $entity->setData($existingData);
+        $entity->updatedDateTime = date('c');
 
         return $this->repository->update($entity);
     }

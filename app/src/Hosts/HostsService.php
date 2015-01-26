@@ -1,27 +1,20 @@
 <?php namespace Hostbase\Hosts;
 
 use Crypt;
-use Hostbase\Entity\Entity;
-use Hostbase\Entity\Exceptions\InvalidEntity;
 use Hostbase\Hosts\Finder\HostsFinder;
 use Hostbase\Hosts\Repository\HostRepository;
-use Hostbase\Services\BaseResourceService;
+use Hostbase\Services\DefaultResourceService;
 use Log;
 
 
-class HostsService extends BaseResourceService {
+/**
+ * Class HostsService
+ * @package Hostbase\Hosts
+ */
+class HostsService extends DefaultResourceService
+{
+    use HostHelper;
 
-    use HostMaker;
-
-    /**
-     * @var string $entityName
-     */
-    static protected $entityName = 'host';
-
-    /**
-     * @var string $idField
-     */
-    static protected $idField = 'fqdn';
 
     /**
      * @var \Hostbase\Hosts\Repository\HostRepository
@@ -32,6 +25,7 @@ class HostsService extends BaseResourceService {
      * @var HostsFinder
      */
     protected $finder;
+
 
     /**
      * @param HostRepository $repository
@@ -75,33 +69,18 @@ class HostsService extends BaseResourceService {
 
 
     /**
-     * @param Entity $host
+     * @param array $data
      * @return Host
-     * @throws InvalidEntity
      * @throws HostMissingFqdn
      */
-    public function store(Entity $host)
+    public function store(array $data)
     {
-        if (! $host instanceof Host) {
-            throw new InvalidEntity('Expected $host to be an instance of Host');
-        }
-
-        $fqdn = $host->getFqdn();
-
-        if ($fqdn === null) {
-            throw new HostMissingFqdn("Host must have a value for 'fqdn'");
-        }
-
-        // generate hostname and domain if they don't already exist
-        if (!isset($host->hostname) && !isset($host->domain)) {
-            $fqdnParts = explode('.', $host->fqdn, 2);
-            //Log::debug('$fqdnParts:' . print_r($fqdnParts, true));
-            $host->hostname = $fqdnParts[0];
-            $host->domain = $fqdnParts[1];
-        }
+        $host = $this->makeEntity($data);
 
         // encrypt admin password
         $this->encryptAdminPassword($host);
+
+        $host->createdDateTime = date('c');
 
         return $this->repository->store($host);
     }
@@ -114,10 +93,24 @@ class HostsService extends BaseResourceService {
      */
     public function update($id, array $data)
     {
-        // encrypt admin password
-        $this->encryptAdminPassword($data);
+        $host = $this->repository->getOne($id);
 
-        return parent::update($id, $data);
+        if (isset($data['adminCredentials'])) {
+            $this->encryptAdminPassword($host);
+        }
+
+        foreach ($data as $key => $value) {
+            if ($value === '') {
+                // keys should be removed when nullified
+                unset($host->$key);
+            } else {
+                $host->$key = $value;
+            }
+        }
+
+        $host->updatedDateTime = date('c');
+
+        return $this->repository->update($host);
     }
 
 
@@ -127,6 +120,7 @@ class HostsService extends BaseResourceService {
     protected function encryptAdminPassword(Host $host)
     {
         if (isset($host->adminCredentials)) {
+            Log::debug("Encrypting admin password for {$host->fqdn}");
             $host->adminCredentials['encryptedPassword'] = Crypt::encrypt($host->adminCredentials['password']);
             unset($host->adminCredentials['password']);
         }

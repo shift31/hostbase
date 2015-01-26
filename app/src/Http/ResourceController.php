@@ -1,10 +1,9 @@
 <?php namespace Hostbase\Http;
 
 use Hostbase\Entity\EntityTransformer;
-use Hostbase\Entity\Exceptions\EntityNotFound;
-use Hostbase\Exceptions\NoSearchResults;
+use Hostbase\ErrorHandling\ErrorHandler;
 use Hostbase\ListTransformer;
-use Hostbase\Services\BaseResourceService;
+use Hostbase\Services\DefaultResourceService;
 use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Routing\Controller;
 use Input;
@@ -26,7 +25,7 @@ abstract class ResourceController extends Controller
 
 
     /**
-     * @var BaseResourceService
+     * @var DefaultResourceService
      */
     protected $service;
 
@@ -41,20 +40,12 @@ abstract class ResourceController extends Controller
     protected $transformer;
 
 
-
-    const CODE_WRONG_ARGS = 'Incorrect arguments';
-    const CODE_NOT_FOUND = 'Resource not found';
-    const CODE_INTERNAL_ERROR = 'Internal error';
-    const CODE_UNAUTHORIZED = 'Unauthorized';
-    const CODE_FORBIDDEN = 'Forbidden';
-
-
     /**
-     * @param BaseResourceService $service
-     * @param Manager $fractal
-     * @param EntityTransformer $transformer
+     * @param DefaultResourceService $service
+     * @param Manager                $fractal
+     * @param EntityTransformer      $transformer
      */
-    public function __construct(BaseResourceService $service, Manager $fractal, EntityTransformer $transformer)
+    public function __construct(DefaultResourceService $service, Manager $fractal, EntityTransformer $transformer)
     {
         $this->service = $service;
         $this->fractal = $fractal;
@@ -69,29 +60,29 @@ abstract class ResourceController extends Controller
      */
     public function index()
     {
+        $showData = Input::has('showData') ? (bool) Input::get('showData') : false;
+
+        if ($showData === true) {
+            $this->setTransformerFilters();
+        }
+
+        $limit = Input::has('limit') ? Input::get('limit') : 10000;
+
+
         // handle search
         if (Input::has('q')) {
 
-            $showData = Input::has('showData') ? (bool) Input::get('showData') : false;
+            $resources = $this->service->search(
+                Input::get('q'),
+                $limit,
+                $showData
+            );
 
-            if ($showData === true) {
-                $this->setTransformerFilters();
-            }
-
-            try {
-                $resources = $this->service->search(
-                    Input::get('q'),
-                    Input::has('size') ? Input::get('size') : 10000,
-                    $showData
-                );
-                return $this->respondWithCollection($resources, $showData === true ? $this->transformer : new ListTransformer());
-            } catch (NoSearchResults $e) {
-                return $this->errorNotFound($e->getMessage());
-            } catch (\Exception $e) {
-                return $this->errorInternalError($e->getMessage());
-            }
+            return $this->respondWithCollection($resources,
+                $showData === true ? $this->transformer : new ListTransformer());
         } else {
-            return $this->respondWithCollection($this->service->showList(), new ListTransformer());
+            return $this->respondWithCollection($this->service->showList($limit, $showData),
+                $showData === true ? $this->transformer : new ListTransformer());
         }
     }
 
@@ -100,6 +91,7 @@ abstract class ResourceController extends Controller
      * Store a newly created resource in storage.
      *
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function store()
     {
@@ -112,17 +104,12 @@ abstract class ResourceController extends Controller
             $data = Yaml::parse(Input::getContent());
 
         } else {
-            return $this->errorInternalError("Content-Type must be 'application/json' or 'application/yaml");
+            return ErrorHandler::errorUnsupportedMediaType("Content-Type must be 'application/json' or 'application/yaml");
         }
 
-        try {
-            $entity = $this->service->makeNewEntity(null, $data);
-            $resource = $this->service->store($entity);
+        $resource = $this->service->store($data);
 
-            return $this->setStatusCode(HttpResponse::HTTP_CREATED)->respondWithItem($resource, $this->transformer);
-        } catch (\Exception $e) {
-            return $this->errorInternalError($e->getMessage());
-        }
+        return $this->setStatusCode(HttpResponse::HTTP_CREATED)->respondWithItem($resource, $this->transformer);
     }
 
 
@@ -137,13 +124,7 @@ abstract class ResourceController extends Controller
     {
         $this->setTransformerFilters();
 
-        try {
-            return $this->respondWithItem($this->service->showOne($id), $this->transformer);
-        } catch (EntityNotFound $e) {
-            return $this->errorNotFound($e->getMessage());
-        } catch (\Exception $e) {
-            return $this->errorInternalError($e->getMessage());
-        }
+        return $this->respondWithItem($this->service->showOne($id), $this->transformer);
     }
 
 
@@ -165,18 +146,12 @@ abstract class ResourceController extends Controller
             $data = Yaml::parse(Input::getContent());
 
         } else {
-            return $this->errorInternalError("Content-Type must be 'application/json' or 'application/yaml");
+            return ErrorHandler::errorUnsupportedMediaType("Content-Type must be 'application/json' or 'application/yaml");
         }
 
-        try {
-            $updatedResource = $this->service->update($id, $data);
+        $updatedResource = $this->service->update($id, $data);
 
-            return $this->respondWithItem($updatedResource, $this->transformer);
-        } catch (EntityNotFound $e) {
-            return $this->errorNotFound($e->getMessage());
-        } catch (\Exception $e) {
-            return $this->errorInternalError($e->getMessage());
-        }
+        return $this->respondWithItem($updatedResource, $this->transformer);
     }
 
 
@@ -189,13 +164,9 @@ abstract class ResourceController extends Controller
      */
     public function destroy($id)
     {
-        try {
-            $this->service->destroy($id);
+        $this->service->destroy($id);
 
-            return Response::json("Deleted $id");
-        } catch (\Exception $e) {
-            return $this->errorInternalError($e->getMessage());
-        }
+        return Response::json("Deleted $id", HttpResponse::HTTP_ACCEPTED);
     }
 
 

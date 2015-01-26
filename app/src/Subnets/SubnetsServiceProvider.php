@@ -28,7 +28,7 @@ class SubnetsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(SubnetRepository::class, CouchbaseSubnetRepository::class);
-        $this->app->bind(SubnetsFinder::class, ElasticsearchSubnetsFinder::class);
+        $this->app->singleton(SubnetRepository::class, CouchbaseSubnetRepository::class);
+        $this->app->singleton(SubnetsFinder::class, ElasticsearchSubnetsFinder::class);
     }
 }

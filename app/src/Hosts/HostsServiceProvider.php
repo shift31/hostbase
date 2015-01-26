@@ -28,7 +28,7 @@ class HostsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(HostRepository::class, CouchbaseHostRepository::class);
-        $this->app->bind(HostsFinder::class, ElasticsearchHostsFinder::class);
+        $this->app->singleton(HostRepository::class, CouchbaseHostRepository::class);
+        $this->app->singleton(HostsFinder::class, ElasticsearchHostsFinder::class);
     }
 }

@@ -15,7 +15,7 @@
         "shift31/laravel-elasticsearch": "1.3.*@dev",
         "symfony/yaml": "~2.6",
         "league/fractal": "@stable",
-        "doctrine/key-value-store": "dev-master"
+        "doctrine/inflector": "1.*"
     },
     "require-dev": {
         "phpunit/phpunit": "4.0.*",

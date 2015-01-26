@@ -1,48 +1,31 @@
 <?php namespace Hostbase\Repository;
 
+use CouchbaseBucket;
 use Hostbase\Entity\Entity;
 use Hostbase\Entity\Exceptions\EntityAlreadyExists;
 use Hostbase\Entity\Exceptions\EntityNotFound;
-use Hostbase\Entity\Exceptions\EntityUpdateFailed;
-use Hostbase\Entity\MakesEntities;
+use Hostbase\Entity\HandlesEntities;
 
 
 /**
  * Class CouchbaseRepository
  * @package Hostbase\Repository
  */
-abstract class CouchbaseRepository implements Repository, MakesEntities
+abstract class CouchbaseRepository implements Repository, HandlesEntities
 {
     /**
-     * The entity name/document type.  Used as the key prefix.
-     *
-     * @var string $entityName
-     */
-    static protected $entityName = null;
-
-    /**
-     * The data field to use for generating a new id (key suffix).
-     *
-     * @var string $idField
-     */
-    static protected $idField = null;
-
-
-    /**
-     * @var \CouchbaseBucket
+     * @var CouchbaseBucket
      */
     protected $bucket;
 
 
     /**
-     * @param \CouchbaseBucket $bucket
+     * @param CouchbaseBucket $bucket
      * @throws \Exception
      */
-    public function __construct(\CouchbaseBucket $bucket)
+    public function __construct(CouchbaseBucket $bucket)
     {
-        if (is_null(static::$entityName) || is_null(static::$idField)) {
-            throw new \Exception("'entityName' and 'idField' fields must not be null");
-        }
+        $this->bucket = $bucket;
     }
 
 
@@ -53,13 +36,16 @@ abstract class CouchbaseRepository implements Repository, MakesEntities
     {
         $key = $this->makeKey($id);
 
-        $metaDoc = $this->bucket->get($key);
-
-        if ($metaDoc === null) {
-            throw new EntityNotFound('No ' . static::$entityName . " named '$id'");
+        try {
+            $metaDoc = $this->bucket->get($key);
+        } catch (\Exception $e) {
+            throw new EntityNotFound("No '{$this->getEntityDocType()}' named '$id'");
         }
 
-        return $this->makeNewEntity($this->makeIdFromKey($key), $metaDoc->value);
+        // convert object to array
+        $data = json_decode(json_encode($metaDoc->value), true);
+
+        return $this->makeEntity($data);
     }
 
 
@@ -73,7 +59,10 @@ abstract class CouchbaseRepository implements Repository, MakesEntities
         $metaDocs = $this->bucket->get($ids);
 
         foreach ($metaDocs as $key => $metaDoc) {
-            $entity = $this->makeNewEntity($this->makeIdFromKey($key), $metaDoc->value);
+            // convert object to array
+            $data = json_decode(json_encode($metaDoc->value), true);
+
+            $entity = $this->makeEntity($data);
 
             $entities[] = $entity;
         }
@@ -87,15 +76,14 @@ abstract class CouchbaseRepository implements Repository, MakesEntities
      */
     public function store(Entity $entity)
     {
-        $id = $entity->{static::$idField};
+        $id = $entity->getId();
         $key = $this->makeKey($id);
-        $entity->setId($key);
 
-        // set document type and creation time
-        $entity->docType = static::$entityName;
-        $entity->createdDateTime = date('c');
-
-        $this->bucket->insert($key, $entity);
+        try {
+            $this->bucket->insert($key, $entity->toArray());
+        } catch (\Exception $e) {
+            throw new EntityAlreadyExists("A '{$entity->getDocType()}' with the '{$entity::getIdField()}' '$id' already exists");
+        }
 
         return $entity;
     }
@@ -108,7 +96,7 @@ abstract class CouchbaseRepository implements Repository, MakesEntities
     {
         $id = $entity->getId();
 
-        $this->bucket->replace($this->makeKey($id), $entity);
+        $this->bucket->replace($this->makeKey($id), $entity->toArray());
 
         return $entity;
     }
@@ -129,16 +117,6 @@ abstract class CouchbaseRepository implements Repository, MakesEntities
      */
     protected function makeKey($id)
     {
-        return static::$entityName . "_$id";
-    }
-
-
-    /**
-     * @param string $key
-     * @return string
-     */
-    protected function makeIdFromKey($key)
-    {
-        return str_replace(static::$entityName . '_', '', $key);
+        return $this->getEntityDocType() . "_$id";
     }
 }

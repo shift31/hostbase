@@ -5,6 +5,11 @@ use Hostbase\Http\ResourceController;
 use League\Fractal\Manager;
 
 
+/**
+ * Class HostsController
+ *
+ * @package Hostbase\Hosts
+ */
 class HostsController extends ResourceController
 {
 

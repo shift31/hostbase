@@ -2,7 +2,7 @@
 
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Hostbase\CouchbaseServiceProvider;
-use Hostbase\DoctrineKeyValueStoreServiceProvider;
+use Hostbase\ErrorHandling\ErrorHandlerServiceProvider;
 use Hostbase\Hosts\HostsServiceProvider;
 use Hostbase\IpAddresses\IpAddressesServiceProvider;
 use Hostbase\Subnets\SubnetsServiceProvider;
@@ -121,7 +121,7 @@ return array(
         LaravelElasticsearchServiceProvider::class,
 
         CouchbaseServiceProvider::class,
-        DoctrineKeyValueStoreServiceProvider::class,
+        ErrorHandlerServiceProvider::class,
 
         HostsServiceProvider::class,
         SubnetsServiceProvider::class,

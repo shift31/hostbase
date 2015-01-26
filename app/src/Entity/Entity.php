@@ -8,22 +8,28 @@
 interface Entity
 {
     /**
-     * @param mixed $id
+     * @param string $id
      * @param array $data
      */
     public function __construct($id = null, array $data);
 
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getId();
+    public static function getIdField();
 
 
     /**
-     * @param mixed $id
+     * @return string
      */
-    public function setId($id);
+    public static function getDocType();
+
+
+    /**
+     * @return string
+     */
+    public function getId();
 
 
     /**
