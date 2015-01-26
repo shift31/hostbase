@@ -14,7 +14,7 @@
 - [Security](#security)
 - [To-do](#to-do)
 
-_**Hostbase is currently under development, however it is quite usable.**_  I created this project to help teach myself the Laravel framework, and study REST API development and enterprise architecture patterns.  ~@bgetsug
+_**Hostbase is currently under development, however it is quite usable.**_  I created this project to help teach myself the Laravel framework, study REST API development, and apply enterprise architecture patterns.  ~@bgetsug
 
 ## Overview
 
@@ -34,7 +34,7 @@ _A rough overview (everything on a single machine)..._
 2. On your Couchbase server:
     - Create (or keep) the 'default' bucket.  This will be used for sessions / cache.
     - Create a bucket called 'hostbase' (you can call it whatever you want, but the default config supports this naming convention)
-3. Download and install [Elasticsearch 1.0.1](http://www.elasticsearch.org/downloads/page/2/).
+3. Download and install [Elasticsearch 1.3.0](http://www.elasticsearch.org/downloads/page/2/).
 4. On your Elasticsearch server, create an index called 'hostbase' with at least 1 shard...replicas are optional but recommended. The data can always be re-indexed by replicating from Couchbase again.
 5. Install the [Couchbase Plug-in for Elasticsearch](http://www.couchbase.com/couchbase-server/connectors/elasticsearch)
 6. Configure Couchbase XDCR to replicate the 'hostbase' bucket to the Elasticsearch cluster
