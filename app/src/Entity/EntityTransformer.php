@@ -3,6 +3,11 @@
 use League\Fractal\TransformerAbstract;
 
 
+/**
+ * Class EntityTransformer
+ *
+ * @package Hostbase\Entity
+ */
 class EntityTransformer extends TransformerAbstract
 {
     /**
@@ -64,52 +69,45 @@ class EntityTransformer extends TransformerAbstract
      */
     public function transform(Entity $entity)
     {
+        $data = $entity->toArray();
+
         if (count($this->fieldIncludes) > 0) {
-            $this->filterResourceForIncludes($entity);
+            $this->filterIncludes($data);
         }
 
         if (count($this->fieldExcludes) > 0) {
-            $this->filterResourceForExcludes($entity);
+            $this->filterEntityForExcludes($data);
         }
 
-        $data = $entity->getData();
-
-        // remove docType and _timestamp keys, as they're only used internally
+        // remove docType key as it's only used internally
         unset($data['docType']);
-        unset($data['_timestamp']);
 
         return $data;
     }
 
 
     /**
-     * @param Entity $entity
+     * @param $data
      */
-    protected function filterResourceForIncludes(Entity $entity)
+    protected function filterIncludes(&$data)
     {
-        $data = $entity->getData();
-
         $filteredData = [];
 
         foreach ($this->fieldIncludes as $include) {
             $filteredData[$include] = $data[$include];
         }
 
-        $entity->setData($filteredData);
+        $data = $filteredData;
     }
 
 
     /**
-     * @param Entity $entity
+     * @param $data
      */
-    protected function filterResourceForExcludes(Entity $entity)
+    protected function filterEntityForExcludes(&$data)
     {
-        $data = $entity->getData();
-
         foreach ($this->fieldExcludes as $exclude) {
             unset($data[$exclude]);
         }
-
-        $entity->setData($data);
     }
 } 

@@ -6,21 +6,15 @@
         "php": ">=5.5",
         "laravel/framework": "4.2.*",
         "barryvdh/laravel-ide-helper": "1.*",
-        "shift31/laravel-basement": "dev-master",
-        "shift31/laravel-elasticsearch": "1.0.*@dev",
-        "symfony/yaml": "2.3.x-dev",
-        "league/fractal": "0.9.*"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "4.0.*",
-        "mockery/mockery": "0.9.*@dev",
-        "phpspec/phpspec": "2.0.*@dev"
+        "shift31/laravel-elasticsearch": "1.3.*@dev",
+        "symfony/yaml": "~2.6",
+        "league/fractal": "@stable",
+        "doctrine/inflector": "1.*"
     },
     "autoload": {
         "classmap": [
             "app/controllers",
-            "app/models",
-            "app/tests/TestCase.php"
+            "app/models"
         ],
         "psr-4": {
             "Hostbase\\": "app/src"

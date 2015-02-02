@@ -14,17 +14,17 @@
 - [Security](#security)
 - [To-do](#to-do)
 
-_**Hostbase is currently under development, however it is quite usable.**_  I created this project to help teach myself the Laravel framework, and study REST API development and enterprise architecture patterns.  ~@bgetsug
+_**Hostbase is currently under development, however it is quite usable.**_  I created this project to help teach myself the Laravel framework, study REST API development, and apply enterprise architecture patterns.  ~@bgetsug
 
 ## Overview
 
-Hostbase is a systems and network administration tool for cataloging hosts, subnets, and IP addresses.  It is designed to support private or public cloud operations of any size.  Whether you have a few dozen or a few thousand hosts across multiple environments and data centers, Hostbase can provide the foundation of a service-oriented architecture for tracking the lifecycle of hosts and networks.  Instead of storing duplicate host information across your continuous integration server, deployment tools, provisioning system, or CMDB, Hostbase can provide a single, centralized interface for storing and retrieving this information dynamically.  This is especially useful in environments where scaling horizontally is commonplace.
+Hostbase is a systems and network administration tool for cataloging hosts, subnets, and IP addresses.  It is designed to support private or public cloud operations of any size.  Whether you have a few dozen or a few thousand hosts across multiple environments and data centers, Hostbase can provide the foundation of a service-oriented architecture for tracking the lifecycle of hosts and networks.  Instead of storing duplicate host information across your continuous integration server, deployment tools, provisioning system, or other CMDB, Hostbase can provide a single, centralized interface for storing and retrieving this information dynamically.
 
 ### Technology
 
-Hostbase uses Couchbase Server to easily store data with whatever schema you choose, so you're not locked in to any particular data models other than the primary concepts of hosts, subnets, and IPs.  These objects are stored as JSON documents in a single Couchbase bucket.  Using the Couchbase plug-in for Elasticsearch, data is streamed in real-time from Couchbase to Elasticsearch.  This allows for full-text search using [Elasticsearch/Lucene query string syntax](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html). For example, let's assume you "tag" your hosts by role, environment, and data center.  To retrieve a list of all hosts of the 'web_server' role, in the 'QA' environment, in the 'dallas01' data center, the search query might be as simple as: `env:qa AND role:web_server AND datacenter:dallas01`.
+Hostbase uses Couchbase Server to store data with whatever schema you choose, so you're not locked in to any particular data models other than the primary concepts of hosts, subnets, and IPs.  These objects are stored as JSON documents in a single Couchbase bucket.  Using the Couchbase plug-in for Elasticsearch, data is streamed in real-time from Couchbase to Elasticsearch.  This allows for full-text search using [Elasticsearch/Lucene query string syntax](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html). For example, let's assume you "tag" your hosts by role, environment, and data center.  To retrieve a list of all hosts of the 'web_server' role, in the 'QA' environment, in the 'dallas01' data center, the search query might be as simple as: `env:qa AND role:web_server AND datacenter:dallas01`.
 
-In addition to Couchbase and Elasticsearch, Hostbase requires a web server with PHP 5.5 or greater.  All search and CRUD operations are exposed through a RESTful web service.
+In addition to Couchbase and Elasticsearch, Hostbase requires a web server with PHP 5.5 or greater.  All search and CRUD operations are available through a RESTful web service.
 
 ## Installation
 
@@ -34,7 +34,7 @@ _A rough overview (everything on a single machine)..._
 2. On your Couchbase server:
     - Create (or keep) the 'default' bucket.  This will be used for sessions / cache.
     - Create a bucket called 'hostbase' (you can call it whatever you want, but the default config supports this naming convention)
-3. Download and install [Elasticsearch 1.0.1](http://www.elasticsearch.org/downloads/page/2/).
+3. Download and install [Elasticsearch 1.3.0](http://www.elasticsearch.org/downloads/page/2/).
 4. On your Elasticsearch server, create an index called 'hostbase' with at least 1 shard...replicas are optional but recommended. The data can always be re-indexed by replicating from Couchbase again.
 5. Install the [Couchbase Plug-in for Elasticsearch](http://www.couchbase.com/couchbase-server/connectors/elasticsearch)
 6. Configure Couchbase XDCR to replicate the 'hostbase' bucket to the Elasticsearch cluster
@@ -208,14 +208,13 @@ Basic authentication will be implemented soon, but until then it is recommended 
 
 ## To-do / ?
 
-- Tests (unit, integration, etc.) - **IN PROGRESS**
+- Tests
 - Implement HTTP Basic Authentication with users stored in Hostbase and/or LDAP
-- Puppet Module and Chef Cookbook to help automate installation
-- CMDB integration
+- Ansible Playbook to help automate installation
+- Integrations
     - Script to periodically update Hostbase from Puppet Facts...likely using Facter output, run via Cron
     - Puppet function to allow querying of Hostbase from Puppet manifests
     - Hiera backend to allow querying of Hostbase from Hiera
-    - Chef equivalents of the above
 - Command line tool to aid initial configuration (driven by Laravel's artisan command)
 - API
     - Pagination

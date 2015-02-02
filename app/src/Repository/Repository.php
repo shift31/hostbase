@@ -1,6 +1,8 @@
 <?php namespace Hostbase\Repository;
 
 use Hostbase\Entity\Entity;
+use Hostbase\Entity\Exceptions\EntityAlreadyExists;
+use Hostbase\Entity\Exceptions\EntityUpdateFailed;
 
 
 interface Repository
@@ -24,7 +26,7 @@ interface Repository
     /**
      * @param Entity $entity
      *
-     * @throws \Hostbase\Entity\Exceptions\EntityAlreadyExists
+     * @throws EntityAlreadyExists
      * @return Entity
      */
     public function store(Entity $entity);
@@ -33,7 +35,7 @@ interface Repository
     /**
      * @param Entity $entity
      *
-     * @throws \Hostbase\Entity\Exceptions\EntityUpdateFailed
+     * @throws EntityUpdateFailed
      * @return Entity
      */
     public function update(Entity $entity);
@@ -41,9 +43,6 @@ interface Repository
 
     /**
      * @param string $id
-     *
-     * @throws \Exception
-     * @return bool
      */
     public function destroy($id);
 }

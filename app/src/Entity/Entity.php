@@ -1,35 +1,39 @@
 <?php namespace Hostbase\Entity;
 
 
+/**
+ * Interface Entity
+ * @package Hostbase\Entity
+ */
 interface Entity
 {
     /**
-     * @param mixed $id
+     * @param string $id
      * @param array $data
      */
-    public function __construct($id = null, array $data = []);
+    public function __construct($id = null, array $data);
 
 
     /**
-     * @return mixed
+     * @return string
+     */
+    public static function getIdField();
+
+
+    /**
+     * @return string
+     */
+    public static function getDocType();
+
+
+    /**
+     * @return string
      */
     public function getId();
 
 
     /**
-     * @param mixed $id
-     */
-    public function setId($id);
-
-
-    /**
      * @return array
      */
-    public function getData();
-
-
-    /**
-     * @param array $data
-     */
-    public function setData(array $data);
+    public function toArray();
 } 
