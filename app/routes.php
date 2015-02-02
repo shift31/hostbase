@@ -15,7 +15,3 @@ Route::get('/', function()
 {
 	return View::make('home');
 });
-
-Route::resource('hosts', 'HostController');
-Route::resource('subnets', 'SubnetController');
-Route::resource('ipaddresses', 'IpAddressController');
